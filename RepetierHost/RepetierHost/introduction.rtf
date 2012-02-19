@@ -1,0 +1,105 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf320
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\b\fs48 \cf0 First Steps
+\b0\fs24 \
+\
+
+\fs36 1. Introduction
+\fs24 \
+\
+Repetier-Host Mac is a blazing fast and user friendly host software to manage your 3d printer. You can\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural
+\ls1\ilvl0\cf0 {\listtext	\'95	}Arrange your modeled objects on the print bed.\
+{\listtext	\'95	}Slice the models with the build-in Slic3r slicer or with an external Slic3r or Skeinforge/SFact installed on your computer.\
+{\listtext	\'95	}Review the generated G-Code in code and visually. The editor will explain your code lines and highlight them for better reading.\
+{\listtext	\'95	}Send the code to your printer.\
+{\listtext	\'95	}Store code on a sd card and run your print job from the card.\
+{\listtext	\'95	}Control your printer with manual controls.\
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 To get the most out of the software, you should read this short tutorial. You will get tips and tricks to get your work done more efficiently.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs36 \cf0 2. Configuration
+\fs24 \
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+If you use the host for the first time, you need to do some configurations. Start with the preferences (cmd+,). Here you see at the left side several options, which can be changed.  Most have good defaults and can be left for later. \
+\
+The host comes with an included slicing software (Slic3r from Alessandro Ranellucci). If you are a beginner use this for your first steps. It gives good results and is fast and easy to configure.\
+If you have installed Skeinforge or an other version of Slic3r open the appropriate "Slicer" tab and configure it. At the bottom you find a button to visit the slicer's homepage, if you need a fresher version.\
+\
+The last, but most important, thing to configure are the printer settings. Open the printer settings (cmd+P). You can have multiple printer configurations. Each configuration consists of the values entered in this panel and the start/end codes defined in the G-Code editor. This way you manage any number of printers.\
+\
+Take special care with the connection settings. Wrong settings make a communication with your printer impossible.\
+\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	\'95	}Connect your printer to your computer and turn it on. You only see connections currently available.\
+{\listtext	\'95	}If you just want to play with the host, select the "Virtual printer".\
+{\listtext	\'95	}The virtual printer is blazing fast. It can handle more then 15000 commands per second on a standard iMac. If you select a baud rate below 250000 the speed is throttled.\
+{\listtext	\'95	}Make sure you select the correct receive cache size. Setting it to high creates many communication problems. Old Arduinos (<1.0) had a cache size of 128 bytes. Since Arduino 1.0 the cache size is only 64 byte long.\
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs36 \cf0 3. Walkthrough
+\fs24 \
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+Time for a first run through the complete toolchain. The main window is your control center. It is divided into 5 parts:\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural
+\ls3\ilvl0\cf0 {\listtext	\'95	}At the top you have a toolbar with the most important commands.\
+{\listtext	\'95	}On the left you have the information views: Graphic visualization of the models or the printer temperature.\
+{\listtext	\'95	}On the right you control and modify everything.\
+{\listtext	\'95	}Below these two views, you have the log output. Here you can see the communication with your printer or with the slicing software. If you are searching for errors, make sure you see the log.\
+{\listtext	\'95	}At the bottom you have a status line with the most important informations.\
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+For a first run get a simple STL file of the model. A good source is http://www.thingiverse.com.\
+After you start the host, you should have the "Object placement" tab visible. Klick on "Add STL file" and select your model. You will it drop down onto your printer bed. With the right mouse button you can select the object. Hold the button down and you can move the object. If you have troubles with the orientation, select the top-view in the left toolbar.\
+If you want, you can add more items on the bed. If you see an object pulsing, it is not inside your printable area.\
+\
+Now you can start computing the needed printer actions, which is called slicing. So press the "Generate G-Code button". You will see some output from the slicer in the logs at the bottom. After the slicer is finished, the created G-Code is loaded and the tab switches to "G-Code".\
+\
+In the "G-Code" tab you see the commands, that you need to send to the printer. On the left side you will see a preview of how the result should look like, if the printer is finished. At right top of the editor, you can change what code you see.\
+- G-Code : The code created by the slicer.\
+- Start Code : These commands are send before sending the G-Code commands.\
+- End Code : These commands are send after sending the G-Code commands.\
+\
+IMPORTANT: Start and End Code are part of your printer configuration. If you change them, you need to press the save button, if you want them the next time you run the host, otherwise they are only stored as long as the host is running.\
+\
+If you are satisfied with what you see, go to the "Print panel". Here you can control the printer manually and you will see the a visualization of the commands send to the printer on the left.\
+Make sure you have configured your printer correct. If not or no printer is present, go to the printer settings and select the "Virtual printer" from the port list. This simulates a printer, so you can test the program.\
+\
+Connect the printer. After a few seconds you should see the extruder temperature instead of a "Disconnected" message at the bottom. You can move your extruder around or enable the heater. To start the print you created,  click on the run button. Now the host starts to send the commands to your printer. You can still use the manual controls, but moving the head normally ruins your print.\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\fs36 \cf0 4. Tipps and Tricks
+\fs24 \
+\pard\tx560\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0     \
+Graphic view:\
+\
+I use always the rotate command. Pressing shift moves the view. With the scroll wheel you can zoom in and out.\
+You can select more then one object by holding the ctrl-key down.\
+\
+Temperature curve:\
+\
+The menu has many options to select what you see.\
+For every hour a new entry is stored. Use the menu to review past histories.\
+For normal operation select "Past 60 minutes" and "Autoscroll". That way you always see the last temperatures. \
+\
+Print panel:\
+\
+The manual command field sends the command with a return, no need to press the send button.\
+It also has a history. Use down and up key to navigate through past commands.\
+}

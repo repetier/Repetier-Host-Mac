@@ -1,0 +1,935 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FD0AE1D514DB446A002356B8 /* Slic3rSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */; };
+		FD13BF7614C090620007E33D /* RHAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = FD13BF7514C090620007E33D /* RHAnimation.m */; };
+		FD13BF7914C174D40007E33D /* STLComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD13BF7814C174D40007E33D /* STLComposer.xib */; };
+		FD13BF7C14C1756D0007E33D /* STLComposer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD13BF7B14C1756D0007E33D /* STLComposer.m */; };
+		FD1719CF148D35750023E262 /* RHLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719CE148D35750023E262 /* RHLinkedList.m */; };
+		FD1719D3148E83540023E262 /* GCode.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D2148E83540023E262 /* GCode.m */; };
+		FD1719D6148EA3040023E262 /* GCodeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */; };
+		FD1719D9148EAD850023E262 /* RHPrintjob.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D8148EAD850023E262 /* RHPrintjob.m */; };
+		FD1E241E14966F67008AF30C /* ThreeD.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD1E241D14966F67008AF30C /* ThreeD.xib */; };
+		FD1E242314967310008AF30C /* ThreeDContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E242214967310008AF30C /* ThreeDContainer.m */; };
+		FD1E24261497A612008AF30C /* RHOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E24251497A612008AF30C /* RHOpenGLView.m */; };
+		FD1E24281497ABD2008AF30C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD1E24271497ABD2008AF30C /* GLUT.framework */; };
+		FD1E242B1497B7D4008AF30C /* ThreeDConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E242A1497B7D4008AF30C /* ThreeDConfig.m */; };
+		FD283A7E14E6B55000597203 /* fronview.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7914E6B55000597203 /* fronview.png */; };
+		FD283A7F14E6B55000597203 /* move.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7A14E6B55000597203 /* move.png */; };
+		FD283A8014E6B55000597203 /* topview.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7B14E6B55000597203 /* topview.png */; };
+		FD283A8114E6B55000597203 /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7C14E6B55000597203 /* trash.png */; };
+		FD283A8214E6B55000597203 /* zoom.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7D14E6B55000597203 /* zoom.png */; };
+		FD283A8514E6B61900597203 /* rotateicon.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A8414E6B61900597203 /* rotateicon.png */; };
+		FD283A8814E6C43A00597203 /* HorizontalSpliViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD283A8714E6C43A00597203 /* HorizontalSpliViewDelegate.m */; };
+		FD283A8B14E97ED100597203 /* preferences.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A8914E97ED100597203 /* preferences.png */; };
+		FD283A8C14E97ED100597203 /* printersettings.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A8A14E97ED100597203 /* printersettings.png */; };
+		FD283A8E14EAB8CA00597203 /* SDCard.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD283A8D14EAB8CA00597203 /* SDCard.xib */; };
+		FD283A9114EABBBA00597203 /* SDCardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FD283A9014EABBB900597203 /* SDCardManager.m */; };
+		FD283A9414EAC4ED00597203 /* FlippedNSView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD283A9314EAC4ED00597203 /* FlippedNSView.m */; };
+		FD283A9614EACEFC00597203 /* emergencystop.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A9514EACEFC00597203 /* emergencystop.png */; };
+		FD283A9814EFAFD000597203 /* pauseiconbig.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A9714EFAFD000597203 /* pauseiconbig.png */; };
+		FD283A9B14EFB10D00597203 /* HistoryTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FD283A9A14EFB10D00597203 /* HistoryTextField.m */; };
+		FD28663C14DD8E1A0081750D /* RHFileHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28663B14DD8E1A0081750D /* RHFileHistory.m */; };
+		FD28663F14DDAD2A0081750D /* introduction.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FD28663E14DDAD2A0081750D /* introduction.rtf */; };
+		FD28664214DE7A130081750D /* TemperatureHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28664114DE7A130081750D /* TemperatureHistory.m */; };
+		FD28664514DE8CFB0081750D /* TemperatureView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28664414DE8CFA0081750D /* TemperatureView.m */; };
+		FD67BF4D149A6C95001B124B /* STL.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF4C149A6C95001B124B /* STL.m */; };
+		FD67BF51149A715C001B124B /* ThreeDModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF50149A715C001B124B /* ThreeDModel.m */; };
+		FD67BF54149AA9CA001B124B /* RHMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF53149AA9CA001B124B /* RHMatrix.c */; };
+		FD67BF57149DDE54001B124B /* repetier-logo-trans128.icns in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF56149DDE54001B124B /* repetier-logo-trans128.icns */; };
+		FD67BF59149DE318001B124B /* GCodeEditor.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF58149DE318001B124B /* GCodeEditor.xib */; };
+		FD67BF5C149E08FA001B124B /* GCodeEditorController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF5B149E08FA001B124B /* GCodeEditorController.m */; };
+		FD67BF5F14A24364001B124B /* GCodeView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF5E14A24364001B124B /* GCodeView.m */; };
+		FD67BF6414A5CFFD001B124B /* empty.txt in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF6014A5CFFC001B124B /* empty.txt */; };
+		FD67BF6514A5CFFD001B124B /* syntax.xml in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF6214A5CFFD001B124B /* syntax.xml */; };
+		FD67BF6814A5D042001B124B /* Commands.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF6714A5D041001B124B /* Commands.m */; };
+		FD67BF6A14A870BE001B124B /* defaultPrepend.gcode in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF6914A870BE001B124B /* defaultPrepend.gcode */; };
+		FD67BF6C14A8721D001B124B /* defaultAppend.gcode in Resources */ = {isa = PBXBuildFile; fileRef = FD67BF6B14A8721D001B124B /* defaultAppend.gcode */; };
+		FD6E2F7214C243AF00F57498 /* EEPROM.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD6E2F7114C243AF00F57498 /* EEPROM.xib */; };
+		FD6E2F7614C2446700F57498 /* EEPROMController.m in Sources */ = {isa = PBXBuildFile; fileRef = FD6E2F7514C2446700F57498 /* EEPROMController.m */; };
+		FD74DBB814CAF7E000422BFE /* VirtualPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBB714CAF7E000422BFE /* VirtualPrinter.m */; };
+		FD74DBBC14CC593200422BFE /* pauseicon.png in Resources */ = {isa = PBXBuildFile; fileRef = FD74DBBA14CC593200422BFE /* pauseicon.png */; };
+		FD74DBBD14CC593200422BFE /* previewoff.png in Resources */ = {isa = PBXBuildFile; fileRef = FD74DBBB14CC593200422BFE /* previewoff.png */; };
+		FD74DBC114CC727C00422BFE /* EnableToollbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBC014CC727C00422BFE /* EnableToollbarItem.m */; };
+		FD74DBC414D06AE300422BFE /* EEPROMParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBC314D06AE300422BFE /* EEPROMParameter.m */; };
+		FD74DBC814D1C83F00422BFE /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD74DBC714D1C83F00422BFE /* Preferences.xib */; };
+		FD74DBCB14D1CD7400422BFE /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBCA14D1CD7300422BFE /* Preferences.m */; };
+		FD92675214D42F37005B31FF /* DefaultsExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675114D42F37005B31FF /* DefaultsExtension.m */; };
+		FD92675614D5A30E005B31FF /* ThreadedNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675514D5A30E005B31FF /* ThreadedNotification.m */; };
+		FD92675914D71E3E005B31FF /* RHTask.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675814D71E3E005B31FF /* RHTask.m */; };
+		FD92675C14D85552005B31FF /* Slicer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675B14D85552005B31FF /* Slicer.m */; };
+		FD92676114D9A54D005B31FF /* Slic3r.app in Resources */ = {isa = PBXBuildFile; fileRef = FD92676014D9A54C005B31FF /* Slic3r.app */; };
+		FD97347F14DC5DCB007D2E42 /* Slic3rConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */; };
+		FD98D9E314BB5AA00079AB43 /* GCodeVisual.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */; };
+		FD98D9E814BCEF710079AB43 /* RHActionTabDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */; };
+		FDB2C67314914C7E00276479 /* TemperatureView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C67214914C7E00276479 /* TemperatureView.xib */; };
+		FDB2C67614926E6500276479 /* RHTempertuareController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C67514926E6500276479 /* RHTempertuareController.m */; };
+		FDB2C67914927CA900276479 /* RHLogView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C67814927CA900276479 /* RHLogView.m */; };
+		FDB2C67D1493CC9300276479 /* LogSplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C67C1493CC9300276479 /* LogSplitViewDelegate.m */; };
+		FDB2C67F1494A9BA00276479 /* ManualControl.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C67E1494A9BA00276479 /* ManualControl.xib */; };
+		FDB2C6821494AD1600276479 /* RHManualControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C6811494AD1600276479 /* RHManualControl.m */; };
+		FDB2C6851494B59400276479 /* switch_off.png in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C6831494B59400276479 /* switch_off.png */; };
+		FDB2C6861494B59400276479 /* switch_on.png in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C6841494B59400276479 /* switch_on.png */; };
+		FDB2C68A1494CB8C00276479 /* IntegerTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C6891494CB8C00276479 /* IntegerTransformer.m */; };
+		FDEDF7A9148961D800E6CFF1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEDF7A8148961D800E6CFF1 /* Cocoa.framework */; };
+		FDEDF7B3148961D800E6CFF1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7B1148961D800E6CFF1 /* InfoPlist.strings */; };
+		FDEDF7B5148961D800E6CFF1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF7B4148961D800E6CFF1 /* main.m */; };
+		FDEDF7B9148961D800E6CFF1 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7B7148961D800E6CFF1 /* Credits.rtf */; };
+		FDEDF7BC148961D800E6CFF1 /* RHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF7BB148961D800E6CFF1 /* RHAppDelegate.m */; };
+		FDEDF7C6148961F300E6CFF1 /* repetier-logo128.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7C5148961F300E6CFF1 /* repetier-logo128.png */; };
+		FDEDF7C91489627D00E6CFF1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEDF7C81489627D00E6CFF1 /* OpenGL.framework */; };
+		FDEDF7CB148962A200E6CFF1 /* PrinterSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7CA148962A200E6CFF1 /* PrinterSettings.xib */; };
+		FDEDF7D1148A0EEF00E6CFF1 /* ThreeDView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF7D0148A0EEF00E6CFF1 /* ThreeDView.m */; };
+		FDEDF7D4148A174A00E6CFF1 /* loadgcode.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D3148A174A00E6CFF1 /* loadgcode.png */; };
+		FDEDF7E9148A19DE00E6CFF1 /* connect.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D5148A19DE00E6CFF1 /* connect.png */; };
+		FDEDF7EA148A19DE00E6CFF1 /* copy.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D6148A19DE00E6CFF1 /* copy.png */; };
+		FDEDF7EB148A19DE00E6CFF1 /* cut.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D7148A19DE00E6CFF1 /* cut.png */; };
+		FDEDF7EC148A19DE00E6CFF1 /* disconnect.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D8148A19DE00E6CFF1 /* disconnect.png */; };
+		FDEDF7ED148A19DE00E6CFF1 /* killjob32.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7D9148A19DE00E6CFF1 /* killjob32.png */; };
+		FDEDF7EE148A19DE00E6CFF1 /* log.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DA148A19DE00E6CFF1 /* log.png */; };
+		FDEDF7EF148A19DE00E6CFF1 /* movecamera.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DB148A19DE00E6CFF1 /* movecamera.png */; };
+		FDEDF7F0148A19DE00E6CFF1 /* moveobject.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DC148A19DE00E6CFF1 /* moveobject.png */; };
+		FDEDF7F1148A19DE00E6CFF1 /* newfile.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DD148A19DE00E6CFF1 /* newfile.png */; };
+		FDEDF7F2148A19DE00E6CFF1 /* paste.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DE148A19DE00E6CFF1 /* paste.png */; };
+		FDEDF7F3148A19DE00E6CFF1 /* preview.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7DF148A19DE00E6CFF1 /* preview.png */; };
+		FDEDF7F4148A19DE00E6CFF1 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E0148A19DE00E6CFF1 /* redo.png */; };
+		FDEDF7F5148A19DE00E6CFF1 /* runjob32.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E1148A19DE00E6CFF1 /* runjob32.png */; };
+		FDEDF7F6148A19DE00E6CFF1 /* save.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E2148A19DE00E6CFF1 /* save.png */; };
+		FDEDF7F7148A19DE00E6CFF1 /* sdcardicon.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E3148A19DE00E6CFF1 /* sdcardicon.png */; };
+		FDEDF7F8148A19DE00E6CFF1 /* sdcardminusicon.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E4148A19DE00E6CFF1 /* sdcardminusicon.png */; };
+		FDEDF7F9148A19DE00E6CFF1 /* sdcardmount.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E5148A19DE00E6CFF1 /* sdcardmount.png */; };
+		FDEDF7FA148A19DE00E6CFF1 /* sdcardplusicon.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E6148A19DE00E6CFF1 /* sdcardplusicon.png */; };
+		FDEDF7FB148A19DE00E6CFF1 /* sdcardunmount.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E7148A19DE00E6CFF1 /* sdcardunmount.png */; };
+		FDEDF7FC148A19DE00E6CFF1 /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7E8148A19DE00E6CFF1 /* undo.png */; };
+		FDEDF7FF148A279C00E6CFF1 /* PrinterSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF7FE148A279C00E6CFF1 /* PrinterSettingsController.m */; };
+		FDEDF809148A3DD600E6CFF1 /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF804148A3DD600E6CFF1 /* AMSerialPort.m */; };
+		FDEDF80A148A3DD600E6CFF1 /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF806148A3DD600E6CFF1 /* AMSerialPortAdditions.m */; };
+		FDEDF80B148A3DD600E6CFF1 /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF808148A3DD600E6CFF1 /* AMSerialPortList.m */; };
+		FDEDF80E148A3E1A00E6CFF1 /* PrinterConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF80D148A3E1A00E6CFF1 /* PrinterConfiguration.m */; };
+		FDEDF810148A408A00E6CFF1 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEDF80F148A408A00E6CFF1 /* IOKit.framework */; };
+		FDEDF813148A694900E6CFF1 /* RHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF812148A694900E6CFF1 /* RHLogger.m */; };
+		FDEDF816148A879800E6CFF1 /* PrinterConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF815148A879800E6CFF1 /* PrinterConnection.m */; };
+		FDEDF81A148B603000E6CFF1 /* StringUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF819148B603000E6CFF1 /* StringUtil.m */; };
+		FDEE79E414C30308001F3F0A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDEE79E314C30308001F3F0A /* MainMenu.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Slic3rSettings.xib; sourceTree = "<group>"; };
+		FD13BF7414C090620007E33D /* RHAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHAnimation.h; sourceTree = "<group>"; };
+		FD13BF7514C090620007E33D /* RHAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHAnimation.m; sourceTree = "<group>"; };
+		FD13BF7814C174D40007E33D /* STLComposer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STLComposer.xib; sourceTree = "<group>"; };
+		FD13BF7A14C1756D0007E33D /* STLComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STLComposer.h; sourceTree = "<group>"; };
+		FD13BF7B14C1756D0007E33D /* STLComposer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STLComposer.m; sourceTree = "<group>"; };
+		FD1719CD148D35750023E262 /* RHLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHLinkedList.h; sourceTree = "<group>"; };
+		FD1719CE148D35750023E262 /* RHLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHLinkedList.m; sourceTree = "<group>"; };
+		FD1719D1148E83540023E262 /* GCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCode.h; sourceTree = "<group>"; };
+		FD1719D2148E83540023E262 /* GCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCode.m; sourceTree = "<group>"; };
+		FD1719D4148EA3040023E262 /* GCodeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeAnalyzer.h; sourceTree = "<group>"; };
+		FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeAnalyzer.m; sourceTree = "<group>"; };
+		FD1719D7148EAD850023E262 /* RHPrintjob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHPrintjob.h; sourceTree = "<group>"; };
+		FD1719D8148EAD850023E262 /* RHPrintjob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHPrintjob.m; sourceTree = "<group>"; };
+		FD1E241D14966F67008AF30C /* ThreeD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreeD.xib; sourceTree = "<group>"; };
+		FD1E242114967310008AF30C /* ThreeDContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDContainer.h; sourceTree = "<group>"; };
+		FD1E242214967310008AF30C /* ThreeDContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDContainer.m; sourceTree = "<group>"; };
+		FD1E24241497A612008AF30C /* RHOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHOpenGLView.h; sourceTree = "<group>"; };
+		FD1E24251497A612008AF30C /* RHOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHOpenGLView.m; sourceTree = "<group>"; };
+		FD1E24271497ABD2008AF30C /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/GLUT.framework; sourceTree = DEVELOPER_DIR; };
+		FD1E24291497B7D4008AF30C /* ThreeDConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDConfig.h; sourceTree = "<group>"; };
+		FD1E242A1497B7D4008AF30C /* ThreeDConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDConfig.m; sourceTree = "<group>"; };
+		FD283A7914E6B55000597203 /* fronview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fronview.png; sourceTree = "<group>"; };
+		FD283A7A14E6B55000597203 /* move.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = move.png; sourceTree = "<group>"; };
+		FD283A7B14E6B55000597203 /* topview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = topview.png; sourceTree = "<group>"; };
+		FD283A7C14E6B55000597203 /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
+		FD283A7D14E6B55000597203 /* zoom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = zoom.png; sourceTree = "<group>"; };
+		FD283A8414E6B61900597203 /* rotateicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rotateicon.png; sourceTree = "<group>"; };
+		FD283A8614E6C43A00597203 /* HorizontalSpliViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HorizontalSpliViewDelegate.h; sourceTree = "<group>"; };
+		FD283A8714E6C43A00597203 /* HorizontalSpliViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HorizontalSpliViewDelegate.m; sourceTree = "<group>"; };
+		FD283A8914E97ED100597203 /* preferences.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preferences.png; sourceTree = "<group>"; };
+		FD283A8A14E97ED100597203 /* printersettings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = printersettings.png; sourceTree = "<group>"; };
+		FD283A8D14EAB8CA00597203 /* SDCard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDCard.xib; sourceTree = "<group>"; };
+		FD283A8F14EABBB900597203 /* SDCardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCardManager.h; sourceTree = "<group>"; };
+		FD283A9014EABBB900597203 /* SDCardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCardManager.m; sourceTree = "<group>"; };
+		FD283A9214EAC4ED00597203 /* FlippedNSView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlippedNSView.h; sourceTree = "<group>"; };
+		FD283A9314EAC4ED00597203 /* FlippedNSView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlippedNSView.m; sourceTree = "<group>"; };
+		FD283A9514EACEFC00597203 /* emergencystop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = emergencystop.png; sourceTree = "<group>"; };
+		FD283A9714EFAFD000597203 /* pauseiconbig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseiconbig.png; sourceTree = "<group>"; };
+		FD283A9914EFB10D00597203 /* HistoryTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryTextField.h; sourceTree = "<group>"; };
+		FD283A9A14EFB10D00597203 /* HistoryTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryTextField.m; sourceTree = "<group>"; };
+		FD28663A14DD8E1A0081750D /* RHFileHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHFileHistory.h; sourceTree = "<group>"; };
+		FD28663B14DD8E1A0081750D /* RHFileHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHFileHistory.m; sourceTree = "<group>"; };
+		FD28663E14DDAD2A0081750D /* introduction.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = introduction.rtf; sourceTree = "<group>"; };
+		FD28664014DE7A130081750D /* TemperatureHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemperatureHistory.h; sourceTree = "<group>"; };
+		FD28664114DE7A130081750D /* TemperatureHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemperatureHistory.m; sourceTree = "<group>"; };
+		FD28664314DE8CFA0081750D /* TemperatureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemperatureView.h; sourceTree = "<group>"; };
+		FD28664414DE8CFA0081750D /* TemperatureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemperatureView.m; sourceTree = "<group>"; };
+		FD67BF4B149A6C95001B124B /* STL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STL.h; sourceTree = "<group>"; };
+		FD67BF4C149A6C95001B124B /* STL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STL.m; sourceTree = "<group>"; };
+		FD67BF4F149A715C001B124B /* ThreeDModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDModel.h; sourceTree = "<group>"; };
+		FD67BF50149A715C001B124B /* ThreeDModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDModel.m; sourceTree = "<group>"; };
+		FD67BF52149AA9BC001B124B /* RHMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHMatrix.h; sourceTree = "<group>"; };
+		FD67BF53149AA9CA001B124B /* RHMatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = RHMatrix.c; sourceTree = "<group>"; };
+		FD67BF56149DDE54001B124B /* repetier-logo-trans128.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "repetier-logo-trans128.icns"; sourceTree = "<group>"; };
+		FD67BF58149DE318001B124B /* GCodeEditor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GCodeEditor.xib; sourceTree = "<group>"; };
+		FD67BF5A149E08F9001B124B /* GCodeEditorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeEditorController.h; sourceTree = "<group>"; };
+		FD67BF5B149E08FA001B124B /* GCodeEditorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeEditorController.m; sourceTree = "<group>"; };
+		FD67BF5D14A24363001B124B /* GCodeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeView.h; sourceTree = "<group>"; };
+		FD67BF5E14A24364001B124B /* GCodeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeView.m; sourceTree = "<group>"; };
+		FD67BF6114A5CFFD001B124B /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/empty.txt; sourceTree = "<group>"; };
+		FD67BF6314A5CFFD001B124B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = en.lproj/syntax.xml; sourceTree = "<group>"; };
+		FD67BF6614A5D040001B124B /* Commands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Commands.h; sourceTree = "<group>"; };
+		FD67BF6714A5D041001B124B /* Commands.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Commands.m; sourceTree = "<group>"; };
+		FD67BF6914A870BE001B124B /* defaultPrepend.gcode */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = defaultPrepend.gcode; sourceTree = "<group>"; };
+		FD67BF6B14A8721D001B124B /* defaultAppend.gcode */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = defaultAppend.gcode; sourceTree = "<group>"; };
+		FD6E2F7114C243AF00F57498 /* EEPROM.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EEPROM.xib; sourceTree = "<group>"; };
+		FD6E2F7414C2446700F57498 /* EEPROMController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EEPROMController.h; sourceTree = "<group>"; };
+		FD6E2F7514C2446700F57498 /* EEPROMController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EEPROMController.m; sourceTree = "<group>"; };
+		FD74DBB614CAF7E000422BFE /* VirtualPrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VirtualPrinter.h; sourceTree = "<group>"; };
+		FD74DBB714CAF7E000422BFE /* VirtualPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VirtualPrinter.m; sourceTree = "<group>"; };
+		FD74DBBA14CC593200422BFE /* pauseicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseicon.png; sourceTree = "<group>"; };
+		FD74DBBB14CC593200422BFE /* previewoff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = previewoff.png; sourceTree = "<group>"; };
+		FD74DBBF14CC727C00422BFE /* EnableToollbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnableToollbarItem.h; sourceTree = "<group>"; };
+		FD74DBC014CC727C00422BFE /* EnableToollbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnableToollbarItem.m; sourceTree = "<group>"; };
+		FD74DBC214D06AE200422BFE /* EEPROMParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EEPROMParameter.h; sourceTree = "<group>"; };
+		FD74DBC314D06AE300422BFE /* EEPROMParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EEPROMParameter.m; sourceTree = "<group>"; };
+		FD74DBC714D1C83F00422BFE /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		FD74DBC914D1CD7300422BFE /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
+		FD74DBCA14D1CD7300422BFE /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
+		FD92675014D42F37005B31FF /* DefaultsExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsExtension.h; sourceTree = "<group>"; };
+		FD92675114D42F37005B31FF /* DefaultsExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsExtension.m; sourceTree = "<group>"; };
+		FD92675414D5A30E005B31FF /* ThreadedNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadedNotification.h; sourceTree = "<group>"; };
+		FD92675514D5A30E005B31FF /* ThreadedNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadedNotification.m; sourceTree = "<group>"; };
+		FD92675714D71E3E005B31FF /* RHTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHTask.h; sourceTree = "<group>"; };
+		FD92675814D71E3E005B31FF /* RHTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHTask.m; sourceTree = "<group>"; };
+		FD92675A14D85552005B31FF /* Slicer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slicer.h; sourceTree = "<group>"; };
+		FD92675B14D85552005B31FF /* Slicer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slicer.m; sourceTree = "<group>"; };
+		FD92676014D9A54C005B31FF /* Slic3r.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = Slic3r.app; sourceTree = "<group>"; };
+		FD97347D14DC5DCA007D2E42 /* Slic3rConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slic3rConfig.h; sourceTree = "<group>"; };
+		FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slic3rConfig.m; sourceTree = "<group>"; };
+		FD98D9E114BB5A9F0079AB43 /* GCodeVisual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeVisual.h; sourceTree = "<group>"; };
+		FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeVisual.m; sourceTree = "<group>"; };
+		FD98D9E614BCEF710079AB43 /* RHActionTabDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHActionTabDelegate.h; sourceTree = "<group>"; };
+		FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHActionTabDelegate.m; sourceTree = "<group>"; };
+		FDB2C67214914C7E00276479 /* TemperatureView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TemperatureView.xib; sourceTree = "<group>"; };
+		FDB2C67414926E6500276479 /* RHTempertuareController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHTempertuareController.h; sourceTree = "<group>"; };
+		FDB2C67514926E6500276479 /* RHTempertuareController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHTempertuareController.m; sourceTree = "<group>"; };
+		FDB2C67714927CA900276479 /* RHLogView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHLogView.h; sourceTree = "<group>"; };
+		FDB2C67814927CA900276479 /* RHLogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHLogView.m; sourceTree = "<group>"; };
+		FDB2C67B1493CC9300276479 /* LogSplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogSplitViewDelegate.h; sourceTree = "<group>"; };
+		FDB2C67C1493CC9300276479 /* LogSplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogSplitViewDelegate.m; sourceTree = "<group>"; };
+		FDB2C67E1494A9BA00276479 /* ManualControl.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ManualControl.xib; sourceTree = "<group>"; };
+		FDB2C6801494AD1600276479 /* RHManualControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHManualControl.h; sourceTree = "<group>"; };
+		FDB2C6811494AD1600276479 /* RHManualControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHManualControl.m; sourceTree = "<group>"; };
+		FDB2C6831494B59400276479 /* switch_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = switch_off.png; sourceTree = "<group>"; };
+		FDB2C6841494B59400276479 /* switch_on.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = switch_on.png; sourceTree = "<group>"; };
+		FDB2C6881494CB8C00276479 /* IntegerTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntegerTransformer.h; sourceTree = "<group>"; };
+		FDB2C6891494CB8C00276479 /* IntegerTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegerTransformer.m; sourceTree = "<group>"; };
+		FDBAF41E14EFE96100E41B62 /* Repetier-Host MacMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Repetier-Host MacMac.entitlements"; sourceTree = "<group>"; };
+		FDEDF7A4148961D800E6CFF1 /* Repetier-Host Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Repetier-Host Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDEDF7A8148961D800E6CFF1 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		FDEDF7AB148961D800E6CFF1 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		FDEDF7AC148961D800E6CFF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FDEDF7AD148961D800E6CFF1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FDEDF7B0148961D800E6CFF1 /* RepetierHost-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RepetierHost-Info.plist"; sourceTree = "<group>"; };
+		FDEDF7B2148961D800E6CFF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FDEDF7B4148961D800E6CFF1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FDEDF7B6148961D800E6CFF1 /* RepetierHost-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RepetierHost-Prefix.pch"; sourceTree = "<group>"; };
+		FDEDF7B8148961D800E6CFF1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		FDEDF7BA148961D800E6CFF1 /* RHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RHAppDelegate.h; sourceTree = "<group>"; };
+		FDEDF7BB148961D800E6CFF1 /* RHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RHAppDelegate.m; sourceTree = "<group>"; };
+		FDEDF7C5148961F300E6CFF1 /* repetier-logo128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "repetier-logo128.png"; sourceTree = "<group>"; };
+		FDEDF7C81489627D00E6CFF1 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		FDEDF7CA148962A200E6CFF1 /* PrinterSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PrinterSettings.xib; sourceTree = "<group>"; };
+		FDEDF7CF148A0EEF00E6CFF1 /* ThreeDView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDView.h; sourceTree = "<group>"; };
+		FDEDF7D0148A0EEF00E6CFF1 /* ThreeDView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDView.m; sourceTree = "<group>"; };
+		FDEDF7D3148A174A00E6CFF1 /* loadgcode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loadgcode.png; sourceTree = "<group>"; };
+		FDEDF7D5148A19DE00E6CFF1 /* connect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = connect.png; sourceTree = "<group>"; };
+		FDEDF7D6148A19DE00E6CFF1 /* copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = copy.png; sourceTree = "<group>"; };
+		FDEDF7D7148A19DE00E6CFF1 /* cut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cut.png; sourceTree = "<group>"; };
+		FDEDF7D8148A19DE00E6CFF1 /* disconnect.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = disconnect.png; sourceTree = "<group>"; };
+		FDEDF7D9148A19DE00E6CFF1 /* killjob32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = killjob32.png; sourceTree = "<group>"; };
+		FDEDF7DA148A19DE00E6CFF1 /* log.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = log.png; sourceTree = "<group>"; };
+		FDEDF7DB148A19DE00E6CFF1 /* movecamera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = movecamera.png; sourceTree = "<group>"; };
+		FDEDF7DC148A19DE00E6CFF1 /* moveobject.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moveobject.png; sourceTree = "<group>"; };
+		FDEDF7DD148A19DE00E6CFF1 /* newfile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newfile.png; sourceTree = "<group>"; };
+		FDEDF7DE148A19DE00E6CFF1 /* paste.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = paste.png; sourceTree = "<group>"; };
+		FDEDF7DF148A19DE00E6CFF1 /* preview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = preview.png; sourceTree = "<group>"; };
+		FDEDF7E0148A19DE00E6CFF1 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo.png; sourceTree = "<group>"; };
+		FDEDF7E1148A19DE00E6CFF1 /* runjob32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = runjob32.png; sourceTree = "<group>"; };
+		FDEDF7E2148A19DE00E6CFF1 /* save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = save.png; sourceTree = "<group>"; };
+		FDEDF7E3148A19DE00E6CFF1 /* sdcardicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sdcardicon.png; sourceTree = "<group>"; };
+		FDEDF7E4148A19DE00E6CFF1 /* sdcardminusicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sdcardminusicon.png; sourceTree = "<group>"; };
+		FDEDF7E5148A19DE00E6CFF1 /* sdcardmount.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sdcardmount.png; sourceTree = "<group>"; };
+		FDEDF7E6148A19DE00E6CFF1 /* sdcardplusicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sdcardplusicon.png; sourceTree = "<group>"; };
+		FDEDF7E7148A19DE00E6CFF1 /* sdcardunmount.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sdcardunmount.png; sourceTree = "<group>"; };
+		FDEDF7E8148A19DE00E6CFF1 /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo.png; sourceTree = "<group>"; };
+		FDEDF7FD148A279C00E6CFF1 /* PrinterSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrinterSettingsController.h; sourceTree = "<group>"; };
+		FDEDF7FE148A279C00E6CFF1 /* PrinterSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrinterSettingsController.m; sourceTree = "<group>"; };
+		FDEDF802148A3DD600E6CFF1 /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
+		FDEDF803148A3DD600E6CFF1 /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
+		FDEDF804148A3DD600E6CFF1 /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
+		FDEDF805148A3DD600E6CFF1 /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
+		FDEDF806148A3DD600E6CFF1 /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
+		FDEDF807148A3DD600E6CFF1 /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
+		FDEDF808148A3DD600E6CFF1 /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
+		FDEDF80C148A3E1A00E6CFF1 /* PrinterConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrinterConfiguration.h; sourceTree = "<group>"; };
+		FDEDF80D148A3E1A00E6CFF1 /* PrinterConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrinterConfiguration.m; sourceTree = "<group>"; };
+		FDEDF80F148A408A00E6CFF1 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		FDEDF811148A694900E6CFF1 /* RHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHLogger.h; sourceTree = "<group>"; };
+		FDEDF812148A694900E6CFF1 /* RHLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHLogger.m; sourceTree = "<group>"; };
+		FDEDF814148A879800E6CFF1 /* PrinterConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrinterConnection.h; sourceTree = "<group>"; };
+		FDEDF815148A879800E6CFF1 /* PrinterConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrinterConnection.m; sourceTree = "<group>"; };
+		FDEDF818148B603000E6CFF1 /* StringUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringUtil.h; sourceTree = "<group>"; };
+		FDEDF819148B603000E6CFF1 /* StringUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringUtil.m; sourceTree = "<group>"; };
+		FDEE79E314C30308001F3F0A /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FDEDF7A1148961D800E6CFF1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD1E24281497ABD2008AF30C /* GLUT.framework in Frameworks */,
+				FDEDF810148A408A00E6CFF1 /* IOKit.framework in Frameworks */,
+				FDEDF7C91489627D00E6CFF1 /* OpenGL.framework in Frameworks */,
+				FDEDF7A9148961D800E6CFF1 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FD1E242014967242008AF30C /* 3D */ = {
+			isa = PBXGroup;
+			children = (
+				FD1E242114967310008AF30C /* ThreeDContainer.h */,
+				FD1E242214967310008AF30C /* ThreeDContainer.m */,
+				FD1E24291497B7D4008AF30C /* ThreeDConfig.h */,
+				FD1E242A1497B7D4008AF30C /* ThreeDConfig.m */,
+				FD67BF4B149A6C95001B124B /* STL.h */,
+				FD67BF4C149A6C95001B124B /* STL.m */,
+				FD67BF4F149A715C001B124B /* ThreeDModel.h */,
+				FD67BF50149A715C001B124B /* ThreeDModel.m */,
+				FD67BF52149AA9BC001B124B /* RHMatrix.h */,
+				FD67BF53149AA9CA001B124B /* RHMatrix.c */,
+				FD98D9E114BB5A9F0079AB43 /* GCodeVisual.h */,
+				FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */,
+				FD13BF7414C090620007E33D /* RHAnimation.h */,
+				FD13BF7514C090620007E33D /* RHAnimation.m */,
+			);
+			name = 3D;
+			sourceTree = "<group>";
+		};
+		FD74DBBE14CC724800422BFE /* controls */ = {
+			isa = PBXGroup;
+			children = (
+				FD74DBBF14CC727C00422BFE /* EnableToollbarItem.h */,
+				FD74DBC014CC727C00422BFE /* EnableToollbarItem.m */,
+				FD283A9214EAC4ED00597203 /* FlippedNSView.h */,
+				FD283A9314EAC4ED00597203 /* FlippedNSView.m */,
+				FD283A9914EFB10D00597203 /* HistoryTextField.h */,
+				FD283A9A14EFB10D00597203 /* HistoryTextField.m */,
+			);
+			name = controls;
+			sourceTree = "<group>";
+		};
+		FD98D9E514BCEF3F0079AB43 /* delegates */ = {
+			isa = PBXGroup;
+			children = (
+				FD98D9E614BCEF710079AB43 /* RHActionTabDelegate.h */,
+				FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */,
+			);
+			name = delegates;
+			sourceTree = "<group>";
+		};
+		FDB2C67A1493CC5100276479 /* delegates */ = {
+			isa = PBXGroup;
+			children = (
+				FDB2C67B1493CC9300276479 /* LogSplitViewDelegate.h */,
+				FDB2C67C1493CC9300276479 /* LogSplitViewDelegate.m */,
+				FD283A8614E6C43A00597203 /* HorizontalSpliViewDelegate.h */,
+				FD283A8714E6C43A00597203 /* HorizontalSpliViewDelegate.m */,
+			);
+			name = delegates;
+			sourceTree = "<group>";
+		};
+		FDB2C6871494CB5700276479 /* transformer */ = {
+			isa = PBXGroup;
+			children = (
+				FDB2C6881494CB8C00276479 /* IntegerTransformer.h */,
+				FDB2C6891494CB8C00276479 /* IntegerTransformer.m */,
+			);
+			name = transformer;
+			sourceTree = "<group>";
+		};
+		FDEDF799148961D800E6CFF1 = {
+			isa = PBXGroup;
+			children = (
+				FDBAF41E14EFE96100E41B62 /* Repetier-Host MacMac.entitlements */,
+				FD1E24271497ABD2008AF30C /* GLUT.framework */,
+				FDEDF80F148A408A00E6CFF1 /* IOKit.framework */,
+				FDEDF7C81489627D00E6CFF1 /* OpenGL.framework */,
+				FDEDF7C5148961F300E6CFF1 /* repetier-logo128.png */,
+				FDEDF7AE148961D800E6CFF1 /* RepetierHost */,
+				FDEDF7A7148961D800E6CFF1 /* Frameworks */,
+				FDEDF7A5148961D800E6CFF1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FDEDF7A5148961D800E6CFF1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF7A4148961D800E6CFF1 /* Repetier-Host Mac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FDEDF7A7148961D800E6CFF1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF7A8148961D800E6CFF1 /* Cocoa.framework */,
+				FDEDF7AA148961D800E6CFF1 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FDEDF7AA148961D800E6CFF1 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF7AB148961D800E6CFF1 /* AppKit.framework */,
+				FDEDF7AC148961D800E6CFF1 /* CoreData.framework */,
+				FDEDF7AD148961D800E6CFF1 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		FDEDF7AE148961D800E6CFF1 /* RepetierHost */ = {
+			isa = PBXGroup;
+			children = (
+				FDB2C6871494CB5700276479 /* transformer */,
+				FDB2C67A1493CC5100276479 /* delegates */,
+				FDEDF800148A3D8500E6CFF1 /* extensions */,
+				FDEDF7D2148A16EB00E6CFF1 /* images */,
+				FDEDF7CE148A0EA500E6CFF1 /* controller */,
+				FDEDF7CD148A0DF900E6CFF1 /* models */,
+				FDEDF7CC148A0DCF00E6CFF1 /* protocols */,
+				FDEDF7C71489620900E6CFF1 /* windows */,
+				FDEDF7BA148961D800E6CFF1 /* RHAppDelegate.h */,
+				FDEDF7BB148961D800E6CFF1 /* RHAppDelegate.m */,
+				FDEE79E314C30308001F3F0A /* MainMenu.xib */,
+				FDEDF7AF148961D800E6CFF1 /* Supporting Files */,
+			);
+			path = RepetierHost;
+			sourceTree = "<group>";
+		};
+		FDEDF7AF148961D800E6CFF1 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FD92676014D9A54C005B31FF /* Slic3r.app */,
+				FD67BF6014A5CFFC001B124B /* empty.txt */,
+				FD67BF6214A5CFFD001B124B /* syntax.xml */,
+				FDEDF7B0148961D800E6CFF1 /* RepetierHost-Info.plist */,
+				FDEDF7B1148961D800E6CFF1 /* InfoPlist.strings */,
+				FDEDF7B4148961D800E6CFF1 /* main.m */,
+				FDEDF7B6148961D800E6CFF1 /* RepetierHost-Prefix.pch */,
+				FDEDF7B7148961D800E6CFF1 /* Credits.rtf */,
+				FD67BF6914A870BE001B124B /* defaultPrepend.gcode */,
+				FD67BF6B14A8721D001B124B /* defaultAppend.gcode */,
+				FD28663E14DDAD2A0081750D /* introduction.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FDEDF7C71489620900E6CFF1 /* windows */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF7CA148962A200E6CFF1 /* PrinterSettings.xib */,
+				FDB2C67214914C7E00276479 /* TemperatureView.xib */,
+				FDB2C67E1494A9BA00276479 /* ManualControl.xib */,
+				FD1E241D14966F67008AF30C /* ThreeD.xib */,
+				FD67BF58149DE318001B124B /* GCodeEditor.xib */,
+				FD13BF7814C174D40007E33D /* STLComposer.xib */,
+				FD6E2F7114C243AF00F57498 /* EEPROM.xib */,
+				FD74DBC714D1C83F00422BFE /* Preferences.xib */,
+				FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */,
+				FD283A8D14EAB8CA00597203 /* SDCard.xib */,
+			);
+			path = windows;
+			sourceTree = "<group>";
+		};
+		FDEDF7CC148A0DCF00E6CFF1 /* protocols */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = protocols;
+			sourceTree = "<group>";
+		};
+		FDEDF7CD148A0DF900E6CFF1 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				FD1E242014967242008AF30C /* 3D */,
+				FDEDF80C148A3E1A00E6CFF1 /* PrinterConfiguration.h */,
+				FDEDF80D148A3E1A00E6CFF1 /* PrinterConfiguration.m */,
+				FDEDF811148A694900E6CFF1 /* RHLogger.h */,
+				FDEDF812148A694900E6CFF1 /* RHLogger.m */,
+				FDEDF814148A879800E6CFF1 /* PrinterConnection.h */,
+				FDEDF815148A879800E6CFF1 /* PrinterConnection.m */,
+				FD1719D1148E83540023E262 /* GCode.h */,
+				FD1719D2148E83540023E262 /* GCode.m */,
+				FD1719D4148EA3040023E262 /* GCodeAnalyzer.h */,
+				FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */,
+				FD1719D7148EAD850023E262 /* RHPrintjob.h */,
+				FD1719D8148EAD850023E262 /* RHPrintjob.m */,
+				FD67BF6614A5D040001B124B /* Commands.h */,
+				FD67BF6714A5D041001B124B /* Commands.m */,
+				FD74DBB614CAF7E000422BFE /* VirtualPrinter.h */,
+				FD74DBB714CAF7E000422BFE /* VirtualPrinter.m */,
+				FD74DBC214D06AE200422BFE /* EEPROMParameter.h */,
+				FD74DBC314D06AE300422BFE /* EEPROMParameter.m */,
+				FD92675A14D85552005B31FF /* Slicer.h */,
+				FD92675B14D85552005B31FF /* Slicer.m */,
+				FD28664014DE7A130081750D /* TemperatureHistory.h */,
+				FD28664114DE7A130081750D /* TemperatureHistory.m */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		FDEDF7CE148A0EA500E6CFF1 /* controller */ = {
+			isa = PBXGroup;
+			children = (
+				FD74DBBE14CC724800422BFE /* controls */,
+				FD98D9E514BCEF3F0079AB43 /* delegates */,
+				FDEDF7CF148A0EEF00E6CFF1 /* ThreeDView.h */,
+				FDEDF7D0148A0EEF00E6CFF1 /* ThreeDView.m */,
+				FDEDF7FD148A279C00E6CFF1 /* PrinterSettingsController.h */,
+				FDEDF7FE148A279C00E6CFF1 /* PrinterSettingsController.m */,
+				FDB2C67414926E6500276479 /* RHTempertuareController.h */,
+				FD74DBC914D1CD7300422BFE /* Preferences.h */,
+				FD74DBCA14D1CD7300422BFE /* Preferences.m */,
+				FD6E2F7414C2446700F57498 /* EEPROMController.h */,
+				FD283A8F14EABBB900597203 /* SDCardManager.h */,
+				FD283A9014EABBB900597203 /* SDCardManager.m */,
+				FD6E2F7514C2446700F57498 /* EEPROMController.m */,
+				FDB2C67514926E6500276479 /* RHTempertuareController.m */,
+				FD13BF7A14C1756D0007E33D /* STLComposer.h */,
+				FD13BF7B14C1756D0007E33D /* STLComposer.m */,
+				FDB2C67714927CA900276479 /* RHLogView.h */,
+				FDB2C67814927CA900276479 /* RHLogView.m */,
+				FDB2C6801494AD1600276479 /* RHManualControl.h */,
+				FDB2C6811494AD1600276479 /* RHManualControl.m */,
+				FD1E24241497A612008AF30C /* RHOpenGLView.h */,
+				FD1E24251497A612008AF30C /* RHOpenGLView.m */,
+				FD67BF5A149E08F9001B124B /* GCodeEditorController.h */,
+				FD67BF5B149E08FA001B124B /* GCodeEditorController.m */,
+				FD67BF5D14A24363001B124B /* GCodeView.h */,
+				FD67BF5E14A24364001B124B /* GCodeView.m */,
+				FD28664314DE8CFA0081750D /* TemperatureView.h */,
+				FD28664414DE8CFA0081750D /* TemperatureView.m */,
+				FD97347D14DC5DCA007D2E42 /* Slic3rConfig.h */,
+				FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */,
+			);
+			path = controller;
+			sourceTree = "<group>";
+		};
+		FDEDF7D2148A16EB00E6CFF1 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				FD283A9514EACEFC00597203 /* emergencystop.png */,
+				FD283A8914E97ED100597203 /* preferences.png */,
+				FD283A8A14E97ED100597203 /* printersettings.png */,
+				FD283A7914E6B55000597203 /* fronview.png */,
+				FD283A7A14E6B55000597203 /* move.png */,
+				FD283A9714EFAFD000597203 /* pauseiconbig.png */,
+				FD283A7B14E6B55000597203 /* topview.png */,
+				FD283A8414E6B61900597203 /* rotateicon.png */,
+				FD283A7C14E6B55000597203 /* trash.png */,
+				FD283A7D14E6B55000597203 /* zoom.png */,
+				FD74DBBA14CC593200422BFE /* pauseicon.png */,
+				FD74DBBB14CC593200422BFE /* previewoff.png */,
+				FD67BF56149DDE54001B124B /* repetier-logo-trans128.icns */,
+				FDB2C6831494B59400276479 /* switch_off.png */,
+				FDB2C6841494B59400276479 /* switch_on.png */,
+				FDEDF7D5148A19DE00E6CFF1 /* connect.png */,
+				FDEDF7D6148A19DE00E6CFF1 /* copy.png */,
+				FDEDF7D7148A19DE00E6CFF1 /* cut.png */,
+				FDEDF7D8148A19DE00E6CFF1 /* disconnect.png */,
+				FDEDF7D9148A19DE00E6CFF1 /* killjob32.png */,
+				FDEDF7DA148A19DE00E6CFF1 /* log.png */,
+				FDEDF7DB148A19DE00E6CFF1 /* movecamera.png */,
+				FDEDF7DC148A19DE00E6CFF1 /* moveobject.png */,
+				FDEDF7DD148A19DE00E6CFF1 /* newfile.png */,
+				FDEDF7DE148A19DE00E6CFF1 /* paste.png */,
+				FDEDF7DF148A19DE00E6CFF1 /* preview.png */,
+				FDEDF7E0148A19DE00E6CFF1 /* redo.png */,
+				FDEDF7E1148A19DE00E6CFF1 /* runjob32.png */,
+				FDEDF7E2148A19DE00E6CFF1 /* save.png */,
+				FDEDF7E3148A19DE00E6CFF1 /* sdcardicon.png */,
+				FDEDF7E4148A19DE00E6CFF1 /* sdcardminusicon.png */,
+				FDEDF7E5148A19DE00E6CFF1 /* sdcardmount.png */,
+				FDEDF7E6148A19DE00E6CFF1 /* sdcardplusicon.png */,
+				FDEDF7E7148A19DE00E6CFF1 /* sdcardunmount.png */,
+				FDEDF7E8148A19DE00E6CFF1 /* undo.png */,
+				FDEDF7D3148A174A00E6CFF1 /* loadgcode.png */,
+			);
+			path = images;
+			sourceTree = "<group>";
+		};
+		FDEDF800148A3D8500E6CFF1 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF817148B5FD400E6CFF1 /* utils */,
+				FDEDF801148A3DAB00E6CFF1 /* serialPort */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
+		FDEDF801148A3DAB00E6CFF1 /* serialPort */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF802148A3DD600E6CFF1 /* AMSerialErrors.h */,
+				FDEDF803148A3DD600E6CFF1 /* AMSerialPort.h */,
+				FDEDF804148A3DD600E6CFF1 /* AMSerialPort.m */,
+				FDEDF805148A3DD600E6CFF1 /* AMSerialPortAdditions.h */,
+				FDEDF806148A3DD600E6CFF1 /* AMSerialPortAdditions.m */,
+				FDEDF807148A3DD600E6CFF1 /* AMSerialPortList.h */,
+				FDEDF808148A3DD600E6CFF1 /* AMSerialPortList.m */,
+			);
+			path = serialPort;
+			sourceTree = "<group>";
+		};
+		FDEDF817148B5FD400E6CFF1 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				FDEDF818148B603000E6CFF1 /* StringUtil.h */,
+				FDEDF819148B603000E6CFF1 /* StringUtil.m */,
+				FD1719CD148D35750023E262 /* RHLinkedList.h */,
+				FD1719CE148D35750023E262 /* RHLinkedList.m */,
+				FD92675014D42F37005B31FF /* DefaultsExtension.h */,
+				FD92675114D42F37005B31FF /* DefaultsExtension.m */,
+				FD92675414D5A30E005B31FF /* ThreadedNotification.h */,
+				FD92675514D5A30E005B31FF /* ThreadedNotification.m */,
+				FD92675714D71E3E005B31FF /* RHTask.h */,
+				FD92675814D71E3E005B31FF /* RHTask.m */,
+				FD28663A14DD8E1A0081750D /* RHFileHistory.h */,
+				FD28663B14DD8E1A0081750D /* RHFileHistory.m */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FDEDF7A3148961D800E6CFF1 /* Repetier-Host Mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FDEDF7C2148961D900E6CFF1 /* Build configuration list for PBXNativeTarget "Repetier-Host Mac" */;
+			buildPhases = (
+				FDEDF7A0148961D800E6CFF1 /* Sources */,
+				FDEDF7A1148961D800E6CFF1 /* Frameworks */,
+				FDEDF7A2148961D800E6CFF1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Repetier-Host Mac";
+			productName = RepetierHost;
+			productReference = FDEDF7A4148961D800E6CFF1 /* Repetier-Host Mac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FDEDF79B148961D800E6CFF1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = Repetier;
+			};
+			buildConfigurationList = FDEDF79E148961D800E6CFF1 /* Build configuration list for PBXProject "RepetierHost" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FDEDF799148961D800E6CFF1;
+			productRefGroup = FDEDF7A5148961D800E6CFF1 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FDEDF7A3148961D800E6CFF1 /* Repetier-Host Mac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FDEDF7A2148961D800E6CFF1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FDEDF7B3148961D800E6CFF1 /* InfoPlist.strings in Resources */,
+				FDEDF7B9148961D800E6CFF1 /* Credits.rtf in Resources */,
+				FDEDF7C6148961F300E6CFF1 /* repetier-logo128.png in Resources */,
+				FDEDF7CB148962A200E6CFF1 /* PrinterSettings.xib in Resources */,
+				FDEDF7D4148A174A00E6CFF1 /* loadgcode.png in Resources */,
+				FDEDF7E9148A19DE00E6CFF1 /* connect.png in Resources */,
+				FDEDF7EA148A19DE00E6CFF1 /* copy.png in Resources */,
+				FDEDF7EB148A19DE00E6CFF1 /* cut.png in Resources */,
+				FDEDF7EC148A19DE00E6CFF1 /* disconnect.png in Resources */,
+				FDEDF7ED148A19DE00E6CFF1 /* killjob32.png in Resources */,
+				FDEDF7EE148A19DE00E6CFF1 /* log.png in Resources */,
+				FDEDF7EF148A19DE00E6CFF1 /* movecamera.png in Resources */,
+				FDEDF7F0148A19DE00E6CFF1 /* moveobject.png in Resources */,
+				FDEDF7F1148A19DE00E6CFF1 /* newfile.png in Resources */,
+				FDEDF7F2148A19DE00E6CFF1 /* paste.png in Resources */,
+				FDEDF7F3148A19DE00E6CFF1 /* preview.png in Resources */,
+				FDEDF7F4148A19DE00E6CFF1 /* redo.png in Resources */,
+				FDEDF7F5148A19DE00E6CFF1 /* runjob32.png in Resources */,
+				FDEDF7F6148A19DE00E6CFF1 /* save.png in Resources */,
+				FDEDF7F7148A19DE00E6CFF1 /* sdcardicon.png in Resources */,
+				FDEDF7F8148A19DE00E6CFF1 /* sdcardminusicon.png in Resources */,
+				FDEDF7F9148A19DE00E6CFF1 /* sdcardmount.png in Resources */,
+				FDEDF7FA148A19DE00E6CFF1 /* sdcardplusicon.png in Resources */,
+				FDEDF7FB148A19DE00E6CFF1 /* sdcardunmount.png in Resources */,
+				FDEDF7FC148A19DE00E6CFF1 /* undo.png in Resources */,
+				FDB2C67314914C7E00276479 /* TemperatureView.xib in Resources */,
+				FDB2C67F1494A9BA00276479 /* ManualControl.xib in Resources */,
+				FDB2C6851494B59400276479 /* switch_off.png in Resources */,
+				FDB2C6861494B59400276479 /* switch_on.png in Resources */,
+				FD1E241E14966F67008AF30C /* ThreeD.xib in Resources */,
+				FD67BF57149DDE54001B124B /* repetier-logo-trans128.icns in Resources */,
+				FD67BF59149DE318001B124B /* GCodeEditor.xib in Resources */,
+				FD67BF6414A5CFFD001B124B /* empty.txt in Resources */,
+				FD67BF6514A5CFFD001B124B /* syntax.xml in Resources */,
+				FD67BF6A14A870BE001B124B /* defaultPrepend.gcode in Resources */,
+				FD67BF6C14A8721D001B124B /* defaultAppend.gcode in Resources */,
+				FD13BF7914C174D40007E33D /* STLComposer.xib in Resources */,
+				FD6E2F7214C243AF00F57498 /* EEPROM.xib in Resources */,
+				FDEE79E414C30308001F3F0A /* MainMenu.xib in Resources */,
+				FD74DBBC14CC593200422BFE /* pauseicon.png in Resources */,
+				FD74DBBD14CC593200422BFE /* previewoff.png in Resources */,
+				FD74DBC814D1C83F00422BFE /* Preferences.xib in Resources */,
+				FD92676114D9A54D005B31FF /* Slic3r.app in Resources */,
+				FD0AE1D514DB446A002356B8 /* Slic3rSettings.xib in Resources */,
+				FD28663F14DDAD2A0081750D /* introduction.rtf in Resources */,
+				FD283A7E14E6B55000597203 /* fronview.png in Resources */,
+				FD283A7F14E6B55000597203 /* move.png in Resources */,
+				FD283A8014E6B55000597203 /* topview.png in Resources */,
+				FD283A8114E6B55000597203 /* trash.png in Resources */,
+				FD283A8214E6B55000597203 /* zoom.png in Resources */,
+				FD283A8514E6B61900597203 /* rotateicon.png in Resources */,
+				FD283A8B14E97ED100597203 /* preferences.png in Resources */,
+				FD283A8C14E97ED100597203 /* printersettings.png in Resources */,
+				FD283A8E14EAB8CA00597203 /* SDCard.xib in Resources */,
+				FD283A9614EACEFC00597203 /* emergencystop.png in Resources */,
+				FD283A9814EFAFD000597203 /* pauseiconbig.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FDEDF7A0148961D800E6CFF1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FDEDF7B5148961D800E6CFF1 /* main.m in Sources */,
+				FDEDF7BC148961D800E6CFF1 /* RHAppDelegate.m in Sources */,
+				FDEDF7D1148A0EEF00E6CFF1 /* ThreeDView.m in Sources */,
+				FDEDF7FF148A279C00E6CFF1 /* PrinterSettingsController.m in Sources */,
+				FDEDF809148A3DD600E6CFF1 /* AMSerialPort.m in Sources */,
+				FDEDF80A148A3DD600E6CFF1 /* AMSerialPortAdditions.m in Sources */,
+				FDEDF80B148A3DD600E6CFF1 /* AMSerialPortList.m in Sources */,
+				FDEDF80E148A3E1A00E6CFF1 /* PrinterConfiguration.m in Sources */,
+				FDEDF813148A694900E6CFF1 /* RHLogger.m in Sources */,
+				FDEDF816148A879800E6CFF1 /* PrinterConnection.m in Sources */,
+				FDEDF81A148B603000E6CFF1 /* StringUtil.m in Sources */,
+				FD1719CF148D35750023E262 /* RHLinkedList.m in Sources */,
+				FD1719D3148E83540023E262 /* GCode.m in Sources */,
+				FD1719D6148EA3040023E262 /* GCodeAnalyzer.m in Sources */,
+				FD1719D9148EAD850023E262 /* RHPrintjob.m in Sources */,
+				FDB2C67614926E6500276479 /* RHTempertuareController.m in Sources */,
+				FDB2C67914927CA900276479 /* RHLogView.m in Sources */,
+				FDB2C67D1493CC9300276479 /* LogSplitViewDelegate.m in Sources */,
+				FDB2C6821494AD1600276479 /* RHManualControl.m in Sources */,
+				FDB2C68A1494CB8C00276479 /* IntegerTransformer.m in Sources */,
+				FD1E242314967310008AF30C /* ThreeDContainer.m in Sources */,
+				FD1E24261497A612008AF30C /* RHOpenGLView.m in Sources */,
+				FD1E242B1497B7D4008AF30C /* ThreeDConfig.m in Sources */,
+				FD67BF4D149A6C95001B124B /* STL.m in Sources */,
+				FD67BF51149A715C001B124B /* ThreeDModel.m in Sources */,
+				FD67BF54149AA9CA001B124B /* RHMatrix.c in Sources */,
+				FD67BF5C149E08FA001B124B /* GCodeEditorController.m in Sources */,
+				FD67BF5F14A24364001B124B /* GCodeView.m in Sources */,
+				FD67BF6814A5D042001B124B /* Commands.m in Sources */,
+				FD98D9E314BB5AA00079AB43 /* GCodeVisual.m in Sources */,
+				FD98D9E814BCEF710079AB43 /* RHActionTabDelegate.m in Sources */,
+				FD13BF7614C090620007E33D /* RHAnimation.m in Sources */,
+				FD13BF7C14C1756D0007E33D /* STLComposer.m in Sources */,
+				FD6E2F7614C2446700F57498 /* EEPROMController.m in Sources */,
+				FD74DBB814CAF7E000422BFE /* VirtualPrinter.m in Sources */,
+				FD74DBC114CC727C00422BFE /* EnableToollbarItem.m in Sources */,
+				FD74DBC414D06AE300422BFE /* EEPROMParameter.m in Sources */,
+				FD74DBCB14D1CD7400422BFE /* Preferences.m in Sources */,
+				FD92675214D42F37005B31FF /* DefaultsExtension.m in Sources */,
+				FD92675614D5A30E005B31FF /* ThreadedNotification.m in Sources */,
+				FD92675914D71E3E005B31FF /* RHTask.m in Sources */,
+				FD92675C14D85552005B31FF /* Slicer.m in Sources */,
+				FD97347F14DC5DCB007D2E42 /* Slic3rConfig.m in Sources */,
+				FD28663C14DD8E1A0081750D /* RHFileHistory.m in Sources */,
+				FD28664214DE7A130081750D /* TemperatureHistory.m in Sources */,
+				FD28664514DE8CFB0081750D /* TemperatureView.m in Sources */,
+				FD283A8814E6C43A00597203 /* HorizontalSpliViewDelegate.m in Sources */,
+				FD283A9114EABBBA00597203 /* SDCardManager.m in Sources */,
+				FD283A9414EAC4ED00597203 /* FlippedNSView.m in Sources */,
+				FD283A9B14EFB10D00597203 /* HistoryTextField.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FD67BF6014A5CFFC001B124B /* empty.txt */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FD67BF6114A5CFFD001B124B /* en */,
+			);
+			name = empty.txt;
+			sourceTree = "<group>";
+		};
+		FD67BF6214A5CFFD001B124B /* syntax.xml */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FD67BF6314A5CFFD001B124B /* en */,
+			);
+			name = syntax.xml;
+			sourceTree = "<group>";
+		};
+		FDEDF7B1148961D800E6CFF1 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FDEDF7B2148961D800E6CFF1 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FDEDF7B7148961D800E6CFF1 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FDEDF7B8148961D800E6CFF1 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FDEDF7C0148961D900E6CFF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FDEDF7C1148961D900E6CFF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FDEDF7C3148961D900E6CFF1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RepetierHost/RepetierHost-Prefix.pch";
+				INFOPLIST_FILE = "RepetierHost/RepetierHost-Info.plist";
+				INSTALL_OWNER = "$(USER)";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.6;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FDEDF7C4148961D900E6CFF1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RepetierHost/RepetierHost-Prefix.pch";
+				INFOPLIST_FILE = "RepetierHost/RepetierHost-Info.plist";
+				INSTALL_OWNER = "$(USER)";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.6;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FDEDF79E148961D800E6CFF1 /* Build configuration list for PBXProject "RepetierHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FDEDF7C0148961D900E6CFF1 /* Debug */,
+				FDEDF7C1148961D900E6CFF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FDEDF7C2148961D900E6CFF1 /* Build configuration list for PBXNativeTarget "Repetier-Host Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FDEDF7C3148961D900E6CFF1 /* Debug */,
+				FDEDF7C4148961D900E6CFF1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FDEDF79B148961D800E6CFF1 /* Project object */;
+}

@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='utf-8'?>
+<CommandDescriptions>
+  <Command name="G0" title="Rapid move">
+    <Param name="X" optional="1">X position</Param>
+    <Param name="Y" optional="1">Y position</Param>
+    <Param name="Z" optional="1">Z position</Param>
+    <Param name="E" optional="1">Extruder position</Param>
+    <Param name="F" optional="1">Feedrate</Param>
+    <Description>Move fast to the given position. Movement doesn't need to be a straight line.</Description>
+  </Command>
+  <Command name="G1" title="Controlled move">
+    <Param name="X" optional="1">X position</Param>
+    <Param name="Y" optional="1">Y position</Param>
+    <Param name="Z" optional="1">Z position</Param>
+    <Param name="E" optional="1">Extruder position</Param>
+    <Param name="F" optional="1">Feedrate</Param>
+    <Description>Move in a line to the given position.</Description>
+  </Command>
+  <Command name="G28" title="Move to origin">
+    <Param name="X" optional="1">Move X axis</Param>
+    <Param name="Y" optional="1">Move Y axis</Param>
+    <Param name="Z" optional="1">Move Z axis</Param>
+    <Description>Moves the given axis to its origin. Given values are ignored.</Description>
+  </Command>
+  <Command name="G4" title="Dwell">
+    <Param name="P" optional="1">Time in milliseconds</Param>
+    <Param name="S" optional="1">Time in seconds</Param>
+    <Description>Do nothing for the given time.</Description>
+  </Command>
+  <Command name="G20" title="Set units to inches">
+    <Description>Units from now on are in inches.</Description>
+  </Command>
+  <Command name="G21" title="Set units to millimeter">
+    <Description>Units from now on are in millimeter.</Description>
+  </Command>
+  <Command name="G90" title="Absolute positioning">
+    <Description>Coordinates are absolute to origin.</Description>
+  </Command>
+  <Command name="G91" title="Relative positioning">
+    <Description>Coordinates are relative to last position.</Description>
+  </Command>
+  <Command name="G92" title="Set position">
+    <Param name="X" optional="1">X position</Param>
+    <Param name="Y" optional="1">Y position</Param>
+    <Param name="Z" optional="1">Z position</Param>
+    <Param name="E" optional="1">Extruder position</Param>
+    <Description>Changes the origin, so that the current position represents the given coordinates.</Description>
+  </Command>
+  <Command name="M104" title="Set extruder temperature (fast)">
+    <Param name="S" optional="1">Temperature in °Celsius</Param>
+    <Description>Sets target temperature and returns immediately.</Description>
+  </Command>
+  <Command name="M109" title="Set extruder temperature">
+    <Param name="S" optional="1">Temperature in °Celsius</Param>
+    <Description>Sets target temperature and waits until temperature is reached.</Description>
+  </Command>
+  <Command name="M105" title="Get temperatures">
+    <Description>Returns extruder and heated bed temperature.</Description>
+  </Command>
+  <Command name="M106" title="Fan on">
+    <Param name="S" optional="1">Fan speed (0..255)</Param>
+    <Description>Turns the fan on.</Description>
+  </Command>
+  <Command name="M107" title="Fan off">
+    <Description>Turns the fan off.</Description>
+  </Command>
+  <Command name="M108" title="Set extruder speed">
+    <Description>Sets extruder motor speed. Deprecated in current firmware.</Description>
+  </Command>
+  <Command name="M110" title="Set line number">
+    <Param name="N" optional="0">Line number</Param>
+    <Description>Used only from host software.</Description>
+  </Command>
+  <Command name="M112" title="Emergency stop">
+    <Description>Stops doing anything discarding buffered commands.</Description>
+  </Command>
+  <Command name="M113" title="Set extruder PWM">
+    <Param name="S" optional="0">Power 0-1</Param>
+    <Description>Sets extruder power. .5 means 50%.</Description>
+  </Command>
+  <Command name="M140" title="Set heated bed temperature (fast)">
+    <Param name="S" optional="1">Temperature in °Celsius</Param>
+    <Description>Sets target temperature and returns immediately.</Description>
+  </Command>
+  <Command name="M141" title="Set chamber temperature (fast)">
+    <Param name="S" optional="1">Temperature in °Celsius</Param>
+    <Description>Sets target temperature for the chamber and returns immediately.</Description>
+  </Command>
+  <Command name="M116" title="Wait">
+    <Description>Wait until target tempertures for extruder and heated bed are reached.</Description>
+  </Command>
+  <Command name="M114" title="Get current position">
+    <Description>Returns the current position to the host.</Description>
+  </Command>
+  <Command name="M115" title="Firmware version and capabilities">
+    <Description>Returns the firmware and capabilites.</Description>
+  </Command>
+  <Command name="M119" title="Get endstop status">
+    <Description>Returns the status of all endstops.</Description>
+  </Command>
+  <Command name="M20" title="List SD card">
+    <Description>Returns the files stored on SD card.</Description>
+  </Command>
+  <Command name="M21" title="Initialize SD card">
+    <Description>Initializes SD card.</Description>
+  </Command>
+  <Command name="M22" title="Release SD card">
+    <Description>Releases SD card.</Description>
+  </Command>
+  <Command name="M23" title="Select file on SD card">
+    <Param name="" optional="0">Filename</Param>
+    <Description>Selects a file for printing.</Description>
+  </Command>
+  <Command name="M24" title="Start/resume SD print">
+    <Description>Starts or resumes printing the selected file.</Description>
+  </Command>
+  <Command name="M25" title="Pause SD print">
+    <Description>Pauses printing from SD card.</Description>
+  </Command>
+  <Command name="M26" title="Set SD position">
+    <Param name="S" optional="0">File position</Param>
+    <Description>Moves the printing pointer to the given position.</Description>
+  </Command>
+  <Command name="M27" title="Report SD print status">
+    <Description>Returns status of SD print.</Description>
+  </Command>
+  <Command name="M28" title="Begin writing to SD card">
+    <Param name="" optional="0">Filename</Param>
+    <Description>The following commands are stored in the given file on SD card.</Description>
+  </Command>
+  <Command name="M29" title="Stop writing to SD card">
+    <Description>Stops writing to SD card. The following commands are executed.</Description>
+  </Command>
+  <Command name="M30" title="Delete file on SD card">
+    <Param name="" optional="0">Filename</Param>
+    <Description>Deletes given file from SD card.</Description>
+  </Command>
+  <Command name="M82" title="Disable extruder relative mode">
+    <Description>Disables relive mode for extruder values.</Description>
+  </Command>
+  <Command name="M83" title="Enable extruder relative mode">
+    <Description>Enable relative mode for extuder values.</Description>
+  </Command>
+  <Command name="M84" title="Disable motors">
+    <Description>Disable motors if enabled. May shift extruder position!</Description>
+  </Command>
+
+</CommandDescriptions>
