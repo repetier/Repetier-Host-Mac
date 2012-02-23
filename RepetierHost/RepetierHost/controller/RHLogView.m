@@ -369,7 +369,7 @@
 }
 -(BOOL)hasSelection
 {
-    return row != selRow;
+    return hasSel || hasFocus;
 }
 
 - (void)keyDown:(NSEvent *)theEvent

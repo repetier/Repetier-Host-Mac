@@ -17,6 +17,7 @@
 #import "STL.h"
 #import "RHMatrix.h"
 #import "ThreeDConfig.h"
+#include <OpenGL/gl.h>
 
 @implementation STLTriangle
 

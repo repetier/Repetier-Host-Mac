@@ -18,6 +18,11 @@
 #import "PrinterConfiguration.h"
 #import "StringUtil.h"
 #import "ThreadedNotification.h"
+#import "RHAppDelegate.h"
+#import "RHManualControl.h"
+#import "GCodeEditorController.h"
+#import "RHOpenGLView.h"
+#import "PrinterConnection.h"
 
 @implementation PrinterConfiguration
 
@@ -108,6 +113,11 @@
     [self setEndCode:[d stringForKey:[b stringByAppendingString:@".endCode"]]];
     [self setFilterPrg:[d stringForKey:[b stringByAppendingString:@".filterPrg"]]];
     enableFilterPrg = [d boolForKey:[b stringByAppendingString:@".enableFilterPrg"]];
+    hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
+    dumpAreaLeft = [d doubleForKey:[b stringByAppendingString:@".dumpAreaLeft"]];
+    dumpAreaFront = [d doubleForKey:[b stringByAppendingString:@".dumpAreaFront"]];
+    dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
+    dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     return self;
 }
 -(void)initDefaultsRepository:(NSString*)confname {
@@ -151,8 +161,11 @@
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"debugDryRun"];
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];
     [d setObject:[NSNumber numberWithDouble:50] forKey:@"extruder.extrudeSpeed"];
-    //  [d setObject:[NSNumber numberWithDouble:50] forKey:@"extruder.extrudeSpeed"];
-    //  [d setObject:[NSNumber numberWithDouble:50] forKey:@"extruder.extrudeSpeed"];
+    [d setObject:[NSNumber numberWithBool:YES] forKey:[b stringByAppendingString:@".hasDumpArea"]];
+    [d setObject:[NSNumber numberWithDouble:125] forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
+    [d setObject:[NSNumber numberWithDouble:0] forKey:[b stringByAppendingString:@".dumpAreaFront"]];
+    [d setObject:[NSNumber numberWithDouble:40] forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
+    [d setObject:[NSNumber numberWithDouble:22] forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
@@ -190,6 +203,11 @@
     [d setObject:endCode forKey:[b stringByAppendingString:@".endCode"]];
     [d setObject:filterPrg forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setBool:enableFilterPrg forKey:[b stringByAppendingString:@".enableFilterPrg"]];
+    [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
+    [d setDouble:dumpAreaLeft forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
+    [d setDouble:dumpAreaFront forKey:[b stringByAppendingString:@".dumpAreaFront"]];
+    [d setDouble:dumpAreaWidth forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
+    [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     
 }
 +(void)initPrinter {
@@ -223,6 +241,15 @@
             return conf;
 	}  
     return nil;
+}
++(void)fillFormsWithCurrent {
+    if(!connection->connected) 
+        [connection setConfig:currentPrinterConfiguration];
+    [app->gcodeView setContent:1 text:currentPrinterConfiguration->startCode];
+    [app->gcodeView setContent:2 text:currentPrinterConfiguration->endCode];
+    [app->manualControl->extruderTempText setIntValue:currentPrinterConfiguration->defaultExtruderTemp];
+    [app->manualControl->heatedBedTempText setIntValue:currentPrinterConfiguration->defaultHeatedBedTemp];
+    [app->openGLView redraw];
 }
 +(PrinterConfiguration*)selectPrinter:(NSString *)name {
     currentPrinterConfiguration = [self findPrinter:name];

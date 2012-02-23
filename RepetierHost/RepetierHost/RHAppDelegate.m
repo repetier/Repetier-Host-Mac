@@ -109,7 +109,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(temperatureRead:) name:@"RHTemperatureRead" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(progressReceived:) name:@"RHProgress" object:nil];    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replaceGCodeView:) name:@"RHReplaceGCodeView" object:nil];    
-    
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(firmwareDetected:) name:@"RHFirmware" object:nil];    
     [actionTabDelegate tabView:nil didSelectTabViewItem:composerTab];
     [leftTabView selectTabViewItemAtIndex:0];
     [rightTabView selectTabViewItemAtIndex:0];
@@ -139,6 +139,8 @@
         [firstStepsWindow orderFrontRegardless];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"showFirstSteps"];
     }
+    [PrinterConfiguration fillFormsWithCurrent];
+    [logScrollView setScrollerStyle:NSScrollerStyleLegacy];
 }
 -(void)replaceGCodeView:(NSNotification*)event {
     [codePreview->models remove:codeVisual];
@@ -146,6 +148,9 @@
     codeVisual = event.object;
     [codePreview->models addLast:codeVisual];
     [openGLView redraw];
+}
+-(void)firmwareDetected:(NSNotification*)event {
+    [firmwareLabel setStringValue:[event object]];
 }
 -(void)openRecentSTL:(NSMenuItem*)item {
     NSString *file = item.title;
@@ -366,5 +371,15 @@
 - (IBAction)ShowSkeinforgeHomepage:(id)sender {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://fabmetheus.crsndoo.com"]];
 }
-
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
+    NSString *ext = filename.pathExtension;
+    if([ext compare:@"gcode" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
+        [gcodeView loadGCode:filename];
+        return YES;
+    } else if([ext compare:@"stl" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
+        [stlComposer loadSTLFile:filename];
+        return YES;
+    }
+    return NO;
+}
 @end

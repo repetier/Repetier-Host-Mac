@@ -117,6 +117,8 @@
 }
 -(void)open {
     if(connected) return;
+    isMarlin = NO;
+    isRepetier = NO;
     [self setConfig:currentPrinterConfiguration];
     closeAfterM112 = NO;
     NSString *deviceName = [config port];
@@ -709,6 +711,9 @@
     {
         level = RHLogInfo;
         [self setFirmware:h];
+        isRepetier = [h rangeOfString:@"Repetier"].location!=NSNotFound;
+        isMarlin = [h rangeOfString:@"Marlin"].location!=NSNotFound;
+        [ThreadedNotification notifyASAP:@"RHFirmware" object:h];
     }
     h = [self extract:res identifier:@"FIRMWARE_URL:"];
     if (h != nil)

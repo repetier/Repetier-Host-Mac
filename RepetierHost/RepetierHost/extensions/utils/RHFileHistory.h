@@ -28,4 +28,5 @@
 -(id)initWithName:(NSString*)nm max:(int)m;
 -(void)add:(NSString*)filename;
 -(void)attachMenu:(NSMenu*)m withSelector:(SEL)sel;
+-(void)rebuildMenu;
 @end

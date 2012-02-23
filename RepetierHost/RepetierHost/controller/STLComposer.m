@@ -43,7 +43,8 @@ STLComposer *stlComposer=nil;
             openPanel = [[NSOpenPanel openPanel] retain];
             [openPanel setCanChooseDirectories:YES];
             [openPanel setAllowsMultipleSelection:NO];
-
+            [view registerForDraggedTypes:[NSArray arrayWithObjects:
+                                           NSURLPboardType, NSFilenamesPboardType, nil]];
         }
     }
     stlComposer = self;
@@ -65,7 +66,16 @@ STLComposer *stlComposer=nil;
         if(obj.object==stl) {
             NSUInteger mod = [NSEvent modifierFlags];
             NSIndexSet *set = [NSIndexSet indexSetWithIndex:idx];
-            [filesTable selectRowIndexes:set byExtendingSelection:mod==NSCommandKeyMask];
+            if(mod==NSCommandKeyMask)
+                [filesTable selectRowIndexes:set byExtendingSelection:mod==NSCommandKeyMask];
+            else if(mod==NSControlKeyMask) {
+                if(stl->selected)
+                    [filesTable deselectRow:idx];
+                else
+                    [filesTable selectRowIndexes:set byExtendingSelection:YES];
+            } else
+                [filesTable selectRowIndexes:set byExtendingSelection:NO];
+                
             [self updateView];
         }
         idx++;
@@ -262,6 +272,37 @@ STLComposer *stlComposer=nil;
     }
     [stl release];
     
+}
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard;
+    NSDragOperation sourceDragMask;
+    
+    sourceDragMask = [sender draggingSourceOperationMask];
+    pboard = [sender draggingPasteboard];
+    
+    if ( [[pboard types] containsObject:NSURLPboardType] ) {
+        if (sourceDragMask & NSDragOperationCopy) {
+            return NSDragOperationGeneric;
+        }
+    }
+    if ( [[pboard types] containsObject:NSFilenamesPboardType] ) {
+        if (sourceDragMask & NSDragOperationLink) {
+            return NSDragOperationLink;
+        } else if (sourceDragMask & NSDragOperationCopy) {
+            return NSDragOperationCopy;
+        }
+    }
+    return NSDragOperationNone;
+}
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    
+    if ( [[pboard types] containsObject:NSURLPboardType] ) {
+        NSURL *fileURL = [NSURL URLFromPasteboard:pboard];
+        [self loadSTLFile:fileURL.path];
+    }
+    return YES;
 }
 - (IBAction)addSTLFile:(NSButton *)sender {
     [openPanel setMessage:@"Load STL file"];

@@ -21,10 +21,11 @@
     NSPipe *pipe;
     NSFileHandle *readHandle;
     NSThread *thread;
+    NSString *logPrefix;
     @public
     BOOL running;
 }
--(id)initProgram:(NSString*)prg args:(NSArray*)args;
+-(id)initProgram:(NSString*)prg args:(NSArray*)args logPrefix:(NSString*)prefix;
 -(void)taskThread:(id)obj;
 -(void)bringToFront;
 -(BOOL)finishedSuccessfull;

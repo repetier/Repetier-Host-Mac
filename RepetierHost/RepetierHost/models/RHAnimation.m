@@ -17,6 +17,7 @@
 #import "RHAnimation.h"
 #import "ThreeDModel.h"
 #import "PrinterConfiguration.h"
+#import "OpenGL/gl.h"
 
 @implementation ModelAnimation
 

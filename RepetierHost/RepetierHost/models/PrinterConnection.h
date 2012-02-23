@@ -94,6 +94,8 @@
     TemperatureHistory *tempHistory;
     double lastETA;
     BOOL closeAfterM112;
+    BOOL isRepetier; // Printer is running Repetier-Firmware
+    BOOL isMarlin; // Printer is running Marlin firmware
 }
 @property (retain) AMSerialPort *port;
 @property (retain) PrinterConfiguration *config;

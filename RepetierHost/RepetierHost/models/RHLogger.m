@@ -42,8 +42,13 @@ NSDateFormatter *logDateFormatter = nil;
     return [e autorelease];
 }
 -(BOOL)isACK {
-    if ([message rangeOfString:@"ok"].location==0 || [message rangeOfString:@"wait"].location==0) return YES;
-    if([message rangeOfString:@"T:"].location!=NSNotFound) return YES;
+    //-FIRMWARE_NAME:RepetierVirtualPrinter FIRMWARE_URL:https://github.com/repetier/Repetier-Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 REPETIER_PROTOCOL:1
+    NSUInteger p = [message rangeOfString:@"ok"].location; 
+    if (p!=NSNotFound && (p==0 || [message characterAtIndex:p-1]==' ')) return YES;
+    p = [message rangeOfString:@"wait"].location;
+    if (p==0) return YES;
+    p = [message rangeOfString:@"T:"].location;
+    if (p!=NSNotFound && (p==0 || [message characterAtIndex:p-1]==' ')) return YES;
     if ([message rangeOfString:@"SD printing byte"].location!=NSNotFound) return YES;
     if ([message rangeOfString:@"Not SD printing"].location!=NSNotFound) return YES;
     return NO;

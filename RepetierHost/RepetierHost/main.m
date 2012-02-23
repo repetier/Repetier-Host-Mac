@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
 
-    
+    connection = nil;
     [PrinterConfiguration initPrinter];
     conf3d = [ThreeDConfig new];
     //rhlog = [[RHLogger alloc] init];

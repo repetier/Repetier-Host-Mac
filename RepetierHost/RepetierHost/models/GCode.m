@@ -188,7 +188,7 @@
         if (len > 16) len = 16;
         for (i = 0; i < len; i++)
         {
-            uint8 ch = [orig characterAtIndex:i];
+            uint8 ch = [text characterAtIndex:i];
             [data appendBytes:&ch length:1];
         }
         uint8 nl = 0;

@@ -20,6 +20,7 @@
 #import "RHAppDelegate.h"
 #import "GCodeEditorController.h"
 #import "GCodeView.h"
+#import "ThreadedNotification.h"
 
 @implementation SDCardFile
 
@@ -67,26 +68,37 @@
     readFilenames = NO;
     updateFilenames = NO;
     startPrint = NO;
+    canRemove = NO;
     printWait = 0;
     waitDelete = 0;
+    progress = 0;
     timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self
                                            selector:@selector(timerTick:) userInfo:self repeats:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sdcardStatus:) name:@"RHSDCardStatus" object:nil]; 
+    [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(updateButtons) name:@"RHConnectionOpen" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(updateButtons) name:@"RHConnectionClosed" object:nil];
     openPanel = [[NSOpenPanel openPanel] retain];
     [openPanel setCanChooseDirectories:YES];
     [openPanel setAllowsMultipleSelection:NO];
     [self refreshFilenames];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newParam:) name:@"RHEepromAdded" object:nil];
-    
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    [self updateButtons];
 }
 -(void)dealloc {
     [timer invalidate];
     [files release];
     [super dealloc];
 }
+- (void)windowDidBecomeMain:(NSNotification *)notification {
+    canRemove = connection->isRepetier;
+    [self updateButtons];
+}
 - (BOOL)windowShouldClose:(id)sender {
     [mainWindow orderOut:self];
     return NO;
+}
+-(void)connected:(NSNotification*)event {
+    [self refreshFilenames];
+    [self updateButtons];
 }
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     return files->count;
@@ -95,6 +107,9 @@
     if(col==filenameColumn)
         return ((SDCardFile*)[files objectAtIndex:(int)rowIndex])->filename;
     return [NSString stringWithFormat:@"%d",((SDCardFile*)[files objectAtIndex:(int)rowIndex])->filesize];
+}
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    return NO;
 }
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo {
@@ -135,8 +150,11 @@
         [mountButton setTag:NO];
         [startPrintButton setTag:NO];
         [stopPrintButton setTag:NO];
+        [table setEnabled:NO];
+        [toolbar validateVisibleItems];
         return;
     }
+    [table setEnabled:mounted];
     if (uploading || printing || [connection->job hasData])
     {
         [uploadButton setTag:NO];
@@ -148,15 +166,24 @@
     }
     else
     {
-        BOOL fc = [table selectedRow]!=NSNotFound;
+        canRemove = connection->isRepetier;
+        BOOL fc = [table selectedRow]>=0;
         [uploadButton setTag:mounted];
-        [removeButton setTag:fc && mounted];
+        [removeButton setTag:fc && mounted && canRemove];
         [unmountButton setTag:YES];
         [mountButton setTag:YES];
         [startPrintButton setTag:(fc || printPaused) && mounted];
         [stopPrintButton setTag:printPaused && mounted];
     }
+    [toolbar validateVisibleItems];
     
+}
+-(void)sdcardStatus:(NSNotification*)event {
+    NSString *txt = event.object;
+    if(txt!=nil)
+       [printStatus setStringValue:txt];
+    [progressBar setDoubleValue:progress];
+    [self updateButtons];
 }
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     [self updateButtons];
@@ -202,8 +229,8 @@
     if ([res rangeOfString:@"Not SD printing"].location != NSNotFound || [res rangeOfString:@"Done printing file"].location!=NSNotFound)
     {
         printing = NO;
-        [printStatus setStringValue:@"Print finished"];
-        [progressBar setDoubleValue:100];
+        progress = 100;
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"Print finished"];
     }
     else if ([res rangeOfString:@"SD printing byte "].location != NSNotFound) // Print status update
     {
@@ -230,34 +257,34 @@
     else if ([res rangeOfString:@"Done saving file"].location != NSNotFound) // save finished
     {
         uploading = NO;
-        [progressBar setDoubleValue:100];
-        [printStatus setStringValue:@"Upload finished."];
+        progress = 100;
         updateFilenames = YES;
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"Upload finished"];
     }
     else if ([res rangeOfString:@"File selected"].location != NSNotFound)
     {
-        [printStatus setStringValue:@"SD printing ..."];
-        [progressBar setDoubleValue:0];
+        progress = 0;
         printing = YES;
         printPaused = NO;
         startPrint = YES;
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"SD printing ..."];
     }
     else if (uploading && [res rangeOfString:@"open failed, File"].location!=NSNotFound)
     {
         [connection->job killJob];
         connection->analyzer->uploading = NO;
-        [printStatus setStringValue:@"Upload failed."];
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"Upload failed"];
     }
     else if ([res rangeOfString:@"File deleted"].location!=NSNotFound)
     {
         waitDelete = 0;
-        [printStatus setStringValue:@"File deleted"];
         updateFilenames = YES;
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"File deleted"];
     }
     else if ([res rangeOfString:@"Deletion failed"].location!=NSNotFound)
     {
         waitDelete = 0;
-        [printStatus setStringValue:@"Delete failed"];
+        [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"Delete failed"];
     }
 }
 -(void)timerTick:(NSTimer*)timer
@@ -337,13 +364,15 @@
         printing = YES;
         printPaused = NO;
         [connection injectManualCommand:@"M24"];
+        [self updateButtons];
         return;
     }
     int idx = (int)table.selectedRow;
     if(idx<0 || idx>=files->count) return;
     SDCardFile *v = [files objectAtIndex:idx];
     [connection injectManualCommand:[NSString stringWithFormat:@"M23 %@",v->filename]];
- }
+    [self updateButtons];
+}
 
 - (IBAction)stopPrintAction:(id)sender {
     if (printPaused)
@@ -356,18 +385,23 @@
     printPaused = YES;
     printing = NO;
     [printStatus setStringValue:@"Print paused"];
+    [self updateButtons];
 }
 
 - (IBAction)mountAction:(id)sender {
     [connection injectManualCommand:@"M21"];
     mounted = YES;
     [self refreshFilenames];
+    [self updateButtons];
 }
 
 - (IBAction)unmountAction:(id)sender {
     [connection injectManualCommand:@"M22"];
     mounted = NO;
+    [files clear];
+    [table reloadData];
     [self showInfo:@"You can remove the sd card." headline:@"Information"];
+    [self updateButtons];
 }
 -(BOOL)validFilename:(NSString*)t
 {

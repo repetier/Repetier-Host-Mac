@@ -65,6 +65,7 @@
 // Initialized printer configurations
 +(void)initPrinter;
 +(PrinterConfiguration*)findPrinter:(NSString *)name;
++(void)fillFormsWithCurrent;
 +(PrinterConfiguration*)selectPrinter:(NSString*)name;
 +(BOOL)createPrinter:(NSString*)name;
 +(BOOL)deletePrinter:(NSString*)name;

@@ -306,7 +306,7 @@
 							</object>
 						</object>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<object class="NSArray" key="NSToolbarIBAllowedItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="594247197"/>
 						<reference ref="327871084"/>
@@ -318,7 +318,7 @@
 						<reference ref="661578737"/>
 						<reference ref="333793857"/>
 					</object>
-					<object class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<object class="NSArray" key="NSToolbarIBDefaultItems">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<reference ref="164292676"/>
 						<reference ref="976844803"/>
@@ -341,7 +341,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSScrollView" id="106629202">
 							<reference key="NSNextResponder" ref="1006"/>
-							<int key="NSvFlags">274</int>
+							<int key="NSvFlags">4370</int>
 							<object class="NSMutableArray" key="NSSubviews">
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSClipView" id="429087053">
@@ -355,7 +355,7 @@
 											<string key="NSFrameSize">{400, 228}</string>
 											<reference key="NSSuperview" ref="429087053"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="753523630"/>
+											<reference key="NSNextKeyView" ref="133389188"/>
 											<string key="NSReuseIdentifierKey">_NS:1828</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="464329994">
@@ -540,9 +540,9 @@
 							<string key="NSFrame">{{0, 25}, {395, 246}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="133389188"/>
+							<reference key="NSNextKeyView" ref="429087053"/>
 							<string key="NSReuseIdentifierKey">_NS:1824</string>
-							<int key="NSsFlags">133810</int>
+							<int key="NSsFlags">154290</int>
 							<reference key="NSVScroller" ref="753523630"/>
 							<reference key="NSHScroller" ref="668065399"/>
 							<reference key="NSContentView" ref="429087053"/>
@@ -581,7 +581,6 @@
 							<string key="NSFrame">{{182, 2}, {204, 20}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:2352</string>
 							<int key="NSpiFlags">16394</int>
 							<double key="NSMaxValue">100</double>
@@ -847,7 +846,6 @@
 							<string key="NSFrame">{{304, 12}, {82, 32}}</string>
 							<reference key="NSSuperview" ref="522756664"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:687</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="721219636">
@@ -1098,6 +1096,14 @@
 						<reference key="destination" ref="77506055"/>
 					</object>
 					<int key="connectionID">87</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">toolbar</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="647126390"/>
+					</object>
+					<int key="connectionID">88</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1671,7 +1677,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">87</int>
+			<int key="maxID">88</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1788,6 +1794,7 @@
 							<string>startPrintButton</string>
 							<string>stopPrintButton</string>
 							<string>table</string>
+							<string>toolbar</string>
 							<string>unmountButton</string>
 							<string>uplExternalFilenameText</string>
 							<string>uplFilenameText</string>
@@ -1807,6 +1814,7 @@
 							<string>NSToolbarItem</string>
 							<string>NSToolbarItem</string>
 							<string>NSTableView</string>
+							<string>NSToolbar</string>
 							<string>NSToolbarItem</string>
 							<string>NSTextField</string>
 							<string>NSTextField</string>
@@ -1829,6 +1837,7 @@
 							<string>startPrintButton</string>
 							<string>stopPrintButton</string>
 							<string>table</string>
+							<string>toolbar</string>
 							<string>unmountButton</string>
 							<string>uplExternalFilenameText</string>
 							<string>uplFilenameText</string>
@@ -1874,6 +1883,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">table</string>
 								<string key="candidateClassName">NSTableView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">toolbar</string>
+								<string key="candidateClassName">NSToolbar</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">unmountButton</string>

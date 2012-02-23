@@ -22,6 +22,8 @@
 #import "StringUtil.h"
 #import "RHAppDelegate.h"
 #import "GCodeEditorController.h"
+#import "RHOpenGLView.h"
+#import "RHManualControl.h"
 
 @implementation PrinterSettingsController
 
@@ -81,7 +83,7 @@
 	[AMSerialPortList sharedPortList]; // initialize port list to arm notifications
     [baudRatePopup removeAllItems];
     [self setBaudRates:[NSArray arrayWithObjects:@"9600",@"14400",@"19200",@"28800",@"38400",@"56000",@"57600",
-                        @"76800",@"115200",@"128000",@"250000",@"256000",nil]];
+                        @"76800",@"111112",@"115200",@"128000",@"230400",@"250000",@"256000",nil]];
     [baudRatePopup  addItemsWithTitles:baudRates];
     [protocolPopup removeAllItems];
     [self setProtocolNames:[NSArray arrayWithObjects:@"Autodetect",@"Force ASCII protocol",@"Force Repetier protocol", nil]];
@@ -98,9 +100,7 @@
     if([keyPath compare:@"currentPrinter"]==NSOrderedSame) {
         currentPrinterConfiguration = [PrinterConfiguration findPrinter:[change objectForKey:NSKeyValueChangeNewKey]];
         [self loadFromConfig];
-        [app->gcodeView setContent:1 text:currentPrinterConfiguration->startCode];
-        [app->gcodeView setContent:2 text:currentPrinterConfiguration->endCode];
-
+        [PrinterConfiguration fillFormsWithCurrent];
         //    [configPopup setTitle:[currentPrinterConfiguration name]];
     } 
 }
@@ -250,10 +250,12 @@
 - (IBAction)okButtonHit:(id)sender {
     [self saveToConfig];
     [mainWindow orderOut:mainWindow];
+    [app->openGLView redraw];
 }
 
 - (IBAction)applyButtonHit:(id)sender {
     [self saveToConfig];
+    [app->openGLView redraw];
 }
 
 - (IBAction)addButtonHit:(id)sender {

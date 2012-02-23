@@ -20,10 +20,11 @@
 
 @implementation RHTask
 
--(id)initProgram:(NSString*)prg args:(NSArray*)args {
+-(id)initProgram:(NSString*)prg args:(NSArray*)args logPrefix:(NSString*)prefix {
     if((self=[super init])) {
         task = [[NSTask alloc] init];
         pipe = [[NSPipe pipe] retain];
+        logPrefix = [prefix retain];
         readHandle = [[pipe fileHandleForReading] retain];
         
         // write handle is closed to this process
@@ -43,6 +44,7 @@
     [pipe release];
     [task release];
     [thread release];
+    [logPrefix release];
     [super dealloc];
 }
 -(void)bringToFront {
@@ -65,7 +67,7 @@
                 NSString *p = [s substringWithRange:NSMakeRange(0,range.location)];
                 p = [p stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 if(p.length>0)
-                    [rhlog addInfo:p];
+                    [rhlog addInfo:[logPrefix stringByAppendingString:p]];
                 [s deleteCharactersInRange:NSMakeRange(0,range.location+1)];
             }
         } while(range.location!=NSNotFound);

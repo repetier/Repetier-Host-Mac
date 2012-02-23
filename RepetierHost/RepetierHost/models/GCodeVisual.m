@@ -19,7 +19,8 @@
 #import "RHLogger.h"
 #import "StringUtil.h"
 #import "GCode.h"
-
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl.h>
 @implementation GCodePoint
 
 @end

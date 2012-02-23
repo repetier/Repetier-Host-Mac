@@ -37,6 +37,7 @@
     IBOutlet NSTableColumn *filesizeColumn;
     IBOutlet NSTextField *printStatus;
     IBOutlet NSProgressIndicator *progressBar;
+    IBOutlet NSToolbar *toolbar;
     RHLinkedList *files;
     BOOL mounted;
     BOOL printing;
@@ -45,6 +46,7 @@
     BOOL readFilenames;
     BOOL updateFilenames;
     BOOL startPrint;
+    BOOL canRemove;
     int printWait;
     int waitDelete;
     NSTimer *timer;
@@ -54,6 +56,7 @@
     IBOutlet NSButton *uplIncludeJobEndCheckbox;
     IBOutlet NSPanel *uploadPanel;
     NSOpenPanel* openPanel;
+    double progress;
 }
 - (IBAction)uploadAction:(id)sender;
 - (IBAction)removeAction:(id)sender;
@@ -67,7 +70,9 @@
 - (IBAction)uplCancelAction:(id)sender;
 -(void)timerTick:(NSTimer*)timer;
 -(void)refreshFilenames;
+-(void)updateButtons;
 -(void)showInfo:(NSString*)warn headline:(NSString*)head;
 -(void)showError:(NSString*)warn headline:(NSString*)head;
 -(void)analyze:(NSString*)res;
+-(void)sdcardStatus:(NSNotification*)event;
 @end

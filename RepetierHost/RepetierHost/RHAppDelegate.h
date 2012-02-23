@@ -33,6 +33,7 @@
 @class Slic3rConfig;
 @class STLComposer;
 @class RHTempertuareController;
+@class RHManualControl;
 
 @interface RHAppDelegate : NSObject <NSApplicationDelegate>
 {
@@ -103,6 +104,9 @@
     IBOutlet NSPanel *aboutPanel;
     IBOutlet NSTextView *creditsText;
     IBOutlet NSWindow *firstStepsWindow;
+    IBOutlet NSTextField *firmwareLabel;
+    IBOutlet RHManualControl *manualControl;
+    IBOutlet NSScrollView *logScrollView;
 }
 @property (assign) IBOutlet NSWindow *window;
 -(void)replaceGCodeView:(NSNotification*)event;

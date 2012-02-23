@@ -140,7 +140,7 @@
             [arr replaceObjectAtIndex:i withObject:s];
             i++;
         }
-        postprocess = [[RHTask alloc] initProgram:prg args:arr];
+        postprocess = [[RHTask alloc] initProgram:prg args:arr logPrefix:@"<postproc> "];
     } else {
         [app->gcodeView loadGCode:file];
         [app->rightTabView selectTabViewItem:app->gcodeTab];        
@@ -232,7 +232,7 @@
     NSString *skein = [d stringForKey:@"skeinforgeApplication"];
     NSArray *arr = [NSArray arrayWithObject:skein];
     [[NSApplication sharedApplication] deactivate];
-    skeinforgeRun = [[RHTask alloc] initProgram:python args:arr];
+    skeinforgeRun = [[RHTask alloc] initProgram:python args:arr logPrefix:@"<Skeinforge> "];
 }
 
 - (IBAction)configSlic3rInternal:(id)sender {
@@ -260,7 +260,7 @@
         arr = [NSArray arrayWithObjects:nil];
     else
         arr = [NSArray arrayWithObjects:@"--load",slic3rConfig,nil];
-    slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr];
+    slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
 }
 -(void)sliceSkeinforge:(NSString*)file {
     if(skeinforgeRun!=nil) {
@@ -275,7 +275,7 @@
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];
     NSArray *arr = [NSArray arrayWithObjects:skein,file,nil];
     skeinforgeOut = [[NSString stringWithFormat:@"%@%@%@",[file stringByDeletingPathExtension],[d stringForKey:@"skeinforgePostfix"],[d stringForKey:@"skeinforgeExtension"]] retain];
-    skeinforgeSlice = [[RHTask alloc] initProgram:python args:arr];
+    skeinforgeSlice = [[RHTask alloc] initProgram:python args:arr logPrefix:@"<Skeinforge> "];
     
 }
 -(NSString*)patternName:(NSString*)pat {
@@ -388,7 +388,7 @@
     [arr addObject:slic3rIntOut];
     [arr addObject:file];
     //NSLog(@"Call %@ %@",exe,[StringUtil implode:arr sep:@" "]);
-    slic3rIntSlice = [[RHTask alloc] initProgram:exe args:arr];    
+    slic3rIntSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    
 }
 -(void)sliceSlic3rExternal:(NSString*)file {
     if(slic3rExtSlice!=nil) {
@@ -417,7 +417,7 @@
     slic3rExtOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
     arr = [NSArray arrayWithObjects:@"--load",slic3rConfig,@"--print-center",
            [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],@"-o",slic3rExtOut,file,nil];
-    slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr];    
+    slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    
 }
 -(void)slice:(NSString*)file {
     switch(activeSlicer) {

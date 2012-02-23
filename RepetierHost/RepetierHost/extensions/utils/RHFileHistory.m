@@ -15,6 +15,7 @@
  */
 
 #import "RHFileHistory.h"
+#import "RHAppDelegate.h"
 
 @implementation RHFileHistory
 
@@ -41,14 +42,21 @@
 }
 -(void)rebuildMenu {
     if(menu == nil) return;
-    [menu removeAllItems];
+    while(menu.numberOfItems)
+        [menu removeItemAtIndex:0];
+    //[menu removeAllItems]; doesn't work on 10.5
     int i=0;
     for(NSString *s in files) {
-        [menu addItemWithTitle:s action:selector keyEquivalent:@""];
-        [[menu itemAtIndex:i] setTag:i];
+        NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:s action:selector keyEquivalent:@""];
+        [item setTarget:app];
+        [item setTag:i];
+        [menu addItem:item];
         i++;
+        [item release];
     }
+    [menu update];
 }
+
 -(void)attachMenu:(NSMenu*)m withSelector:(SEL)sel {
     menu = m;
     selector = sel;

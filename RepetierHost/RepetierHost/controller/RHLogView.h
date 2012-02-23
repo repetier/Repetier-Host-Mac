@@ -38,7 +38,7 @@
     NSColor *selectionTextBrush;
     float fontHeight;
     float fontWidth;
-    bool hasFocus;
+    BOOL hasFocus;
     int linesWidth;
     int maxLines;
     BOOL ignoreMouseDown;

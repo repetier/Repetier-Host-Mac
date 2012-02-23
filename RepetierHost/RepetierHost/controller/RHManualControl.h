@@ -19,6 +19,7 @@
 #import "HistoryTextField.h"
 
 @interface RHManualControl : NSView {
+    @public
     IBOutlet NSView *view;
     IBOutlet NSButton *debugEchoButton;
     IBOutlet NSButton *debugInfoButton;

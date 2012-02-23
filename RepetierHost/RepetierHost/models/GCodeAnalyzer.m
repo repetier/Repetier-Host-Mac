@@ -16,6 +16,8 @@
 
 #import "GCodeAnalyzer.h"
 #import "PrinterConfiguration.h"
+#import "RHAppDelegate.h"
+#import "RHFileHistory.h"
 
 @implementation GCodeAnalyzer
 
