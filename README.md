@@ -14,6 +14,6 @@ Alpha - most things work but expect some wrong behaviour. If you find some bugs,
 
 ## Installation
 
-Download the repository as zip file and unpack it.
-All you need to do is run the installer Repetier-Host Mac.pkg
-You can ignore the rest, except you want to develop it further. 
+Download the Installer (https://github.com/downloads/repetier/Repetier-Host-Mac/Repetier-Host%20Mac.pkg)[https://github.com/downloads/repetier/Repetier-Host-Mac/Repetier-Host%20Mac.pkg]
+Run the installer.
+After installation you see a Repetier-Host Mac entry in your application directory.
