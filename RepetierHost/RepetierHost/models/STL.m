@@ -122,6 +122,7 @@
     }
 //                FileInfo info = new FileInfo(file);
     [self setName:[file lastPathComponent]];
+    if(list->count==0) return NO;
     return error==nil;
 }
 /// <summary>

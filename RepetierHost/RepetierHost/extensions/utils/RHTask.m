@@ -42,7 +42,8 @@
 -(void)dealloc {
     [readHandle release];
     [pipe release];
-    [task release];
+    if(task)
+        [task release];
     [thread release];
     [logPrefix release];
     [super dealloc];
@@ -72,14 +73,18 @@
             }
         } while(range.location!=NSNotFound);
     }
+    while(task.isRunning)
+        [NSThread sleepForTimeInterval:0.02];
+    status = [task terminationStatus];
     [s release];
     [pool release];
+    [task release];
+    task = nil;
     running = NO;
     [ThreadedNotification notifyASAP:@"RHTaskFinished" object:self];
 }
 -(BOOL)finishedSuccessfull {
-    if (![task isRunning]) {
-        int status = [task terminationStatus];
+    if (task==nil) {
         if (status == 0)
             return YES;
         else

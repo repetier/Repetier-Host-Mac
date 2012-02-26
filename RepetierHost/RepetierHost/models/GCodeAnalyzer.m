@@ -18,6 +18,7 @@
 #import "PrinterConfiguration.h"
 #import "RHAppDelegate.h"
 #import "RHFileHistory.h"
+#import "ThreadedNotification.h"
 
 @implementation GCodeAnalyzer
 
@@ -46,6 +47,8 @@
     return self;
 }
 -(void)fireChanged {
+    if(privateAnalyzer) return;
+    [ThreadedNotification notifyASAP:@"RHPrinterStateChanged" object:self];
     [delegate printerStateChanged:self];
 }
 -(void) start {
@@ -153,7 +156,7 @@
                 break;
             case 92:
                 if (code.hasX) { xOffset = x-code.getX; x = xOffset; }
-                if (code.hasY) { yOffset = y-code.getY; y = zOffset; }
+                if (code.hasY) { yOffset = y-code.getY; y = yOffset; }
                 if (code.hasZ) { zOffset = z-code.getZ; z = zOffset; }
                 if (code.hasE) { eOffset = e-code.getE; e = eOffset; }
                 [delegate positionChanged:self];

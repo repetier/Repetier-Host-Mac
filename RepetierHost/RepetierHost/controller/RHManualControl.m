@@ -30,12 +30,14 @@
             [self addSubview:view];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(connectionOpened:) name:@"RHConnectionOpen" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(connectionClosed:) name:@"RHConnectionClosed" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(printerStateChanged:) name:@"RHPrinterStateChanged" object:nil];
             [self updateConnectionStatus:NO];
             [self scrollPoint:NSMakePoint(0,0)];
             lastx = lasty = lastz = -1000;
             timer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                      target:self selector:@selector(timerTick:)
-                                                   userInfo:nil repeats:YES];
+                                                userInfo:nil repeats:YES];
+            [self updatePrinterState];
         }
     }
     
@@ -107,14 +109,30 @@
     [extruderSpeedText setEnabled:c];
     [extrudeDistanceText setEnabled:c];
     [retractDistanceText setEnabled:c];
+    [retractExtruderButton setEnabled:c];
 }
 - (void)connectionOpened:(NSNotification *)notification {
     [self updateConnectionStatus:YES];
+    [self sendDebug];
 }
 - (void)connectionClosed:(NSNotification *)notification {
     [self updateConnectionStatus:NO];
 }
-
+-(void)updatePrinterState {
+    GCodeAnalyzer *a = connection->analyzer;
+    if(a==nil) return;
+    [extruderTargetTempLabel setIntValue:a->extruderTemp];
+    [heatedBedTargetTempLabel setIntValue:a->bedTemp];
+    [extruderOnButton setState:a->extruderTemp>0];
+    [heatedBedOnButton setState:a->bedTemp>0];
+    [fanOnButton setState:a->fanOn];
+    NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+    if(a->fanOn) 
+        [d setInteger:(int)((double)a->fanVoltage/2.55) forKey:@"fanSpeed"];
+}
+- (void)printerStateChanged:(NSNotification *)notification {
+    [self updatePrinterState];
+}
 - (void)drawRect:(NSRect)dirtyRect
 {
     // Drawing code here.
@@ -343,7 +361,9 @@
     [connection getInjectLock];
     if (sender.state)
     {
-        [connection injectManualCommand:[NSString stringWithFormat:@"M106 S%d",(int)fanSpeedSlider.intValue]];
+        int speed = 2.56*fanSpeedSlider.doubleValue;
+        if(speed>255) speed=255;
+        [connection injectManualCommand:[NSString stringWithFormat:@"M106 S%d",speed]];
     }
     else
     {
@@ -353,7 +373,7 @@
 }
 
 - (IBAction)fanSpeedChangedAction:(NSSlider *)sender {
-    [fanOnButton setState:1];    
+    //[fanOnButton setState:1];    
     [self fanOnAction:fanOnButton];
 }
 

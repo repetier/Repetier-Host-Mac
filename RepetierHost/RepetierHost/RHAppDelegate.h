@@ -21,6 +21,8 @@
 #import "RHFileHistory.h"
 #import "SDCardManager.h"
 #import "EnableToollbarItem.h"
+#import "LogSplitViewDelegate.h"
+#import "HorizontalSpliViewDelegate.h"
 
 @class ThreeDContainer;
 @class GCodeVisual;
@@ -107,6 +109,8 @@
     IBOutlet NSTextField *firmwareLabel;
     IBOutlet RHManualControl *manualControl;
     IBOutlet NSScrollView *logScrollView;
+    IBOutlet HorizontalSplitViewDelegate *editorSplitterDelegate;
+    IBOutlet LogSplitViewDelegate *logSplitterDelegate;
 }
 @property (assign) IBOutlet NSWindow *window;
 -(void)replaceGCodeView:(NSNotification*)event;

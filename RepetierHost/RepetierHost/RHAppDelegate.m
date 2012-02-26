@@ -140,7 +140,9 @@
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"showFirstSteps"];
     }
     [PrinterConfiguration fillFormsWithCurrent];
-    [logScrollView setScrollerStyle:NSScrollerStyleLegacy];
+    //[logScrollView setScrollerStyle:NSScrollerStyleLegacy];
+    [logSplitterDelegate setAutosaveName:@"logSplitterHeight"];
+    [editorSplitterDelegate setAutosaveName:@"editorSplitterWidth"];
 }
 -(void)replaceGCodeView:(NSNotification*)event {
     [codePreview->models remove:codeVisual];

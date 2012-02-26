@@ -188,7 +188,8 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];
     [d setObject:[NSNumber numberWithDouble:3] forKey:@"extruder.retract"];
     [d setObject:[NSNumber numberWithBool:YES] forKey:@"showFirstSteps"];
-    
+    [d setObject:[NSNumber numberWithFloat:170] forKey:@"logSplitterHeight"];
+    [d setObject:[NSNumber numberWithFloat:516] forKey:@"editorSplitterWidth"];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
 

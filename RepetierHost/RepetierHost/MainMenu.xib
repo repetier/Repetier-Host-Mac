@@ -651,7 +651,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{196, 240}, {783, 467}}</string>
 				<int key="NSWTFlags">1685585920</int>
-				<string key="NSWindowTitle">Repetier-Host Mac 0.11 alpha</string>
+				<string key="NSWindowTitle">Repetier-Host Mac 0.12 alpha</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="903388398">
 					<object class="NSMutableString" key="NSToolbarIdentifier">
@@ -1104,7 +1104,7 @@
 																				<string key="NSFrame">{{-3, 0}, {388, 249}}</string>
 																				<reference key="NSSuperview" ref="431297876"/>
 																				<reference key="NSWindow"/>
-																				<reference key="NSNextKeyView" ref="871100352"/>
+																				<reference key="NSNextKeyView"/>
 																				<string key="NSReuseIdentifierKey">_NS:1192</string>
 																				<string key="NSClassName">RHTempertuareController</string>
 																			</object>
@@ -1268,7 +1268,7 @@
 																						<string key="NSFrame">{{333, 1}, {15, 249}}</string>
 																						<reference key="NSSuperview" ref="332935616"/>
 																						<reference key="NSWindow"/>
-																						<reference key="NSNextKeyView" ref="813222822"/>
+																						<reference key="NSNextKeyView" ref="768310541"/>
 																						<string key="NSReuseIdentifierKey">_NS:408</string>
 																						<bool key="NSEnabled">YES</bool>
 																						<reference key="NSTarget" ref="332935616"/>
@@ -3025,6 +3025,22 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="376997573"/>
 					</object>
 					<int key="connectionID">1406</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">editorSplitterDelegate</string>
+						<reference key="source" ref="368578537"/>
+						<reference key="destination" ref="507325598"/>
+					</object>
+					<int key="connectionID">1407</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">logSplitterDelegate</string>
+						<reference key="source" ref="368578537"/>
+						<reference key="destination" ref="253377249"/>
+					</object>
+					<int key="connectionID">1408</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -5084,7 +5100,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1406</int>
+			<int key="maxID">1408</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5939,6 +5955,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>composerTab</string>
 							<string>connectButton</string>
 							<string>creditsText</string>
+							<string>editorSplitterDelegate</string>
 							<string>eepromMenuItem</string>
 							<string>emergencyButton</string>
 							<string>firmwareLabel</string>
@@ -5952,6 +5969,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>logScrollView</string>
 							<string>logSplitDelegate</string>
 							<string>logSplitView</string>
+							<string>logSplitterDelegate</string>
 							<string>logView</string>
 							<string>logViewText</string>
 							<string>mainMenu</string>
@@ -5993,6 +6011,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSTabViewItem</string>
 							<string>NSToolbarItem</string>
 							<string>NSTextView</string>
+							<string>HorizontalSplitViewDelegate</string>
 							<string>NSMenuItem</string>
 							<string>EnableToollbarItem</string>
 							<string>NSTextField</string>
@@ -6006,6 +6025,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSScrollView</string>
 							<string>LogSplitViewDelegate</string>
 							<string>NSSplitView</string>
+							<string>LogSplitViewDelegate</string>
 							<string>RHLogView</string>
 							<string>NSTextView</string>
 							<string>NSMenu</string>
@@ -6050,6 +6070,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>composerTab</string>
 							<string>connectButton</string>
 							<string>creditsText</string>
+							<string>editorSplitterDelegate</string>
 							<string>eepromMenuItem</string>
 							<string>emergencyButton</string>
 							<string>firmwareLabel</string>
@@ -6063,6 +6084,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>logScrollView</string>
 							<string>logSplitDelegate</string>
 							<string>logSplitView</string>
+							<string>logSplitterDelegate</string>
 							<string>logView</string>
 							<string>logViewText</string>
 							<string>mainMenu</string>
@@ -6123,6 +6145,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 								<string key="candidateClassName">NSTextView</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">editorSplitterDelegate</string>
+								<string key="candidateClassName">HorizontalSplitViewDelegate</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">eepromMenuItem</string>
 								<string key="candidateClassName">NSMenuItem</string>
 							</object>
@@ -6173,6 +6199,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<object class="IBToOneOutletInfo">
 								<string key="name">logSplitView</string>
 								<string key="candidateClassName">NSSplitView</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">logSplitterDelegate</string>
+								<string key="candidateClassName">LogSplitViewDelegate</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">logView</string>
@@ -6650,6 +6680,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>extruderSetTempButton</string>
 							<string>extruderSpeedSlider</string>
 							<string>extruderSpeedText</string>
+							<string>extruderTargetTempLabel</string>
 							<string>extruderTempText</string>
 							<string>fakeOkButton</string>
 							<string>fanOnButton</string>
@@ -6658,10 +6689,12 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>goDumpAreaButton</string>
 							<string>heatedBedOnButton</string>
 							<string>heatedBedSetTempButton</string>
+							<string>heatedBedTargetTempLabel</string>
 							<string>heatedBedTempText</string>
 							<string>homeAllButton</string>
 							<string>powerButton</string>
 							<string>retractDistanceText</string>
+							<string>retractExtruderButton</string>
 							<string>sendButton</string>
 							<string>stopMotorButton</string>
 							<string>view</string>
@@ -6690,6 +6723,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSSlider</string>
 							<string>NSTextField</string>
 							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSSlider</string>
@@ -6698,9 +6732,11 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSView</string>
@@ -6731,6 +6767,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>extruderSetTempButton</string>
 							<string>extruderSpeedSlider</string>
 							<string>extruderSpeedText</string>
+							<string>extruderTargetTempLabel</string>
 							<string>extruderTempText</string>
 							<string>fakeOkButton</string>
 							<string>fanOnButton</string>
@@ -6739,10 +6776,12 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>goDumpAreaButton</string>
 							<string>heatedBedOnButton</string>
 							<string>heatedBedSetTempButton</string>
+							<string>heatedBedTargetTempLabel</string>
 							<string>heatedBedTempText</string>
 							<string>homeAllButton</string>
 							<string>powerButton</string>
 							<string>retractDistanceText</string>
+							<string>retractExtruderButton</string>
 							<string>sendButton</string>
 							<string>stopMotorButton</string>
 							<string>view</string>
@@ -6807,6 +6846,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">extruderTargetTempLabel</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">extruderTempText</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
@@ -6839,6 +6882,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">heatedBedTargetTempLabel</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">heatedBedTempText</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
@@ -6853,6 +6900,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<object class="IBToOneOutletInfo">
 								<string key="name">retractDistanceText</string>
 								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">retractExtruderButton</string>
+								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">sendButton</string>

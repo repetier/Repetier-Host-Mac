@@ -56,12 +56,15 @@
     IBOutlet NSTextField *extruderSpeedText;
     IBOutlet NSTextField *extrudeDistanceText;
     IBOutlet NSTextField *retractDistanceText;
+    IBOutlet NSTextField *extruderTargetTempLabel;
+    IBOutlet NSTextField *heatedBedTargetTempLabel;
+    IBOutlet NSButton *retractExtruderButton;
     NSTimer *timer;
     float lastx,lasty,lastz;
 }
 -(void)updateConnectionStatus:(BOOL)c;
 
-
+-(void)updatePrinterState;
 - (void)timerTick:(NSTimer*)theTimer;
 - (IBAction)debugEchoAction:(NSButton *)sender;
 - (IBAction)debugInfoAction:(NSButton *)sender;

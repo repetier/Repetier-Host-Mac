@@ -248,7 +248,7 @@
     [((line & 1)!=0 ? evenBackBrush : backBrush) set];
     float s1 = -1, s2 = -1;   
     NSString *linenumber = [NSString stringWithFormat:@"%d",line+1];
-    [NSBezierPath fillRect:NSMakeRect(linesWidth-1,yPos,size.width, fontHeight)];
+    [NSBezierPath fillRect:NSMakeRect(linesWidth-1,yPos,size.width-linesWidth, fontHeight)];
     [fontAttributes setObject:linesTextBrush forKey:NSForegroundColorAttributeName];
     NSSize lineSize = [linenumber sizeWithAttributes:fontAttributes];
     [linenumber drawAtPoint:NSMakePoint(linesWidth-fontWidth-1-lineSize.width,yPos) withAttributes:fontAttributes];
@@ -347,7 +347,7 @@
     NSRect bounds = [scrollView documentVisibleRect];
     NSRect visibleBounds = [self.enclosingScrollView bounds];
     rowsVisible = (int)floor(visibleBounds.size.height / fontHeight);
-    colsVisible = (int)floor((double)(visibleBounds.size.width - linesWidth) / fontWidth);
+    colsVisible = (int)floor((double)(visibleBounds.size.width - linesWidth) / fontWidth)-1;
     topRow = bounds.origin.y/fontHeight;
     [scrollView setVerticalPageScroll:MAX(1,rowsVisible-3)*fontHeight];
     bounds = dirtyRect;
@@ -356,9 +356,9 @@
     if(lastLine>=lines.count)
         lastLine = (int)lines.count-1;
     [linesBgBrush set];
-    [NSBezierPath fillRect:NSMakeRect(0,firstLine*fontHeight,linesWidth,MAX(bounds.size.height,(lastLine-firstLine+1)*fontHeight))];
-    [backBrush set];
-    [NSBezierPath fillRect:NSMakeRect(linesWidth,0,bounds.size.width-linesWidth,bounds.size.height)];
+    [NSBezierPath fillRect:NSMakeRect(0,firstLine*fontHeight,linesWidth-1,MAX(bounds.size.height,(lastLine-firstLine+1)*fontHeight))];
+    //[backBrush set];
+    //[NSBezierPath fillRect:NSMakeRect(linesWidth,0,bounds.size.width-linesWidth,bounds.size.height)];
     for (int r = firstLine; r <= lastLine; r++)
     {
         [self drawRow:r y:r * fontHeight];
@@ -683,7 +683,7 @@
 -(void)positionShowCursor:(BOOL)repaint moved:(BOOL)moved
 {
     maxCol = MAX(maxCol,(int)[[lines objectAtIndex:row] length]);
-    [self setFrameSize:NSMakeSize(MAX(NSWidth([self.enclosingScrollView bounds]),linesWidth+maxCol*fontWidth+8),lines.count*fontHeight)];
+    [self setFrameSize:NSMakeSize(MAX(NSWidth([self.enclosingScrollView bounds])-2,linesWidth+maxCol*fontWidth+3),lines.count*fontHeight)];
     //scrollRows.Maximum = lines.Count();
     //repaint |= hasSel;
     if (row < topRow)
@@ -709,7 +709,6 @@
     [self scrollPoint:NSMakePoint(topCol*fontWidth,topRow*fontHeight)]; 
     if (moved)
     {
-        NSLog(@"Mod keys = %d",[NSEvent modifierFlags]);
         if ([NSEvent modifierFlags] & NSShiftKeyMask)
         {
             //repaint = YES;

@@ -1,3 +1,9 @@
+Version 0.12 2012-02-26
+  Fixed several bugs in print panel.
+  Non stl files are not added if tried.
+  Log/Editor splitter position is now saved.
+  Fixed possible crash in Skeinforge configuration call.
+
 Version 0.11 : 2012-02-23
   NEW: Load files by dropping them on icon in taskbar.
   Fixed: File history

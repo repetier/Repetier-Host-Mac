@@ -190,6 +190,12 @@
         [skeinforgeOut release];
         [skeinforgeSlice release];
         skeinforgeSlice = nil;
+    } else if(t==skeinforgeRun) {
+        [skeinforgeRun release];
+        skeinforgeRun = nil;
+    } else if(t==slic3rExtRun) {
+        [slic3rExtRun release];
+        slic3rExtRun = nil;
     }
 }
 -(BOOL)skeinforgeConfigured {
@@ -263,13 +269,7 @@
     slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
 }
 -(void)sliceSkeinforge:(NSString*)file {
-    if(skeinforgeRun!=nil) {
-        if(skeinforgeRun->running) {
-            [skeinforgeRun bringToFront];
-            return;
-        }
-        [skeinforgeRun release];
-    }
+    if(skeinforgeSlice!=nil) return;
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *python = [d stringForKey:@"skeinforgePython"];
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];

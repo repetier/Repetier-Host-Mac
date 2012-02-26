@@ -40,6 +40,7 @@
         [documents addObject:prepend];
         [documents addObject:append];
         editor->cur = gcode;
+        [editor setText:@""];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gcodeUpdateStatus:) name:@"RHGCodeUpdateStatus" object:nil];    
         [editor registerScrollView:scrollView];
         [self setContent:1 text:currentPrinterConfiguration->startCode];

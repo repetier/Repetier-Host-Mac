@@ -21,6 +21,7 @@
     IBOutlet NSView *lowerView;
     IBOutlet NSView *upperView;
     IBOutlet NSSplitView *splitView;
+    NSString *autosaveName;
 }
 @property (assign) IBOutlet NSView *upperView;
 @property (assign) IBOutlet NSView *lowerView;
@@ -29,5 +30,5 @@
 -(IBAction)toggleLowerView:(id)sender;
 -(void)collapseLowerView;
 -(void)uncollapseLowerView;
-
+-(void)setAutosaveName:(NSString*)name;
 @end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
+		<int key="IBDocument.SystemTarget">1070</int>
 		<string key="IBDocument.SystemVersion">11D50</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
@@ -2045,6 +2045,30 @@
 					<int key="connectionID">288</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">extruderTargetTempLabel</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="324460716"/>
+					</object>
+					<int key="connectionID">290</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">heatedBedTargetTempLabel</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="823738677"/>
+					</object>
+					<int key="connectionID">291</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">retractExtruderButton</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="545566737"/>
+					</object>
+					<int key="connectionID">292</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.debugEcho</string>
 						<reference key="source" ref="686381519"/>
@@ -3199,7 +3223,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">289</int>
+			<int key="maxID">292</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3417,6 +3441,7 @@
 							<string>extruderSetTempButton</string>
 							<string>extruderSpeedSlider</string>
 							<string>extruderSpeedText</string>
+							<string>extruderTargetTempLabel</string>
 							<string>extruderTempText</string>
 							<string>fakeOkButton</string>
 							<string>fanOnButton</string>
@@ -3425,6 +3450,7 @@
 							<string>goDumpAreaButton</string>
 							<string>heatedBedOnButton</string>
 							<string>heatedBedSetTempButton</string>
+							<string>heatedBedTargetTempLabel</string>
 							<string>heatedBedTempText</string>
 							<string>homeAllButton</string>
 							<string>powerButton</string>
@@ -3457,13 +3483,15 @@
 							<string>NSSlider</string>
 							<string>NSTextField</string>
 							<string>NSTextField</string>
-							<string>NSButton</string>
-							<string>NSButton</string>
-							<string>NSSlider</string>
 							<string>NSTextField</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
+							<string>NSSlider</string>
+							<string>HistoryTextField</string>
 							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSButton</string>
+							<string>NSTextField</string>
 							<string>NSTextField</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
@@ -3498,6 +3526,7 @@
 							<string>extruderSetTempButton</string>
 							<string>extruderSpeedSlider</string>
 							<string>extruderSpeedText</string>
+							<string>extruderTargetTempLabel</string>
 							<string>extruderTempText</string>
 							<string>fakeOkButton</string>
 							<string>fanOnButton</string>
@@ -3506,6 +3535,7 @@
 							<string>goDumpAreaButton</string>
 							<string>heatedBedOnButton</string>
 							<string>heatedBedSetTempButton</string>
+							<string>heatedBedTargetTempLabel</string>
 							<string>heatedBedTempText</string>
 							<string>homeAllButton</string>
 							<string>powerButton</string>
@@ -3574,6 +3604,10 @@
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">extruderTargetTempLabel</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">extruderTempText</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
@@ -3591,7 +3625,7 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">gcodeText</string>
-								<string key="candidateClassName">NSTextField</string>
+								<string key="candidateClassName">HistoryTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">goDumpAreaButton</string>
@@ -3604,6 +3638,10 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">heatedBedSetTempButton</string>
 								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">heatedBedTargetTempLabel</string>
+								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">heatedBedTempText</string>
@@ -3680,10 +3718,6 @@
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
 			<integer value="3000" key="NS.object.0"/>

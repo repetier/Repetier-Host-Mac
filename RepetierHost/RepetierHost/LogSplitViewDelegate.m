@@ -21,6 +21,19 @@
 @synthesize lowerView;
 @synthesize splitView;
 
+#define SPLIT_LIMIT 80
+
+-(id)init {
+    if((self=[super init])) {
+        autosaveName = nil;
+    }
+    return self;
+}
+-(void)dealloc {
+    if(autosaveName)
+        [autosaveName release];
+    [super dealloc];
+}
 // Lower view is fixed in size, if window changes size
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
@@ -35,16 +48,32 @@
     bottomLocation.y = topSize.height+[sender dividerThickness];
     [lowerView setFrameOrigin:bottomLocation];
 }
-
+- (void)splitViewDidResizeSubviews:(NSNotification *)aNotification {
+    NSSize bottomSize =[lowerView frame].size;
+    if(autosaveName && bottomSize.height>SPLIT_LIMIT) {
+        NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+        [d setFloat:bottomSize.height forKey:autosaveName];
+    }    
+}
+-(void)setAutosaveName:(NSString*)name {
+    autosaveName = [name retain];
+    float pos = 100;
+    NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+    pos = [d floatForKey:autosaveName];
+    //NSLog(@"Set V splitter %f",pos);
+    NSSize splitViewSize = [splitView frame].size;
+    pos = splitViewSize.height-[splitView dividerThickness]-pos;
+    [splitView setPosition:pos ofDividerAtIndex:0];
+}
 // Minimum size of the log view
 - (CGFloat)splitView:(NSSplitView *)sender
 constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
 {
     NSSize splitViewSize = [sender frame].size;
-    return splitViewSize.height-80;
+    return splitViewSize.height-SPLIT_LIMIT;
 }
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
-    return 80;
+    return SPLIT_LIMIT;
 }
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview{
     return (subview == lowerView);

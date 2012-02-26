@@ -104,7 +104,7 @@
 }
 - (void)timerTick:(NSTimer*)theTimer {
     if(changed) {
-        [self setFrameSize:NSMakeSize(NSWidth([self.enclosingScrollView bounds]),lines.count*fontHeight)];
+        [self setFrameSize:NSMakeSize(NSWidth([self.enclosingScrollView bounds])-2,lines.count*fontHeight)];
         if(autoscroll && !hasFocus)
             [self scrollBottom];
         [self setNeedsDisplay:YES]; // Repaint
@@ -209,6 +209,10 @@
     changed = YES;
     return YES;
 }
+- (void)viewDidEndLiveResize {
+    [self setFrameSize:NSMakeSize(NSWidth([self.enclosingScrollView bounds])-2,lines.count*fontHeight)];
+    changed = YES;
+}
 -(void)updateBox
 {
     changed = YES;
@@ -245,7 +249,7 @@
     [linesLock unlock];
 }
 -(void)scrollBottom {
-    [self setFrameSize:NSMakeSize(NSWidth([self.enclosingScrollView bounds]),lines.count*fontHeight)];
+    [self setFrameSize:NSMakeSize(NSWidth([self.enclosingScrollView bounds])-2,lines.count*fontHeight)];
     [self scrollPoint:NSMakePoint(0.0,NSMaxY(self.frame)
                                   -NSHeight([self.enclosingScrollView bounds]))];
 }

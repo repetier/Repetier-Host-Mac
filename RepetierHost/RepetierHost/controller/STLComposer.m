@@ -23,6 +23,7 @@
 #import "ThreeDContainer.h"
 #import "RHOpenGLView.h"
 #import "Slicer.h"
+#import "RHLogger.h"
 
 STLComposer *stlComposer=nil;
 
@@ -268,7 +269,7 @@ STLComposer *stlComposer=nil;
         [filesTable reloadData];
         [app->stlHistory add:fname];
     } else {
-        [app showWarning:[NSString stringWithFormat:@"Couldn't open file %@.",fname] headline:@"Open STL failed"];
+        [rhlog addError:@"Couldn't import STL file. Invalid format?"];
     }
     [stl release];
     

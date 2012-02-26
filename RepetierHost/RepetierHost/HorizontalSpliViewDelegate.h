@@ -21,11 +21,13 @@
     IBOutlet NSView *leftView;
     IBOutlet NSView *rightView;
     IBOutlet NSSplitView *splitView;
+    NSString *autosaveName;
 }
 @property (assign) IBOutlet NSView *leftView;
 @property (assign) IBOutlet NSView *rightView;
 @property (assign) IBOutlet NSSplitView *splitView;
 
+-(void)setAutosaveName:(NSString*)name;
 -(IBAction)toggleRightView:(id)sender;
 -(void)collapseRightView;
 -(void)uncollapseRightView;

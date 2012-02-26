@@ -22,6 +22,7 @@
     NSFileHandle *readHandle;
     NSThread *thread;
     NSString *logPrefix;
+    int status;
     @public
     BOOL running;
 }

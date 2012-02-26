@@ -21,6 +21,20 @@
 @synthesize rightView;
 @synthesize splitView;
 
+#define SPLIT_LIMIT 400
+
+-(id)init {
+    if((self=[super init])) {
+        autosaveName = nil;
+    }
+    return self;
+}
+-(void)dealloc {
+    if(autosaveName)
+        [autosaveName release];
+    [super dealloc];
+}
+
 // Lower view is fixed in size, if window changes size
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
@@ -35,16 +49,33 @@
     rightLocation.x = leftSize.width+[sender dividerThickness];
     [rightView setFrameOrigin:rightLocation];
 }
+- (void)splitViewDidResizeSubviews:(NSNotification *)aNotification {
+    NSSize rightSize =[rightView frame].size;
+    if(autosaveName && rightSize.width>SPLIT_LIMIT) {
+        NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+        [d setFloat:rightSize.width forKey:autosaveName];
+    }    
+}
+-(void)setAutosaveName:(NSString*)name {
+    autosaveName = [name retain];
+    float pos = SPLIT_LIMIT;
+    NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+    pos = [d floatForKey:autosaveName];
+    //NSLog(@"Set H splitter %f",pos);
+    NSSize splitViewSize = [splitView frame].size;
+    pos = splitViewSize.width-[splitView dividerThickness]-pos;
+    [splitView setPosition:pos ofDividerAtIndex:0];
 
+}
 // Minimum size of the log view
 - (CGFloat)splitView:(NSSplitView *)sender
 constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
 {
     NSSize splitViewSize = [sender frame].size;
-    return splitViewSize.width-400;
+    return splitViewSize.width-SPLIT_LIMIT;
 }
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
-    return 400;
+    return 100;
 }
 - (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview{
     return (subview == rightView);
@@ -64,8 +95,7 @@ constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)offset
 }
 
 -(void)collapseRightView
-{
-    
+{    
     NSRect overallFrame = [[self splitView] frame];
     double width = overallFrame.size.width-[splitView dividerThickness];
     [rightView setHidden:YES];
