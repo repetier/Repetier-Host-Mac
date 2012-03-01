@@ -168,7 +168,7 @@
 }
 -(NSData*) getBinary:(int) version
 {
-    NSMutableData *data = [NSMutableData dataWithLength:40];
+    NSMutableData *data = [NSMutableData dataWithCapacity:40];
     uint16 ns = (n & 65535);
     [data appendBytes:&fields length:2];
     if (self.hasN) [data appendBytes:&ns length:2];

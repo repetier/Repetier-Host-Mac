@@ -183,6 +183,18 @@ int main(int argc, char *argv[])
     [d setObject:@"rectilinear" forKey:@"slic3r#Default#fillPattern"];
     [d setObject:@"rectilinear" forKey:@"slic3r#Default#solidFillPattern"];
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#comments"];
+    [d setObject:[NSNumber numberWithInt:100] forKey:@"slic3r#Default#coolBridgeFanSpeed"];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"slic3r#Default#coolDisplayLayer"];
+    [d setObject:[NSNumber numberWithInt:60] forKey:@"slic3r#Default#coolEnableBelow"];
+    [d setObject:[NSNumber numberWithInt:100] forKey:@"slic3r#Default#coolMaxFanSpeed"];
+    [d setObject:[NSNumber numberWithInt:35] forKey:@"slic3r#Default#coolMinFanSpeed"];
+    [d setObject:[NSNumber numberWithInt:10] forKey:@"slic3r#Default#coolMinPrintSpeed"];
+    [d setObject:[NSNumber numberWithInt:15] forKey:@"slic3r#Default#coolSlowDownBelow"];
+    [d setObject:@"RepRap (Repetier/Marlin/Sprinter)" forKey:@"slic3r#Default#GCodeFlavor"];
+    [d setObject:@"Primary" forKey:@"slic3r#Default#supportMaterialTool"];
+    [d setObject:[NSNumber numberWithInt:200] forKey:@"slic3r#Default#firstLayerTemperature"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#coolEnable"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#generateSupportMaterial"];
     // Other data
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"extruder.Speed"];
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];

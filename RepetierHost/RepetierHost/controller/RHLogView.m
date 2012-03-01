@@ -309,24 +309,20 @@
 -(void)positionShowCursor:(BOOL)repaint moved:(BOOL)moved
 {
     //scroll.Maximum = lines.count();
-    repaint |= hasSel;
     if (row < topRow)
     {
         topRow = row;
-        repaint = YES;
         [self scrollPoint:NSMakePoint(0,topRow*fontHeight)];
     }
     else if (row > topRow + rowsVisible - 2)
     {
         topRow = row - rowsVisible + 2;
-        repaint = YES;
         [self scrollPoint:NSMakePoint(0,topRow*fontHeight)];
     }
     if (moved)
     {
         if ([NSEvent modifierFlags] & NSShiftKeyMask)
         {
-            repaint = YES;
             hasSel = YES;
         }
         else

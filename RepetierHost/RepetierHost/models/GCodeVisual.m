@@ -432,7 +432,7 @@
         changed = NO;
         startOnClear = YES;
         changeLock = [NSLock new];
-        [ana setDelegate:self];
+        ana->delegate = self;
     }
     return self;
 }        
@@ -456,7 +456,7 @@
         changed = NO;
         startOnClear = NO;
         changeLock = [NSLock new];
-        [ana setDelegate:self];
+        ana->delegate = self;
     }
     return self;
 }        
@@ -469,6 +469,8 @@
         glDeleteBuffers(1,&colbuf);
     colbufSize = 0;
     [changeLock release];
+    if(ana->privateAnalyzer)
+        [ana release];
     [super dealloc];
 }
 -(void)reduce
@@ -618,13 +620,8 @@
     //double start = CFAbsoluteTimeGetCurrent();
     if (clear)
         [self clear];
+    /* Old algortithm
     NSArray *la = [text componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-   /* NSString *value = [StringUtil normalizeLineends:text];
-    double array = 1000*(CFAbsoluteTimeGetCurrent()-start);
-    NSLog(@"Normalize lines %f",array);start = CFAbsoluteTimeGetCurrent();
-    NSArray *la = [value componentsSeparatedByString:@"\n"];*/
-    //double array = 1000*(CFAbsoluteTimeGetCurrent()-start);
-    //NSLog(@"Split lines %f",array);start = CFAbsoluteTimeGetCurrent();
     for (NSString *s in la)
     {
         if(s.length==0) continue;
@@ -632,6 +629,58 @@
         [self addGCode:gc];
         [gc release];
     }
+     */
+    NSRange res;
+    NSCharacterSet *cset = [NSCharacterSet newlineCharacterSet];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int lastpos = 0;
+    NSUInteger len = text.length;
+    int cnt=0;
+    while(lastpos<len) {
+        res = [text rangeOfCharacterFromSet:cset options:NSLiteralSearch range:NSMakeRange(lastpos, len-lastpos)];
+        if(res.location == NSNotFound) break;
+        NSString *code = [text substringWithRange:NSMakeRange(lastpos,res.location-lastpos)];
+        lastpos = res.location+res.length;
+        if(code.length>0) {
+            GCode *gc = [[GCode alloc] initFromString:code];
+            [self addGCode:gc];
+            [gc release];
+        }
+        if(cnt++>10000) {
+            cnt = 0;
+            [pool release];
+            pool = [[NSAutoreleasePool alloc] init];
+        }            
+    }
+    if(lastpos<len) {
+        GCode *gc = [[GCode alloc] initFromString:[text substringFromIndex:lastpos]];
+        [self addGCode:gc];
+        [gc release];        
+    }
+    [pool release];
+    //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
+    //NSLog(@"Parsing %f",parse);
+}
+-(void)parseTextArray:(NSArray*)text clear:(BOOL)clear
+{
+    //double start = CFAbsoluteTimeGetCurrent();
+    if (clear)
+        [self clear];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int cnt=0;
+    for(NSString *code in text) {
+        if(code.length>0) {
+            GCode *gc = [[GCode alloc] initFromString:code];
+            [self addGCode:gc];
+            [gc release];
+        }
+        if(cnt++>10000) {
+            cnt = 0;
+            [pool release];
+            pool = [[NSAutoreleasePool alloc] init];
+        }            
+    }
+    [pool release];
     //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
     //NSLog(@"Parsing %f",parse);
 }

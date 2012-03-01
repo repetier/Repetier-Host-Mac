@@ -88,6 +88,7 @@
 -(void)stats;
 -(void)addGCode:(GCode*) g;
 -(void)parseText:(NSString*)text clear:(BOOL)clear;
+-(void)parseTextArray:(NSArray*)text clear:(BOOL)clear;
 -(void)setColor:(float)dist;
 -(void)computeColor:(float) dist;
 -(void)drawSegment:(GCodePath*)path;

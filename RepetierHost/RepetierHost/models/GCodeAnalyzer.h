@@ -24,8 +24,8 @@
 @end
 
 @interface GCodeAnalyzer : NSObject {
-    id <GCodeAnalyzerDelegate> delegate;
 @public
+    id <GCodeAnalyzerDelegate> delegate;
     int activeExtruder;
     int extruderTemp;
     BOOL uploading;
@@ -46,7 +46,6 @@
     BOOL drawing;
     GCode *actCode;
 }
-@property (retain, nonatomic) id <GCodeAnalyzerDelegate> delegate;
 -(void)fireChanged;
 -(void) analyze:(GCode*) code;
 -(void) start;

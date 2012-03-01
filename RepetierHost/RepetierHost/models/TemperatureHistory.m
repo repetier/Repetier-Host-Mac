@@ -177,6 +177,7 @@
     [item setTarget:app->temperatureController];
     [lists addLast:history];
     [app->temperatureController->timeperiodMenu addItem:item];
+    [item release];
 }
 -(void)addNotify:(NSNotification*)event {
     TempertureEntry * ent = event.object;
@@ -231,6 +232,7 @@
         [lists addLast:hourHistory];
         [app->temperatureController->timeperiodMenu addItem:item];
         [dateFormatter release];
+        [item release];
     }
     [hourHistory->entries addLast:ent];
     [app->temperatureController refresh];

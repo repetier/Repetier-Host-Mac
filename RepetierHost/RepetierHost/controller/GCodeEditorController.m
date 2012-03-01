@@ -21,6 +21,7 @@
 #import "GCodeVisual.h"
 #import "RHOpenGLView.h"
 #import "PrinterConfiguration.h"
+#import "StringUtil.h"
 
 @implementation GCodeEditorController
 
@@ -39,8 +40,7 @@
         [documents addObject:gcode];
         [documents addObject:prepend];
         [documents addObject:append];
-        editor->cur = gcode;
-        [editor setText:@""];
+        [gcode toActive];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gcodeUpdateStatus:) name:@"RHGCodeUpdateStatus" object:nil];    
         [editor registerScrollView:scrollView];
         [self setContent:1 text:currentPrinterConfiguration->startCode];
@@ -76,10 +76,22 @@
         case 0:c = gcode;break;
         case 1:c = prepend;break;
         case 2:c = append;break;
+        default:c = gcode;break;
     }
     if (c == editor->cur) return editor.text;
-    return c.text;
+    return [StringUtil implode:c->textArray sep:@"\n"];
 }
+-(NSMutableArray*)getContentArray
+{
+    NSInteger len = prepend->textArray.count+gcode->textArray.count
+    +append->textArray.count;    
+    NSMutableArray *updateCode = [[NSMutableArray alloc] initWithCapacity:len];
+    [updateCode addObjectsFromArray:prepend->textArray];
+    [updateCode addObjectsFromArray:gcode->textArray];
+    [updateCode addObjectsFromArray:append->textArray];
+    return [updateCode autorelease];
+}
+
 -(void)setContent:(int)idx text:(NSString*)text
 {
     GCodeContent *c = nil;
@@ -88,6 +100,7 @@
         case 1:c = prepend;break;
         case 2:c = append;break;
     }
+    if(c==nil) return;
     if (c == editor->cur)
     {
         [editor setText:text];
@@ -131,9 +144,9 @@
 
 - (IBAction)showIconClicked:(id)sender {
     [editor->cur fromActive];
-    [app->codeVisual parseText:prepend->text clear:YES];
-    [app->codeVisual parseText:gcode->text clear:NO];
-    [app->codeVisual parseText:append->text clear:NO];
+    [app->codeVisual parseTextArray:prepend->textArray clear:YES];
+    [app->codeVisual parseTextArray:gcode->textArray clear:NO];
+    [app->codeVisual parseTextArray:append->textArray clear:NO];
     [app->codeVisual stats];
     [app->codeVisual reduce];
     [app->codeVisual stats];

@@ -49,7 +49,11 @@
             @"layerHeight",@"firstLayerHeightRatio",@"infillEveryNLayers",@"skirtLoops",@"skirtDistance",
             @"skirtHeight",@"perimeters",@"solidLayers",@"fillDensity",@"fillAngle",
             @"retractLength",@"retractZLift",@"retractSpeed",@"retractExtraLength",@"retractMinTravel",
-            @"extrusionWidth",@"bridgeFlowRatio",@"fillPattern",@"solidFillPattern",@"comments", nil];
+            @"extrusionWidth",@"bridgeFlowRatio",@"fillPattern",@"solidFillPattern",@"comments",
+            @"coolBridgeFanSpeed",@"coolDisplayLayer",@"coolEnableBelow",@"coolMaxFanSpeed",@"coolMinFanSpeed",
+            @"coolMinPrintSpeed",@"coolSlowDownBelow",@"coolEnable",@"generateSupportMaterial",
+            @"GCodeFlavor",@"supportMaterialTool",@"firstLayerTemperature",nil];
+    
 }
 -(void)toCurrent {
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;

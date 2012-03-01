@@ -44,6 +44,7 @@ STLComposer *stlComposer=nil;
             openPanel = [[NSOpenPanel openPanel] retain];
             [openPanel setCanChooseDirectories:YES];
             [openPanel setAllowsMultipleSelection:NO];
+            savePanel = [[NSSavePanel savePanel] retain];
             [view registerForDraggedTypes:[NSArray arrayWithObjects:
                                            NSURLPboardType, NSFilenamesPboardType, nil]];
         }
@@ -54,6 +55,7 @@ STLComposer *stlComposer=nil;
 -(void)dealloc {
     [files release];
     [openPanel release];
+    [savePanel release];
     [super dealloc];
 }
 - (void)drawRect:(NSRect)dirtyRect
@@ -169,13 +171,10 @@ STLComposer *stlComposer=nil;
     [app->openGLView redraw];
 }
 - (IBAction)saveAsSTL:(NSButton *)sender {
-    [openPanel setMessage:@"Save STL file"];
-    [openPanel beginSheetModalForWindow:app->mainWindow completionHandler:^(NSInteger result){
+    [savePanel setMessage:@"Save STL file"];
+    [savePanel beginSheetModalForWindow:app->mainWindow completionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton) {
-            NSArray* urls = [openPanel URLs];
-            if(urls.count>0) {
-                [self saveSTLToFile:[[urls objectAtIndex:0] path]];
-            }
+            [self saveSTLToFile:[savePanel.URL path]];
         }        
     }];
 }

@@ -38,6 +38,7 @@
     IBOutlet NSButton *dropObjectButton;
     IBOutlet NSButton *removeSTLfileButton;
     NSOpenPanel* openPanel;
+    NSSavePanel* savePanel;
     RHLinkedList *files;
     STL *actSTL;
 }

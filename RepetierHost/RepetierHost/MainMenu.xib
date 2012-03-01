@@ -651,7 +651,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{196, 240}, {783, 467}}</string>
 				<int key="NSWTFlags">1685585920</int>
-				<string key="NSWindowTitle">Repetier-Host Mac 0.12 alpha</string>
+				<string key="NSWindowTitle">Repetier-Host Mac 0.13 alpha</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="903388398">
 					<object class="NSMutableString" key="NSToolbarIdentifier">
@@ -1104,7 +1104,7 @@
 																				<string key="NSFrame">{{-3, 0}, {388, 249}}</string>
 																				<reference key="NSSuperview" ref="431297876"/>
 																				<reference key="NSWindow"/>
-																				<reference key="NSNextKeyView"/>
+																				<reference key="NSNextKeyView" ref="871100352"/>
 																				<string key="NSReuseIdentifierKey">_NS:1192</string>
 																				<string key="NSClassName">RHTempertuareController</string>
 																			</object>
@@ -1268,7 +1268,7 @@
 																						<string key="NSFrame">{{333, 1}, {15, 249}}</string>
 																						<reference key="NSSuperview" ref="332935616"/>
 																						<reference key="NSWindow"/>
-																						<reference key="NSNextKeyView" ref="768310541"/>
+																						<reference key="NSNextKeyView" ref="813222822"/>
 																						<string key="NSReuseIdentifierKey">_NS:408</string>
 																						<bool key="NSEnabled">YES</bool>
 																						<reference key="NSTarget" ref="332935616"/>

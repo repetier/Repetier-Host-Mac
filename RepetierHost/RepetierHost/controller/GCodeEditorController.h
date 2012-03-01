@@ -37,6 +37,7 @@
 - (IBAction)fileSelectionChanged:(id)sender;
 - (IBAction)showIconClicked:(id)sender;
 -(NSString*)getContent:(int)idx;
+-(NSMutableArray*)getContentArray;
 -(void)setContent:(int)idx text:(NSString*)text;
 - (IBAction)save:(id)sender;
 - (IBAction)clear:(id)sender;

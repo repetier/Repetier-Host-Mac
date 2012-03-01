@@ -73,6 +73,7 @@
         printPreview = [ThreeDContainer new];
         codeVisual = [[GCodeVisual alloc] init];
         [codePreview->models addLast:codeVisual];
+        
         printVisual = [[GCodeVisual alloc] initWithAnalyzer:connection->analyzer];
         printVisual->liveView = YES;
         [printPreview->models addLast:printVisual];
@@ -147,7 +148,7 @@
 -(void)replaceGCodeView:(NSNotification*)event {
     [codePreview->models remove:codeVisual];
     [codeVisual release];
-    codeVisual = event.object;
+    codeVisual = [event.object retain];
     [codePreview->models addLast:codeVisual];
     [openGLView redraw];
 }

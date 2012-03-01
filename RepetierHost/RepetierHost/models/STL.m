@@ -96,7 +96,7 @@
     int32_t nTri = *(int32_t*)(f+80);
     if (data.length != 84 + nTri * 50) {
         [self loadText:data];
-        starttime = CFAbsoluteTimeGetCurrent()-starttime;
+        //starttime = CFAbsoluteTimeGetCurrent()-starttime;
         //NSLog(@"Imported ASCII STL in %1.2f seconds",starttime);
     }  else {
         for (int i = 0; i < nTri; i++) {
@@ -117,7 +117,7 @@
             [list addLast:tri];
             [tri release];
         }
-        starttime = CFAbsoluteTimeGetCurrent()-starttime;
+        //starttime = CFAbsoluteTimeGetCurrent()-starttime;
         //NSLog(@"Imported binary STL in %1.2f seconds",starttime);
     }
 //                FileInfo info = new FileInfo(file);

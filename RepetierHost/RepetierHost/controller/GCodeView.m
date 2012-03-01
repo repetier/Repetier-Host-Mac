@@ -20,6 +20,8 @@
 #import "DefaultsExtension.h"
 #import "GCodeEditorController.h"
 #import "ThreadedNotification.h"
+#import "RHAppDelegate.h"
+#import "ThreeDConfig.h"
 
 @implementation GCodeView
 
@@ -62,7 +64,7 @@
         overwrite = NO;
         drawFont = [[NSFont userFixedPitchFontOfSize:12] retain];
         blackBrush = [[NSColor blackColor] retain];
-        lines = [NSMutableArray new];
+        lines = nil; //[NSMutableArray new];
         fontAttributes = [[NSMutableDictionary alloc] init];
         [fontAttributes setObject:drawFont forKey:NSFontAttributeName];
         selectionAttributes = [NSMutableDictionary new];
@@ -106,7 +108,7 @@
     [bindingsArray release];
     [timer invalidate];
     [timer release];
-    [lines release];
+    //[lines release];
     [fontAttributes release];
     [selectionAttributes release];
     [drawFont release];
@@ -146,17 +148,10 @@
        // if(changedCounter==0 && contentChangedEvent!=null)
        //     contentChangedEvent();
     }
-    if(changedCounter==0 && mustUpdate && nextView==nil) {
+    if(!conf3d->disableFilamentVisualization && changedCounter==0 && mustUpdate && nextView==nil) {
         mustUpdate = NO; 
-        [cur fromActive];
-        NSInteger len = controller->prepend->text.length+controller->gcode->text.length
-        +controller->append->text.length+20;
-        updateCode = [[NSMutableString alloc] initWithCapacity:len];
-        [updateCode appendString:controller->prepend->text];
-        [updateCode appendString:@"\n"];        
-        [updateCode appendString:controller->gcode->text];
-        [updateCode appendString:@"\n"];        
-        [updateCode appendString:controller->append->text];
+        //[cur fromActive];        
+        updateCode = [[controller getContentArray] retain];
         nextView = [[GCodeVisual alloc] init];
         updateViewThread = [[NSThread alloc] initWithTarget:self
                                               selector:@selector(updateViewThread) object:nil];
@@ -169,18 +164,19 @@
 {
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@"Updating..."];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    double start = CFAbsoluteTimeGetCurrent();
-    [nextView parseText:updateCode clear:YES];
-    double red = CFAbsoluteTimeGetCurrent();
+    //double start = CFAbsoluteTimeGetCurrent();
+    [nextView parseTextArray:updateCode clear:YES];
+    //double red = CFAbsoluteTimeGetCurrent();
     [nextView reduce];
     [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
     [updateCode release];
+    [nextView release];
     updateCode = nil;
     [updateViewThread release];
     updateViewThread = nil;
     nextView = nil;
-    red = 1000*(CFAbsoluteTimeGetCurrent()-red);
-    start = 1000*(CFAbsoluteTimeGetCurrent()-start);    
+    //red = 1000*(CFAbsoluteTimeGetCurrent()-red);
+    //start = 1000*(CFAbsoluteTimeGetCurrent()-start);    
     //NSLog(@"update finished red = %f total = %f",red,start);
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@""];
     [pool release];
@@ -201,6 +197,7 @@
 {
     [lines removeAllObjects];
     row = col = topRow = topCol = 0;
+    maxCol=1;
     hasSel = YES;
     [self appendLine:@""];
     [self positionShowCursor:YES moved:NO];
@@ -731,11 +728,10 @@
         hasSel = NO;
     }
     blink = YES;
-    repaint = YES;
-    if (repaint) { [self setNeedsDisplay:YES]; [self updateHelp]; }
-    else [self positionCursor];
-    //[colText setStringValue:[NSString stringWithFormat:@"C%d",col]];
-    //[rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
+    [self updateHelp];
+    [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
+    [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
+    [self setNeedsDisplay:YES];
 }
 -(void)cursorUp
 {
@@ -974,7 +970,7 @@
 -(void)positionCursor
 {
     [self updateHelp];
-    [colText setStringValue:[NSString stringWithFormat:@"C%d",col]];
+    [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
     [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
     //if (!hasFocus) return;
     blink=YES;
@@ -1138,21 +1134,23 @@
 
 @implementation GCodeContent
 @synthesize name;
-@synthesize text;
+//@synthesize text;
 
 -(id)initWithEditor:(GCodeView*)ed {
     if((self=[super init])) {
         editor = ed;
-        col = row = selCol = selRow = 0;
+        col = row = selCol = selRow = maxCol = 0;
         topRow = topCol=0;
         undo = [RHLinkedList new];
         redo = [RHLinkedList new];
         [self setName:@"unknown"];
-        [self setText:@""];
+        textArray = [[NSMutableArray alloc ] initWithCapacity:1000];
+        [textArray addObject:@""];
     }
     return self;
 }
 -(void)dealloc {
+    [textArray release];
     [undo release];
     [redo release];
     [name release];
@@ -1163,20 +1161,35 @@
     col = row = selCol = selRow = topRow = topCol = 0;
     hasSel = NO;
 }
+-(void)setText:(NSString*)value {
+    [self clearUndo];
+    value = [StringUtil normalizeLineends:value];
+    [textArray removeAllObjects];
+    NSArray *la = [value componentsSeparatedByString:@"\n"];
+    if (la.count == 0) [textArray addObject:@""];
+    else for (NSString *s in la) {
+        [textArray addObject:s];
+        maxCol = MAX(maxCol,s.length);
+    }
+    row = col = topRow = topCol = selRow = selCol = 0;
+}
 -(void)fromActive
 {
     col = editor->col;
     row = editor->row;
+    maxCol = editor->maxCol;
     selCol = editor->selCol;
     selRow = editor->selRow;
     topCol = editor->topCol;
     topRow = editor->topRow;
     hasSel = editor->hasSel;
-    [self setText:editor.text];
+    //[self setTextArray:editor.textArray];
 }
 -(void)toActive
 {
-    editor.text = self.text;
+    //editor.text = self.text;
+    editor->lines = textArray;
+    editor->maxCol = maxCol;
     editor->col = col;
     editor->row = row;
     editor->topRow = topRow;
@@ -1186,8 +1199,6 @@
     editor->hasSel = hasSel;
     editor->cur = self;
     [editor positionShowCursor:YES moved:NO];
-    //editor.toolRow.Text = "R" + (row + 1).ToString();
-    //editor.toolColumn.Text = "C" + (col + 1).ToString();
     [self updateUndoButtons];
 }
 -(void)updateUndoButtons

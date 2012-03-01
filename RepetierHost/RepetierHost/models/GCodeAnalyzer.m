@@ -22,10 +22,10 @@
 
 @implementation GCodeAnalyzer
 
-@synthesize delegate;
 
 -(id)init {
     if((self=[super init])) {
+        delegate = nil;
         activeExtruder = 0;
         extruderTemp=0;
         uploading = NO;

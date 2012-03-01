@@ -285,10 +285,10 @@
 }
 -(void)sliceSlic3rInternal:(NSString*)file {
     if(slic3rIntSlice!=nil) {
-        if(slic3rIntRun->running) {
+        if(slic3rIntSlice->running) {
             return;
         }
-        [slic3rIntRun release];
+        [slic3rIntSlice release];
     }
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *exe = [d stringForKey:@"slic3rExternalPath"];
@@ -380,6 +380,50 @@
     [arr addObject:[s getString:@"skirtHeight"]];
     [arr addObject:@"--extrusion-width-ratio"];
     [arr addObject:[s getString:@"extrusionWidth"]];
+    if ([s getBool:@"coolEnable"])
+    {
+        [arr addObject:@"--cooling"];
+        [arr addObject:@"--bridge-fan-speed"];
+        [arr addObject:[s getString:@"coolBridgeFanSpeed"]];
+        [arr addObject:@"--disable-fan-first-layers"];
+        [arr addObject:[s getString:@"coolDisplayLayer"]];
+        [arr addObject:@"--fan-below-layer-time"];
+        [arr addObject:[s getString:@"coolEnableBelow"]];
+        [arr addObject:@"--max-fan-speed"];
+        [arr addObject:[s getString:@"coolMaxFanSpeed"]];
+        [arr addObject:@"--min-fan-speed"];
+        [arr addObject:[s getString:@"coolMinFanSpeed"]];
+        [arr addObject:@"--min-print-speed"];
+        [arr addObject:[s getString:@"coolMinPrintSpeed"]];
+        [arr addObject:@"--slowdown-below-layer-time"];
+        [arr addObject:[s getString:@"coolSlowDownBelow"]];
+    }
+    if ([s getBool:@"generateSupportMaterial"])
+    {
+        [arr addObject:@"--support-material"];
+        [arr addObject:@"--support-material-tool"];
+        NSString *t = [s getString:@"supportMaterialTool"];
+        if([t compare:@"Secondary"]==NSOrderedSame) {
+            [arr addObject:@"1"];
+        } else {
+            [arr addObject:@"0"];            
+        }
+    }
+    [arr addObject:@"--gcode-flavor"];
+    NSString *t = [s getString:@"GCodeFlavor"];
+    if([t compare:@"Teacup"])
+        [arr addObject:@"teacup"];
+    else if([t compare:@"MakerBot"])
+        [arr addObject:@"makerbot"];
+    else if([t compare:@"Mach3/EMC"])
+        [arr addObject:@"mach3"];
+    else if([t compare:@"No extrusion"])
+        [arr addObject:@"no-extrusion"];
+    else 
+        [arr addObject:@"reprap"];
+    [arr addObject:@"--fisrt-layer-temperature"];
+    [arr addObject:[s getString:@"firstLayerTemperature"]];
+    
     [arr addObject:@"--start-gcode"];
     [arr addObject:emptyPath];
     [arr addObject:@"--end-gcode"];
@@ -392,10 +436,10 @@
 }
 -(void)sliceSlic3rExternal:(NSString*)file {
     if(slic3rExtSlice!=nil) {
-        if(slic3rExtRun->running) {
+        if(slic3rExtSlice->running) {
             return;
         }
-        [slic3rExtRun release];
+        [slic3rExtSlice release];
     }
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *exe = [d stringForKey:@"slic3rExternalPath"];

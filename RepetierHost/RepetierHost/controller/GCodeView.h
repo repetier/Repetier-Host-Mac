@@ -73,7 +73,7 @@
     IBOutlet NSTextField *updateText;
     NSArray *bindingsArray;
     GCodeVisual *nextView;
-    NSMutableString *updateCode;
+    NSMutableArray *updateCode;
     NSThread *updateViewThread;
 }
 @property (retain)NSString* lastHelpCommand;
@@ -137,22 +137,24 @@
 
 @interface GCodeContent : NSObject {
 @public
-    NSString *text;
+    //NSString *text;
     NSUInteger col, row, selCol, selRow;
-    NSUInteger topRow, topCol;
+    NSUInteger topRow, topCol,maxCol;
     BOOL hasSel;
     RHLinkedList *undo;
     RHLinkedList *redo;
     GCodeView *editor;
+    NSMutableArray *textArray;
     NSString *name;
     int etype; // 0 = G-Code, 1 = prepend, 2 = append
 }
 @property (retain)NSString *name;
-@property (retain)NSString *text;
+//@property (retain)NSString *text;
 
 -(id)initWithEditor:(GCodeView*)ed;
 -(void)toActive;
 -(void)fromActive;
+-(void)setText:(NSString*)value;
 -(void)resetPos;
 -(void)clearUndo;
 -(void)addUndo:(GCodeUndo*) u;
