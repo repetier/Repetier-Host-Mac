@@ -33,6 +33,9 @@
         [view setFrame:[self bounds]];
         [self addSubview:view];
         editor->controller = self;
+        showMode = 0;
+        triggerUpdate = YES;
+        showMinLayer = showMaxLayer = maxLayer = 0;
         documents = [NSMutableArray new];
         gcode = [[GCodeContent alloc] initWithEditor:editor];
         prepend = [[GCodeContent alloc] initWithEditor:editor];
@@ -56,11 +59,68 @@
 -(void)awakeFromNib
 {
 }
+-(int)showMinLayer {
+    return showMinLayer;
+}
+-(void)setShowMinLayer:(int)lay {
+    showMinLayer = MIN(maxLayer,lay);
+    if(showMinLayer>showMaxLayer || (showMode==1 && showMinLayer!=showMaxLayer)) {
+        triggerUpdate = NO;
+        [self setShowMaxLayer:showMinLayer];
+        triggerUpdate = YES;
+    }
+    if(triggerUpdate)
+        [editor triggerViewUpdate];
+}
+-(int)showMaxLayer {
+    return showMaxLayer;
+}
+-(void)setShowMaxLayer:(int)lay {
+    showMaxLayer = MIN(maxLayer,lay);
+    if(showMaxLayer<showMinLayer || (showMode==1 && showMinLayer!=showMaxLayer)) {
+        triggerUpdate = NO;
+        [self setShowMinLayer:showMaxLayer];
+        triggerUpdate = YES;
+    }
+    if(triggerUpdate)
+        [editor triggerViewUpdate];
+}
+-(int)showMode {
+    return showMode;
+}
+-(void)setShowMode:(int)mode {
+    showMode = mode;
+    [editor triggerViewUpdate];
+}
+-(int)maxLayer {
+    return maxLayer;
+}
+-(void)setMaxLayer:(int)lay {
+    maxLayer = lay;
+    if(showMinLayer>maxLayer)
+        [self setShowMinLayer:maxLayer];
+    if(showMaxLayer>maxLayer)
+        [self setShowMaxLayer:maxLayer];
+    
+}
+
 -(void)gcodeUpdateStatus:(NSNotification*)event {
     [updateText setStringValue:event.object];
+    if([event.object length]==0) {
+        [editor updateLayer];
+    }
 }
 -(void)loadGCode:(NSString*)file {
-    editor->cur = gcode;
+    [editor loadFile:file];
+    [app->gcodeHistory add:file];
+    [app->rightTabView selectTabViewItem:app->gcodeTab];
+}
+-(void)loadGCodeGCode:(NSString*)file {
+    if(editor->cur!=gcode) {
+        [editor->cur fromActive];
+        editor->cur = gcode;
+        [editor->cur toActive];
+    }
     [editor loadFile:file];
     [app->gcodeHistory add:file];
     [app->rightTabView selectTabViewItem:app->gcodeTab];

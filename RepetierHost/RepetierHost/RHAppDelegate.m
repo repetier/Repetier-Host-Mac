@@ -34,6 +34,7 @@
 #import "GCodeView.h"
 #import "Slic3rConfig.h"
 #import "STLComposer.h"
+#import "GCodeView.h"
 
 @implementation RHAppDelegate
 
@@ -265,9 +266,9 @@
        // toolRunJob.Image = imageList.Images[3];
         [printVisual clear];
         [job beginJob];
-        [job pushData:[gcodeView getContent:1]];
-        [job pushData:[gcodeView getContent:0]];
-        [job pushData:[gcodeView getContent:2]];
+        [job pushShortArray:gcodeView->prepend->textArray];
+        [job pushShortArray:gcodeView->gcode->textArray];
+        [job pushShortArray:gcodeView->append->textArray];
         [job endJob ];
     }
 }

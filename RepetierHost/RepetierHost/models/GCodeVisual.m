@@ -154,6 +154,11 @@
 {
     if (elements != nil)
     {
+        if(positions!=nil)
+            free(positions);
+        free(elements);
+        if(normals!=nil)
+            free(normals);
         elements = nil;
         normals = nil;
         positions = nil;
@@ -416,7 +421,7 @@
         segments = [RHLinkedList new];
         ana = [[GCodeAnalyzer alloc] init];
         ana->privateAnalyzer = YES;
-        act = nil;
+        //act = nil;
         lastFilHeight = 999;
         lastFilWidth = 999;
         lastFilDiameter = 999;
@@ -433,6 +438,8 @@
         startOnClear = YES;
         changeLock = [NSLock new];
         ana->delegate = self;
+        minLayer = 0;
+        maxLayer = 1000000;
     }
     return self;
 }        
@@ -440,7 +447,7 @@
     if((self=[super init])) {
         segments = [RHLinkedList new];
         ana = [a retain];
-        act = nil;
+        //act = nil;
         lastFilHeight = 999;
         lastFilWidth = 999;
         lastFilDiameter = 999;
@@ -457,6 +464,8 @@
         startOnClear = NO;
         changeLock = [NSLock new];
         ana->delegate = self;
+        minLayer = 0;
+        maxLayer = 1000000;
     }
     return self;
 }        
@@ -545,7 +554,7 @@
 /// <param name="g"></param>
 -(void)addGCode:(GCode*) g
 {
-    act = g;
+    //act = g;
     [ana analyze:g];
     laste = ana->emax;
 }
@@ -569,10 +578,10 @@
 }
 -(void) printerStateChanged:(GCodeAnalyzer*)analyzer {}
 -(void) positionChanged:(GCodeAnalyzer*)analyzer {
-    if(analyzer->actCode->g>1) return;
-    float xp = analyzer->x; //+analyzer->xOffset;
-    float yp = analyzer->y; //+analyzer->yOffset;
-    float zp = analyzer->z; //+analyzer->zOffset;
+    if(!analyzer->isG1Move) return;
+    float xp = analyzer->x; 
+    float yp = analyzer->y;
+    float zp = analyzer->z;
     if (!ana->drawing)
     {
         lastx = xp;
@@ -615,6 +624,49 @@
     laste = analyzer->emax;
     [changeLock unlock];
 }
+/// Optimized version for editor preview
+-(void) positionChangedFastX:(float)xp y:(float)yp z:(float)zp e:(float)e {
+    if (!ana->drawing || ana->layer<minLayer || ana->layer>maxLayer)
+    {
+        lastx = xp;
+        lasty = yp;
+        lastz = zp;
+        laste = ana->emax;
+        return;
+    }
+    float locDist = (float)sqrt((xp - lastx) * (xp - lastx) + (yp - lasty) * (yp - lasty) + (zp - lastz) * (zp - lastz));
+    BOOL isLastPos = locDist < 0.00001;
+    float mypos[3] = {xp,yp,zp};
+    if (segments->count == 0 || laste >= e) // start new segment
+    {
+        if (!isLastPos) // no move, no action
+        {
+            GCodePath *p = [GCodePath new];
+            [p add:mypos extruder:ana->emax distance:totalDist];
+            if (segments->count > 0 && ((RHLinkedList*)((GCodePath*)(segments.peekLastFast))->pointsLists.peekLastFast)->count == 1)
+            {
+                [segments removeLast];
+            }
+            [segments addLast:p];
+            [p release];
+            //changed = YES;
+        }
+    }
+    else
+    {
+        if (!isLastPos)
+        {
+            totalDist += locDist;
+            [segments.peekLastFast add:mypos extruder:ana->emax distance:totalDist];
+            //changed = YES;
+        }
+    }
+    lastx = xp;
+    lasty = yp;
+    lastz = zp;
+    laste = ana->emax;
+}
+
 -(void)parseText:(NSString*)text clear:(BOOL)clear
 {
     //double start = CFAbsoluteTimeGetCurrent();
@@ -684,6 +736,27 @@
     //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
     //NSLog(@"Parsing %f",parse);
 }
+-(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear {
+    double start = CFAbsoluteTimeGetCurrent();
+    if (clear)
+        [self clear];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    int cnt=0;
+    for(GCodeShort *code in codes) {
+        [ana analyzeShort:code];
+        laste = ana->emax;
+        if(cnt++>100000) {
+            cnt = 0;
+            [pool release];
+            pool = [[NSAutoreleasePool alloc] init];
+        }            
+    }
+    [pool release];
+    double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
+    //NSLog(@"Parsing %f",parse);
+    
+}
+
 -(void)normalize:(float*)n
 {
     float d = (float)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);

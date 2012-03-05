@@ -43,6 +43,8 @@
 -(void) killJob;
 -(void) doEndKillActions;
 -(void) pushData:(NSString*)code;
+// Push array of GCodeShort elements
+-(void)pushShortArray:(NSArray*)codes;
 -(BOOL) hasData;
 -(GCode*) peekData;
 -(GCode*)popData;

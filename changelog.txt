@@ -1,3 +1,11 @@
+Version 0.14 2012-03-05
+  G-Code editor now shows layer and tool of codeline.
+  G-Code editor can preview all/single layer/layer range.
+  Faster preview of g-code.
+  Detects if you unplug usb cord.
+  Object placement can now rotate/scale correct.
+  Fixed a great memory leakage.
+
 Version 0.13 2012-03-01
   Slic3r 0.7.0 now included.
   Fixed slicer calls.

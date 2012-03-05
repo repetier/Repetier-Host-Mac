@@ -88,7 +88,7 @@
     [super dealloc];
 }
 -(BOOL)load:(NSString*)file {
-    double starttime = CFAbsoluteTimeGetCurrent();
+    //double starttime = CFAbsoluteTimeGetCurrent();
     list = [RHLinkedList new];
     NSData *data = [NSData dataWithContentsOfFile:file];
     if(data.length<84) return NO;
@@ -157,10 +157,17 @@
     matrix4RotateXf(rotx, rotation[0]*(float)M_PI/180.0);
     matrix4RotateYf(roty, rotation[1]*(float)M_PI/180.0);
     matrix4RotateZf(rotz, rotation[2]*(float)M_PI/180.0);
+    /*
     matrix4MulMatf(trans,scalem,rotx);
     matrix4MulMatf(scalem,trans,roty);
     matrix4MulMatf(rotx,scalem,rotz);
     matrix4MulMatf(trans,rotx,transl);
+     */
+    matrix4MulMatf(trans,transl,rotz);
+    matrix4MulMatf(rotz,trans,roty);
+    matrix4MulMatf(roty,rotz,rotx);
+    matrix4MulMatf(trans,roty,scalem);
+    
 }
 -(void)updateBoundingBox {
     [self updateMatrix ];
@@ -178,10 +185,7 @@
     //float x, y, z;
     float v4[] = {v[0],v[1],v[2],1};
     float p[4];
-    matrix4MulVecf(trans,v4,p);
-    //x = vector4Dotf(trans, v4);
-    //y = vector4Dotf(&trans[4], v4);
-    //z = vector4Dotf(&trans[8], v4);
+    matrix4MulVecRes3f(trans,v4,p);
     xMin = MIN(xMin, p[0]);
     xMax = MAX(xMax, p[0]);
     yMin = MIN(yMin, p[1]);

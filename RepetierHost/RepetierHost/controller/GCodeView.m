@@ -22,6 +22,7 @@
 #import "ThreadedNotification.h"
 #import "RHAppDelegate.h"
 #import "ThreeDConfig.h"
+#import "GCodeShort.h"
 
 @implementation GCodeView
 
@@ -148,7 +149,7 @@
        // if(changedCounter==0 && contentChangedEvent!=null)
        //     contentChangedEvent();
     }
-    if(!conf3d->disableFilamentVisualization && changedCounter==0 && mustUpdate && nextView==nil) {
+    if(changedCounter==0 && mustUpdate && nextView==nil) {
         mustUpdate = NO; 
         //[cur fromActive];        
         updateCode = [[controller getContentArray] retain];
@@ -160,15 +161,37 @@
     if(focused && col>=topCol && row>=topRow && row<=topRow+rowsVisible+1)
         [self setNeedsDisplay:YES];
 }
+-(void)triggerViewUpdate{
+    if(nextView==nil) {
+        mustUpdate = NO; 
+        //[cur fromActive];        
+        updateCode = [[controller getContentArray] retain];
+        nextView = [[GCodeVisual alloc] init];
+        updateViewThread = [[NSThread alloc] initWithTarget:self
+                                                   selector:@selector(updateViewThread) object:nil];
+        [updateViewThread start];        
+    } else {
+        changedCounter=0;
+        mustUpdate = YES;
+    }
+}
 -(void) updateViewThread
 {
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@"Updating..."];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     //double start = CFAbsoluteTimeGetCurrent();
-    [nextView parseTextArray:updateCode clear:YES];
+    if(controller->showMode==1) {
+        nextView->minLayer = nextView->maxLayer = controller->showMinLayer;
+    } else if(controller->showMode==2) {
+        nextView->minLayer = controller->showMinLayer;
+        nextView->maxLayer = controller->showMaxLayer;
+    }
+    [nextView parseGCodeShortArray:updateCode clear:YES];
+    [controller setMaxLayer:nextView->ana->layer];
     //double red = CFAbsoluteTimeGetCurrent();
     [nextView reduce];
-    [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
+    if(!conf3d->disableFilamentVisualization)
+        [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
     [updateCode release];
     [nextView release];
     updateCode = nil;
@@ -209,12 +232,17 @@
 }
 -(void)appendLine:(NSString*)l
 {
-    [lines addObject:l];
+    [lines addObject:[GCodeShort codeWith:l]];
     maxCol = MAX(maxCol, l.length);
     //scrollRows.Maximum = lines.Count;
 }
 -(NSString*)text {
-    return [lines componentsJoinedByString:@"\n"];
+    NSMutableString *s = [NSMutableString new];
+    for(GCodeShort *c in lines) {
+        [s appendString:c->text];
+        [s appendString:@"\n"];
+    }
+    return s;
 }
 -(void)setText:(NSString*)value {
     [cur clearUndo];
@@ -225,7 +253,7 @@
     NSArray *la = [value componentsSeparatedByString:@"\n"];
     if (la.count == 0) [self appendLine:@""];
     else for (NSString *s in la) {
-        [lines addObject:s];
+        [lines addObject:[GCodeShort codeWith:s]];
         maxCol =MAX(maxCol, s.length);
     }
     [self scrollPoint:NSMakePoint(0,0)]; 
@@ -239,7 +267,7 @@
 }
 -(void) drawRow:(int)line y:(float)yPos
 {
-    NSString *text = [lines objectAtIndex:line];
+    NSString *text = ((GCodeShort*)([lines objectAtIndex:line]))->text;
     NSSize size = [self bounds].size;
     NSColor *fontBrush = normalBrush;
     [((line & 1)!=0 ? evenBackBrush : backBrush) set];
@@ -673,6 +701,15 @@
         [self positionShowCursor];
     }
 }
+-(void)updateLayer {
+    GCodeShort *acode = [lines objectAtIndex:row];
+    NSString *txt;
+    if(acode.hasLayer)
+        txt = [NSString stringWithFormat:@"Layer: %d Tool: %d",(int)acode.layer,(int)acode.tool];
+    else
+        txt = @"Layer: - Tool: -";
+    [controller->layerText setStringValue:txt];
+}
 -(void)positionShowCursor
 {
     [self positionShowCursor:NO moved:YES];
@@ -732,6 +769,7 @@
     [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
     [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
     [self setNeedsDisplay:YES];
+    [self updateLayer];
 }
 -(void)cursorUp
 {
@@ -786,7 +824,8 @@
     [tmp release];
     if (self.hasSelection)
         [self deleteSelectionRedraw:NO];
-    NSString *l = [lines objectAtIndex:row];
+    GCodeShort *gc = [lines objectAtIndex:row];
+    NSString *l = gc->text;
     if(col>(int)l.length) col = (int)l.length;
     NSString *ns;
     if(overwrite && col < l.length)
@@ -795,7 +834,7 @@
     else
         ns = [[NSString alloc] initWithFormat:@"%@%@%@",
               [l substringToIndex:col],c,[l substringFromIndex:col]];
-    [lines replaceObjectAtIndex:row withObject:ns];
+    [lines replaceObjectAtIndex:row withObject:[GCodeShort codeWith:ns]];
     [ns release];
     col++;
     [self positionShowCursor:YES moved:NO];
@@ -810,16 +849,16 @@
         [self deleteSelectionRedraw:NO];
     s = [StringUtil normalizeLineends:s];
     NSMutableArray *la = [StringUtil explode:s sep:@"\n"];
-    NSString *l = [lines objectAtIndex:row];
+    GCodeShort *l = [lines objectAtIndex:row];
     if (col > l.length) col = (int)l.length;
-    [la replaceObjectAtIndex:0 withObject:[[l substringToIndex:col] stringByAppendingString:[la objectAtIndex:0]]];
+    [la replaceObjectAtIndex:0 withObject:[[l->text substringToIndex:col] stringByAppendingString:[la objectAtIndex:0]]];
     int nc = (int)[[la objectAtIndex:la.count - 1] length];
-    [la replaceObjectAtIndex:la.count-1 withObject:[[la objectAtIndex:la.count - 1] stringByAppendingString:[l substringFromIndex:col]]];
+    [la replaceObjectAtIndex:la.count-1 withObject:[[la objectAtIndex:la.count - 1] stringByAppendingString:[l->text substringFromIndex:col]]];
     col = nc;
-    [lines replaceObjectAtIndex:row withObject:[la objectAtIndex:0]];
+    [lines replaceObjectAtIndex:row withObject:[GCodeShort codeWith:[la objectAtIndex:0]]];
     for (int i = 1; i < la.count; i++)
     {
-        [lines insertObject:[la objectAtIndex:i] atIndex:row+i];
+        [lines insertObject:[GCodeShort codeWith:[la objectAtIndex:i]] atIndex:row+i];
     }
     row += la.count - 1;
     [self positionShowCursor:YES moved:NO];
@@ -844,7 +883,7 @@
     NSMutableString *sb = [NSMutableString stringWithCapacity:1000];
     for (i = rstart; i <= rend; i++)
     {
-        NSString *l = [lines objectAtIndex:i];
+        NSString *l = ((GCodeShort*)[lines objectAtIndex:i])->text;
         if (i == rend)
         {
             cend = MIN(cend, (int)(l.length));
@@ -879,7 +918,7 @@
     [cur addUndo:tmp];
     [tmp release];
     // start row = begin first + end last row
-    [lines replaceObjectAtIndex:rstart withObject:[[[lines objectAtIndex:rstart] substringToIndex:cstart] stringByAppendingString:[[lines objectAtIndex:rend]substringFromIndex:cend]]];
+    [lines replaceObjectAtIndex:rstart withObject:[GCodeShort codeWith:[[((GCodeShort*)[lines objectAtIndex:rstart])->text substringToIndex:cstart] stringByAppendingString:[((GCodeShort*)[lines objectAtIndex:rend])->text substringFromIndex:cend]]]];
     if(rend>rstart)
         [lines removeObjectsInRange:NSMakeRange(rstart+1, rend-rstart)];
     row = selRow = rstart;
@@ -891,19 +930,19 @@
 }
 -(void)deleteChar
 {
-    NSString *t = [lines objectAtIndex:row];
+    GCodeShort *t = [lines objectAtIndex:row];
     if (t.length == col)
     { // Join with next line
         if (row == lines.count - 1) return;
-        [lines replaceObjectAtIndex:row withObject:[[lines objectAtIndex: row] stringByAppendingString:[lines objectAtIndex:row + 1]]];
+        [lines replaceObjectAtIndex:row withObject:[GCodeShort codeWith:[((GCodeShort*)[lines objectAtIndex: row])->text stringByAppendingString:((GCodeShort*)[lines objectAtIndex:row + 1])->text]]];
         [lines removeObjectAtIndex:row+1];
         GCodeUndo *tmp = [[GCodeUndo alloc] initFromText:@"" orig:@"\n" col:col row:row selCol:0 selRow:row+1]; 
         [cur addUndo:tmp];
         [tmp release];
     } else {
-        GCodeUndo *tmp = [[GCodeUndo alloc] initFromText:@"" orig:[t substringWithRange:NSMakeRange(col,1)] col:col row:row selCol:col+1 selRow:row];
+        GCodeUndo *tmp = [[GCodeUndo alloc] initFromText:@"" orig:[t->text substringWithRange:NSMakeRange(col,1)] col:col row:row selCol:col+1 selRow:row];
         [cur addUndo:tmp];
-        [lines replaceObjectAtIndex:row withObject:[[t substringToIndex:col] stringByAppendingString:[t substringFromIndex:col+1]]];
+        [lines replaceObjectAtIndex:row withObject:[GCodeShort codeWith:[[t->text substringToIndex:col] stringByAppendingString:[t->text substringFromIndex:col+1]]]];
         [tmp release];
     }
     [self setNeedsDisplay:YES];
@@ -911,7 +950,7 @@
 }
 -(void)backspace
 {
-    NSString *t = [lines objectAtIndex:row];
+    GCodeShort *t = [lines objectAtIndex:row];
     if (col > t.length)
     {
         col = (int)t.length;
@@ -923,13 +962,13 @@
             [cur addUndo:tmp];
             [tmp release];
             col = (int)[[lines objectAtIndex:row-1] length];
-            [lines replaceObjectAtIndex:row-1 withObject:[[lines objectAtIndex: row-1] stringByAppendingString:[lines objectAtIndex:row]]];
+            [lines replaceObjectAtIndex:row-1 withObject:[GCodeShort codeWith:[((GCodeShort*)[lines objectAtIndex: row-1])->text stringByAppendingString:((GCodeShort*)[lines objectAtIndex:row])->text]]];
             [lines removeObjectAtIndex:row];
             row--;
         } else {
-            GCodeUndo *tmp = [[GCodeUndo alloc] initFromText:@"" orig:[t substringWithRange:NSMakeRange(col-1,1)] col:col row:row selCol:col-1 selRow:row];
+            GCodeUndo *tmp = [[GCodeUndo alloc] initFromText:@"" orig:[t->text substringWithRange:NSMakeRange(col-1,1)] col:col row:row selCol:col-1 selRow:row];
             [cur addUndo:tmp];
-            [lines replaceObjectAtIndex:row withObject:[[t substringToIndex:col-1] stringByAppendingString:[t substringFromIndex:col]]];
+            [lines replaceObjectAtIndex:row withObject:[GCodeShort codeWith:[[t->text substringToIndex:col-1] stringByAppendingString:[t->text substringFromIndex:col]]]];
             [tmp release];
             [self cursorLeft];
         }
@@ -947,7 +986,7 @@
 -(void)updateHelp
 {
     if (commands == nil) return;
-    NSString *l = [[lines objectAtIndex:row] stringByTrimmingCharactersInSet:
+    NSString *l = [((GCodeShort*)[lines objectAtIndex:row])->text stringByTrimmingCharactersInSet:
                                               [NSCharacterSet whitespaceAndNewlineCharacterSet]];   
     NSRange p = [l rangeOfString:@" "];
     if (p.location == NSNotFound)
@@ -972,6 +1011,7 @@
     [self updateHelp];
     [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
     [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
+    [self updateLayer];
     //if (!hasFocus) return;
     blink=YES;
     [self setNeedsDisplay:YES];
@@ -994,7 +1034,7 @@
 -(void)deleteSelection:(GCodeView*)e colStart:(NSUInteger)cstart rowStart:(NSUInteger)rstart colEnd:(NSUInteger)cend rowEnd:(NSUInteger) rend {
         // start row = begin first + end last row
     NSMutableArray *lines = e->lines;
-    [lines replaceObjectAtIndex:rstart withObject:[[[lines objectAtIndex:rstart] substringToIndex:cstart] stringByAppendingString:[[lines objectAtIndex:rend] substringFromIndex:cend]]];
+    [lines replaceObjectAtIndex:rstart withObject:[GCodeShort codeWith:[[((GCodeShort*)[lines objectAtIndex:rstart])->text substringToIndex:cstart] stringByAppendingString:[((GCodeShort*)[lines objectAtIndex:rend])->text substringFromIndex:cend]]]];
     if (rend > rstart)
         [lines removeObjectsInRange:NSMakeRange(rstart+1,rend-rstart)];
     e->row = e->selRow = rstart;
@@ -1018,23 +1058,23 @@
     e->col = cstart;
     s = [StringUtil normalizeLineends:s];
     NSArray *la = [s componentsSeparatedByString:@"\n"];
-    NSString *l = [lines objectAtIndex:e->row];
+    GCodeShort *l = [lines objectAtIndex:e->row];
     if (e->col > l.length) e->col = (int)l.length;
     //NSMutableArray *la2 = [[NSMutableArray alloc] initWithCapacity:la.count-1];
     //[la2 insertObject:[[l substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]] atIndex:0];
-    NSString *la20=[[l substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]];
+    NSString *la20=[[l->text substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]];
     int nc = (int)[[la objectAtIndex:la.count - 1] length];
   //  [lines replaceObjectAtIndex:rstart withObject:[la objectAtIndex:0]];
     for (int i = 1; i < la.count-1; i++) {
-        [lines insertObject:[la objectAtIndex:i] atIndex:e->row+i];
+        [lines insertObject:[GCodeShort codeWith:[la objectAtIndex:i]] atIndex:e->row+i];
        // [la2 insertObject:[la objectAtIndex:i] atIndex:i - 1];
     }
     if(la.count==1) {
-        [lines replaceObjectAtIndex:rstart withObject:[la20 stringByAppendingString:[l substringFromIndex:e->col]]];
+        [lines replaceObjectAtIndex:rstart withObject:[GCodeShort codeWith:[la20 stringByAppendingString:[l->text substringFromIndex:e->col]]]];
         e->col = (int)[la20 length];    
     } else {
-        [lines replaceObjectAtIndex:rstart withObject:la20];
-        [lines replaceObjectAtIndex:rend withObject:[[la objectAtIndex:la.count-1] stringByAppendingString:[l substringFromIndex:e->col]]];      
+        [lines replaceObjectAtIndex:rstart withObject:[GCodeShort codeWith:la20]];
+        [lines replaceObjectAtIndex:rend withObject:[GCodeShort codeWith:[[la objectAtIndex:la.count-1] stringByAppendingString:[l->text substringFromIndex:e->col]]]];      
         e->col = nc;
     }
     //[la2 insertObject:[[la objectAtIndex:la.count - 1] stringByAppendingString:[l substringFromIndex:e->col]] atIndex:la.count - 2];
@@ -1145,7 +1185,7 @@
         redo = [RHLinkedList new];
         [self setName:@"unknown"];
         textArray = [[NSMutableArray alloc ] initWithCapacity:1000];
-        [textArray addObject:@""];
+        [textArray addObject:[GCodeShort codeWith:@""]];
     }
     return self;
 }
@@ -1168,7 +1208,7 @@
     NSArray *la = [value componentsSeparatedByString:@"\n"];
     if (la.count == 0) [textArray addObject:@""];
     else for (NSString *s in la) {
-        [textArray addObject:s];
+        [textArray addObject:[GCodeShort codeWith:s]];
         maxCol = MAX(maxCol,s.length);
     }
     row = col = topRow = topCol = selRow = selCol = 0;

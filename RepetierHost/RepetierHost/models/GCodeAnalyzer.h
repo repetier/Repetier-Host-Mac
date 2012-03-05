@@ -16,11 +16,14 @@
 
 #import <Foundation/Foundation.h>
 #import "GCode.h"
+#import "GCodeShort.h"
+
 @class GCodeAnalyzer;
 
 @protocol GCodeAnalyzerDelegate
 -(void) printerStateChanged:(GCodeAnalyzer*)analyzer;
 -(void) positionChanged:(GCodeAnalyzer*)analyzer;
+-(void) positionChangedFastX:(float)x y:(float)y z:(float)z e:(float)e;
 @end
 
 @interface GCodeAnalyzer : NSObject {
@@ -44,9 +47,12 @@
     float printerWidth, printerHeight, printerDepth;
     int tempMonitor;
     BOOL drawing;
+    int layer;
+    BOOL isG1Move;
     GCode *actCode;
 }
 -(void)fireChanged;
--(void) analyze:(GCode*) code;
+-(void)analyze:(GCode*) code;
+-(void)analyzeShort:(GCodeShort*)code;
 -(void) start;
 @end

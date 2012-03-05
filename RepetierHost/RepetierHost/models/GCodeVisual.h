@@ -19,6 +19,7 @@
 #import "ThreeDModel.h"
 #import "GCodeAnalyzer.h"
 #import "GCode.h"
+#import "GCodeShort.h"
 #import <OpenGL/OpenGL.h>
 
 @interface GCodePoint : NSObject {
@@ -57,7 +58,7 @@
 @public
     RHLinkedList *segments;
     GCodeAnalyzer *ana;
-    GCode *act;
+    //GCode *act;
     float lastFilHeight;
     float lastFilWidth;
     float lastFilDiameter;
@@ -80,15 +81,18 @@
     BOOL changed;
     BOOL startOnClear;
     NSLock *changeLock;
+    int minLayer,maxLayer;
 }
 -(id)initWithAnalyzer:(GCodeAnalyzer*)a;
 -(void)printerStateChanged:(GCodeAnalyzer*)analyzer;
 -(void)positionChanged:(GCodeAnalyzer*)analyzer;
+-(void) positionChangedFastX:(float)x y:(float)y z:(float)z e:(float)e;
 -(void)reduce;
 -(void)stats;
 -(void)addGCode:(GCode*) g;
 -(void)parseText:(NSString*)text clear:(BOOL)clear;
 -(void)parseTextArray:(NSArray*)text clear:(BOOL)clear;
+-(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear;
 -(void)setColor:(float)dist;
 -(void)computeColor:(float) dist;
 -(void)drawSegment:(GCodePath*)path;

@@ -90,6 +90,8 @@
 @property (retain)NSColor *linesTextBrush;
 
 -(void)setupColor;
+-(void)updateLayer;
+-(void)triggerViewUpdate;
 -(id)initWithFrame:(NSRect)frameRect;
 -(BOOL)loadFile:(NSString*)path;
 -(void)scrollBottom;

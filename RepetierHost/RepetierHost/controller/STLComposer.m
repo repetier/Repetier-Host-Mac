@@ -43,7 +43,7 @@ STLComposer *stlComposer=nil;
             [self updateView];
             openPanel = [[NSOpenPanel openPanel] retain];
             [openPanel setCanChooseDirectories:YES];
-            [openPanel setAllowsMultipleSelection:NO];
+            [openPanel setAllowsMultipleSelection:YES];
             savePanel = [[NSSavePanel savePanel] retain];
             [view registerForDraggedTypes:[NSArray arrayWithObjects:
                                            NSURLPboardType, NSFilenamesPboardType, nil]];
@@ -168,6 +168,7 @@ STLComposer *stlComposer=nil;
     actSTL->rotation[0] = rotateX.doubleValue;
     actSTL->rotation[1] = rotateY.doubleValue;
     actSTL->rotation[2] = rotateZ.doubleValue;
+    [self updateSTLState:actSTL];
     [app->openGLView redraw];
 }
 - (IBAction)saveAsSTL:(NSButton *)sender {
@@ -188,15 +189,22 @@ STLComposer *stlComposer=nil;
 
 - (IBAction)centerObject:(NSButton *)sender {
     if(actSTL==nil) return;
-    [actSTL centerX:currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->depth/2];
+    for(STL *act in files) {
+        if(act->selected) {
+            [act centerX:currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->depth/2];
+            [self updateSTLState:act];
+        }
+    }
     [app->openGLView redraw];
     [self updateView];
 }
 
 - (IBAction)dropObject:(NSButton *)sender {
     for(STL *act in files) {
-        if(act->selected)
+        if(act->selected) {
             [act land];
+            [self updateSTLState:act];
+        }
     }
     [app->openGLView redraw];
     [self updateView];
@@ -208,7 +216,23 @@ STLComposer *stlComposer=nil;
     n[1] /= d;
     n[2] /= d;
 }
-
+-(void)updateSTLState:(STL*)stl
+{
+    [stl updateBoundingBox];
+    if (stl->xMin < 0 || stl->yMin < 0 || stl->zMin < -0.001 || stl->xMax > currentPrinterConfiguration->width ||
+        stl->yMax > currentPrinterConfiguration->depth || stl->zMax > currentPrinterConfiguration->height)
+    {
+        if(![stl hasAnimationWithName:@"pulse"]) {
+            PulseAnimation *panim = [[PulseAnimation alloc] initPulseAnimation:@"pulse" scaleX:0.05 scaleY:0.05 scaleZ:0.05 frequency:0.5];
+            [stl addAnimation:panim];
+            [panim release];
+        }
+    }
+    else
+    {
+        [stl removeAnimationWithName:@"pulse"];
+    }
+}
 -(void)saveSTLToFile:(NSString*)file {
     int32_t n = 0;
     for (STL *stl in files)
@@ -266,6 +290,7 @@ STLComposer *stlComposer=nil;
         [files addLast:stl];
         [panim release];
         [filesTable reloadData];
+        [self updateSTLState:stl];
         [app->stlHistory add:fname];
     } else {
         [rhlog addError:@"Couldn't import STL file. Invalid format?"];
@@ -309,8 +334,8 @@ STLComposer *stlComposer=nil;
     [openPanel beginSheetModalForWindow:app->mainWindow completionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton) {
             NSArray* urls = [openPanel URLs];
-            if(urls.count>0) {
-                [self loadSTLFile:[[urls objectAtIndex:0] path]];
+            for(NSURL *url in urls) {
+                [self loadSTLFile:[url path]];
             }
         }        
     }];
@@ -352,6 +377,7 @@ STLComposer *stlComposer=nil;
         if(!act->selected) continue;
         act->position[0]+=p->x;
         act->position[1]+=p->y;
+        [self updateSTLState:act];
     }
     [app->openGLView redraw];
     [self updateView];

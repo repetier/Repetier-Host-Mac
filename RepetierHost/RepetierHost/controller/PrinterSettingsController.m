@@ -24,6 +24,7 @@
 #import "GCodeEditorController.h"
 #import "RHOpenGLView.h"
 #import "RHManualControl.h"
+#import "PrinterConnection.h"
 
 @implementation PrinterSettingsController
 
@@ -226,13 +227,18 @@
 - (void)didRemovePorts:(NSNotification *)theNotification
 {
     NSString *act = [portPopup title];
+    BOOL hasAct = NO;
     [portPopup removeAllItems];
     [portPopup addItemWithTitle:@"Virtual printer"];
     for (AMSerialPort* aPort in [[AMSerialPortList sharedPortList] serialPorts]) {
 		// print port name
 		[portPopup addItemWithTitle:[aPort name]];
+        if(act!=nil && [act compare:[aPort name]]==NSOrderedSame)
+            hasAct = YES;
 	}    
     [portPopup setTitle:act];
+    if(connection->connected && !hasAct) 
+        [connection close];
 }
 
 - (IBAction)selectorChanged:(id)sender {

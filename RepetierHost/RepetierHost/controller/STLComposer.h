@@ -42,6 +42,7 @@
     RHLinkedList *files;
     STL *actSTL;
 }
+-(void)updateSTLState:(STL*)stl;
 -(void)objectMoved:(id)omove;
 -(void)objectSelected:(id)obj;
 - (IBAction)saveAsSTL:(NSButton *)sender;

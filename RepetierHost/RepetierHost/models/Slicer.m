@@ -142,7 +142,7 @@
         }
         postprocess = [[RHTask alloc] initProgram:prg args:arr logPrefix:@"<postproc> "];
     } else {
-        [app->gcodeView loadGCode:file];
+        [app->gcodeView loadGCodeGCode:file];
         [app->rightTabView selectTabViewItem:app->gcodeTab];        
     }
 }
@@ -150,7 +150,7 @@
     RHTask *t = event.object;
     if(t==postprocess) {
         if(postprocess.finishedSuccessfull) {
-            [app->gcodeView loadGCode:postprocessOut];
+            [app->gcodeView loadGCodeGCode:postprocessOut];
             [app->rightTabView selectTabViewItem:app->gcodeTab];        
         } else {
             [app showWarning:@"Postprocessing exited with error!" headline:@"Slicing failed"];

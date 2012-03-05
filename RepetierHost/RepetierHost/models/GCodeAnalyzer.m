@@ -39,6 +39,7 @@
         eRelative = NO;
         debugLevel = 6;
         lastline = 0;
+        layer=0;
         hasXHome = hasYHome = hasZHome = NO;
         privateAnalyzer = NO;
         tempMonitor = -1;
@@ -57,6 +58,7 @@
     activeExtruder = 0;
     extruderTemp = 0;
     bedTemp = 0;
+    layer = 0;
     fanOn = NO;
     powerOn = YES;
     drawing = YES;
@@ -73,6 +75,7 @@
 }
 -(void) analyze:(GCode*) code
 {
+    isG1Move = false;
     if (code->hostCommand)
     {
         NSString *hc = code.hostCommand;
@@ -99,6 +102,7 @@
         {
             case 0:
             case 1:
+                isG1Move = YES;
                 if (relative)
                 {
                     if(code.hasX) x += code.getX;
@@ -224,6 +228,122 @@
     {
         activeExtruder = code.getT;
     }
+}
+-(void) analyzeShort:(GCodeShort*) code
+{
+    isG1Move = NO;
+    switch (code.compressedCommand)
+    {
+        case 1:
+            isG1Move = YES;
+            if (relative) {
+                if(code.hasX) {
+                    x += code->x;
+                    //if (x < 0) { x = 0; hasXHome = NO; }
+                    //if (x > printerWidth) { hasXHome = NO; }
+                }
+                if(code.hasY) {
+                    y += code->y;
+                    //if (y < 0) { y = 0; hasYHome = NO; }
+                    //if (y > printerDepth) { hasYHome = NO; }
+                }
+                if(code.hasZ) {
+                    if(code->z!=0) layer++;
+                    z += code->z;
+                    //if (z < 0) { z = 0; hasZHome = NO; }
+                    //if (z > printerHeight) { hasZHome = NO; }
+                }
+                if(code.hasE) {
+                    e += code->e;
+                    if (e > emax) emax = e;
+                }
+            } else {
+                if (code->x!=-99999) {
+                    x = xOffset+code->x;
+                    //if (x < 0) { x = 0; hasXHome = NO; }
+                    //if (x > printerWidth) { hasXHome = NO; }
+                }
+                if (code->y!=-99999) {
+                    y = yOffset+code->y;
+                    //if (y < 0) { y = 0; hasYHome = NO; }
+                    //if (y > printerDepth) { hasYHome = NO; }
+                }
+                if (code->z!=-99999) {
+                    float lastz = z;
+                    z = zOffset+code->z;
+                    if(z!=lastz) layer++;
+                    //if (z < 0) { z = 0; hasZHome = NO; }
+                    //if (z > printerHeight) { hasZHome = NO; }
+                }
+                if (code->e!=-99999) {
+                    if (eRelative)
+                        e += code->e;
+                    else
+                        e = eOffset + code->e;
+                    if (e > emax) emax = e;
+                }
+            }
+            [delegate positionChangedFastX:x y:y z:z e:e];
+            break;
+        case 4:
+            {
+                bool homeAll = !(code.hasX || code.hasY || code.hasZ);
+                if (code.hasX || homeAll) { xOffset = 0; x = 0; hasXHome = YES; }
+                if (code.hasY || homeAll) { yOffset = 0; y = 0; hasYHome = YES; }
+                if (code.hasZ || homeAll) { zOffset = 0; z = 0; hasZHome = YES; }
+                if (code.hasE) { eOffset = 0; e = 0; emax = 0; }
+                // [delegate positionChangedFastX:x y:y z:z e:e];
+            }
+            break;
+        case 5:
+            {
+                bool homeAll = !(code.hasX || code.hasY || code.hasZ);
+                if (code.hasX || homeAll) { xOffset = 0; x = currentPrinterConfiguration->width; hasXHome = YES; }
+                if (code.hasY || homeAll) { yOffset = 0; y = currentPrinterConfiguration->depth; hasYHome = YES; }
+                if (code.hasZ || homeAll) { zOffset = 0; z = currentPrinterConfiguration->height; hasZHome = YES; }
+                //[delegate positionChangedFastX:x y:y z:z e:e];
+            }
+            break;
+        case 6:
+            relative = false;
+            break;
+        case 7:
+            relative = true;
+            break;
+        case 8:
+            if (code.hasX) { xOffset = x-code->x; x = xOffset; }
+            if (code.hasY) { yOffset = y-code->y; y = yOffset; }
+            if (code.hasZ) { zOffset = z-code->z; z = zOffset; }
+            if (code.hasE) { eOffset = e-code->e; e = eOffset; }
+            break;
+        case 12: // Host command
+            {
+                NSString *hc = code->text;
+                if ([hc compare:@"@hide"]==NSOrderedSame)
+                    drawing = NO;
+                else if ([hc compare:@"@show"]==NSOrderedSame)
+                    drawing = YES;
+                else if ([hc compare:@"@isathome"]==NSOrderedSame)
+                {
+                    hasXHome = hasYHome = hasZHome = YES;
+                    x = xOffset = 0;
+                    y = yOffset = 0;
+                    z = zOffset = 0;
+                } 
+            }
+            break;
+        case 9:
+            eRelative = NO;
+            break;
+        case 10:
+            eRelative = YES;
+            break;
+        case 11:
+            activeExtruder = code.tool;
+            break;
+    }
+    [code setLayer:layer];
+    [code setTool:activeExtruder];
 }
 
 

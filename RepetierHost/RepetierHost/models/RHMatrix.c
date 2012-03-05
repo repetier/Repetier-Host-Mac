@@ -79,9 +79,10 @@ void matrix4MulVecf(float *mat,float *v,float *out) {
     out[3] = mat[3]*v[0]+mat[7]*v[1]+mat[11]*v[2]+mat[15]*v[3];
 }
 void matrix4MulVecRes3f(float *mat,float *v,float *out) {
-    out[0] = mat[0]*v[0]+mat[4]*v[1]+mat[8]*v[2]+mat[12]*v[3];
-    out[1] = mat[1]*v[0]+mat[5]*v[1]+mat[9]*v[2]+mat[13]*v[3];
-    out[2] = mat[2]*v[0]+mat[6]*v[1]+mat[10]*v[2]+mat[14]*v[3];
+    float s = mat[3]*v[0]+mat[7]*v[1]+mat[11]*v[2]+mat[15]*v[3];
+    out[0] = (mat[0]*v[0]+mat[4]*v[1]+mat[8]*v[2]+mat[12]*v[3])/s;
+    out[1] = (mat[1]*v[0]+mat[5]*v[1]+mat[9]*v[2]+mat[13]*v[3])/s;
+    out[2] = (mat[2]*v[0]+mat[6]*v[1]+mat[10]*v[2]+mat[14]*v[3])/s;
 }
 float vector4Dotf(float *a,float *b) {
     return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];

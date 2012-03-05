@@ -18,6 +18,7 @@
 #import "RHLogger.h"
 #import "PrinterConnection.h"
 #import "ThreadedNotification.h"
+#import "GCodeShort.h"
 
 @implementation PrintTime
 
@@ -133,6 +134,20 @@
         }
         [gcode release];
     }
+}
+-(void)pushShortArray:(NSArray*)codes {
+    for (GCodeShort *code in codes)
+    {
+        NSString *line = code->text;
+        if (line.length == 0) continue;
+        GCode *gcode = [[GCode alloc] initFromString:line];
+        if (!gcode->comment)
+        {
+            [jobList addLast:gcode];
+            totalLines++;
+        }
+        [gcode release];
+    }    
 }
 /// <summary>
 /// Check, if more data is stored

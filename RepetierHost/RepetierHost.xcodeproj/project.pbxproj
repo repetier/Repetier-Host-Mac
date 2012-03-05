@@ -20,6 +20,7 @@
 		FD1E24261497A612008AF30C /* RHOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E24251497A612008AF30C /* RHOpenGLView.m */; };
 		FD1E24281497ABD2008AF30C /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD1E24271497ABD2008AF30C /* GLUT.framework */; };
 		FD1E242B1497B7D4008AF30C /* ThreeDConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E242A1497B7D4008AF30C /* ThreeDConfig.m */; };
+		FD22AFC41501822D009BE821 /* GCodeShort.m in Sources */ = {isa = PBXBuildFile; fileRef = FD22AFC31501822D009BE821 /* GCodeShort.m */; };
 		FD283A7E14E6B55000597203 /* fronview.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7914E6B55000597203 /* fronview.png */; };
 		FD283A7F14E6B55000597203 /* move.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7A14E6B55000597203 /* move.png */; };
 		FD283A8014E6B55000597203 /* topview.png in Resources */ = {isa = PBXBuildFile; fileRef = FD283A7B14E6B55000597203 /* topview.png */; };
@@ -142,6 +143,8 @@
 		FD1E24271497ABD2008AF30C /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = SDKs/MacOSX10.6.sdk/System/Library/Frameworks/GLUT.framework; sourceTree = DEVELOPER_DIR; };
 		FD1E24291497B7D4008AF30C /* ThreeDConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDConfig.h; sourceTree = "<group>"; };
 		FD1E242A1497B7D4008AF30C /* ThreeDConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDConfig.m; sourceTree = "<group>"; };
+		FD22AFC21501822D009BE821 /* GCodeShort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeShort.h; sourceTree = "<group>"; };
+		FD22AFC31501822D009BE821 /* GCodeShort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeShort.m; sourceTree = "<group>"; };
 		FD283A7914E6B55000597203 /* fronview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fronview.png; sourceTree = "<group>"; };
 		FD283A7A14E6B55000597203 /* move.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = move.png; sourceTree = "<group>"; };
 		FD283A7B14E6B55000597203 /* topview.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = topview.png; sourceTree = "<group>"; };
@@ -481,6 +484,8 @@
 				FDEDF815148A879800E6CFF1 /* PrinterConnection.m */,
 				FD1719D1148E83540023E262 /* GCode.h */,
 				FD1719D2148E83540023E262 /* GCode.m */,
+				FD22AFC21501822D009BE821 /* GCodeShort.h */,
+				FD22AFC31501822D009BE821 /* GCodeShort.m */,
 				FD1719D4148EA3040023E262 /* GCodeAnalyzer.h */,
 				FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */,
 				FD1719D7148EAD850023E262 /* RHPrintjob.h */,
@@ -788,6 +793,7 @@
 				FD283A9114EABBBA00597203 /* SDCardManager.m in Sources */,
 				FD283A9414EAC4ED00597203 /* FlippedNSView.m in Sources */,
 				FD283A9B14EFB10D00597203 /* HistoryTextField.m in Sources */,
+				FD22AFC41501822D009BE821 /* GCodeShort.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
