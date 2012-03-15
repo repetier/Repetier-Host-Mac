@@ -152,6 +152,7 @@
     codeVisual = [event.object retain];
     [codePreview->models addLast:codeVisual];
     [openGLView redraw];
+    gcodeView->editor->nextView = nil;
 }
 -(void)firmwareDetected:(NSNotification*)event {
     [firmwareLabel setStringValue:[event object]];
@@ -170,7 +171,9 @@
     
     return YES;
 }
-
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+    [stlComposer recheckChangedFiles];
+}
 - (IBAction)toolConnect:(id)sender {
     if(connection->connected)
         [connection close];

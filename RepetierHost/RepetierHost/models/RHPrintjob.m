@@ -75,6 +75,7 @@
     totalLines = 0;
     linesSend = 0;
     mode = 1;
+    maxLayer = 0;
     [ThreadedNotification notifyASAP:@"RHJobChanged" object:self];
 }
 -(void) endJob
@@ -147,6 +148,8 @@
             totalLines++;
         }
         [gcode release];
+        if(code.hasLayer)
+            maxLayer = code.layer;
     }    
 }
 /// <summary>

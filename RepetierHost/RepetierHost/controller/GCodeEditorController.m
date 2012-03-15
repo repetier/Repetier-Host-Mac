@@ -48,6 +48,8 @@
         [editor registerScrollView:scrollView];
         [self setContent:1 text:currentPrinterConfiguration->startCode];
         [self setContent:2 text:currentPrinterConfiguration->endCode];
+        [firstLayerSlider setAltIncrementValue:1];
+        [lastLayerSlider setAltIncrementValue:1];
     }
     return self;
 }
@@ -63,26 +65,28 @@
     return showMinLayer;
 }
 -(void)setShowMinLayer:(int)lay {
-    showMinLayer = MIN(maxLayer,lay);
+    int old = showMinLayer;
+    showMinLayer = MAX(0,MIN(maxLayer,lay));
     if(showMinLayer>showMaxLayer || (showMode==1 && showMinLayer!=showMaxLayer)) {
         triggerUpdate = NO;
         [self setShowMaxLayer:showMinLayer];
         triggerUpdate = YES;
     }
-    if(triggerUpdate)
+    if(showMode>0 && triggerUpdate && old!=showMinLayer)
         [editor triggerViewUpdate];
 }
 -(int)showMaxLayer {
     return showMaxLayer;
 }
 -(void)setShowMaxLayer:(int)lay {
-    showMaxLayer = MIN(maxLayer,lay);
+    int old = showMaxLayer;
+    showMaxLayer = MAX(0,MIN(maxLayer,lay));
     if(showMaxLayer<showMinLayer || (showMode==1 && showMinLayer!=showMaxLayer)) {
         triggerUpdate = NO;
         [self setShowMinLayer:showMaxLayer];
         triggerUpdate = YES;
     }
-    if(triggerUpdate)
+    if(showMode>0 && triggerUpdate && old!=showMaxLayer)
         [editor triggerViewUpdate];
 }
 -(int)showMode {

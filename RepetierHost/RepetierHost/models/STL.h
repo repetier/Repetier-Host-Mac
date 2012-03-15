@@ -34,6 +34,8 @@
     @public
     RHLinkedList *list;
     NSString *name;
+    NSString *filename;
+    NSTimeInterval lastModified;
     float xMin, yMin, zMin, xMax, yMax, zMax;
     float trans[16];
     GLfloat *points;
@@ -47,8 +49,10 @@
 }
 @property (retain)NSString* name;
 @property (retain)NSString* error;
+@property (retain)NSString* filename;
 
 -(BOOL)load:(NSString*)file;
+-(BOOL)changedOnDisk;
 -(void)land;
 -(void)centerX:(float) x y:(float) y;
 -(void)updateMatrix;
@@ -58,5 +62,6 @@
 -(void)paint;
 -(void)loadText:(NSData*)file;
 -(void)extractVector:(GLfloat*)res from:(NSString*)s;
-
+-(STL*)copySTL;
+-(void)reload;
 @end

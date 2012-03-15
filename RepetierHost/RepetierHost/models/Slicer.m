@@ -421,9 +421,16 @@
         [arr addObject:@"no-extrusion"];
     else 
         [arr addObject:@"reprap"];
-    [arr addObject:@"--fisrt-layer-temperature"];
+    [arr addObject:@"--first-layer-temperature"];
     [arr addObject:[s getString:@"firstLayerTemperature"]];
-    
+    [arr addObject:@"--bed-temperature"];
+    [arr addObject:[s getString:@"bedtemperature"]];
+    [arr addObject:@"--first-layer-bed-temperature"];
+    [arr addObject:[s getString:@"firstLayerBedTemperature"]];
+    if ([s getBool:@"keepFanAlwaysOn"])
+    {
+        [arr addObject:@"--fan-always-on"];
+    }
     [arr addObject:@"--start-gcode"];
     [arr addObject:emptyPath];
     [arr addObject:@"--end-gcode"];

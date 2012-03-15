@@ -59,6 +59,7 @@
 
 @synthesize name;
 @synthesize error;
+@synthesize filename;
 
 -(id)init {
     if((self = [super init])) {
@@ -74,6 +75,7 @@
 }
 
 -(void)dealloc {
+    self.filename = nil;
     if(error!=nil)
         [error release];
     if(points!=nil) free(points);
@@ -87,7 +89,61 @@
     }
     [super dealloc];
 }
+-(STL*)copySTL {
+    STL *stl = [STL new];
+    stl.filename = filename;
+    stl.name = name;
+    stl->lastModified = lastModified;
+    stl->list = [list retain];
+    stl->position[0] = position[0];
+    stl->position[1] = position[1]+5+yMax-yMin;
+    stl->position[2] = position[2];
+    stl->scale[0] = scale[0];
+    stl->scale[1] = scale[1];
+    stl->scale[2] = scale[2];
+    stl->rotation[0] = rotation[0];
+    stl->rotation[1] = rotation[1];
+    stl->rotation[2] = rotation[2];
+    stl->selected = YES;
+    [stl updateBoundingBox];
+    return [stl retain];
+}
+-(BOOL)changedOnDisk {
+    NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil];
+    NSDate* lastModified2 = [dict objectForKey:NSFileModificationDate] ;
+    if(lastModified2==nil) return NO; // Deleted
+    return lastModified != lastModified2.timeIntervalSince1970;    
+}
+-(void)resetModifiedDate {
+    NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil];
+    NSDate* lastModified2 = [dict objectForKey:NSFileModificationDate] ;
+    if(lastModified2==nil) return; // Deleted
+    lastModified = lastModified2.timeIntervalSince1970;
+}
+-(void)reload {
+    if(error!=nil)
+        [error release];
+    if(points!=nil) free(points);
+    if(normals!=nil) free(normals);
+    if(triangles!=nil) free(triangles);
+    if(edges!=nil) free(edges);
+    if(list!=nil) [list release];
+    if(bufs!=nil) {
+        glDeleteBuffers(4, bufs);
+        free(bufs);
+    }
+    points = normals = nil;
+    edges = nil;
+    triangles = nil;
+    bufs = nil;
+    [self load:filename];
+    [self land];
+}
 -(BOOL)load:(NSString*)file {
+    self.filename = file;
+    NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
+    NSDate* lastModified2 = [dict objectForKey:NSFileModificationDate] ;
+    lastModified = lastModified2.timeIntervalSince1970;
     //double starttime = CFAbsoluteTimeGetCurrent();
     list = [RHLinkedList new];
     NSData *data = [NSData dataWithContentsOfFile:file];
@@ -154,9 +210,9 @@
     float transl[16],scalem[16],rotx[16],roty[16],rotz[16];
     matrix4Translatef(transl, position[0], position[1],position[2]);
     matrix4Scalef(scalem,scale[0],scale[1],scale[2]);
-    matrix4RotateXf(rotx, rotation[0]*(float)M_PI/180.0);
-    matrix4RotateYf(roty, rotation[1]*(float)M_PI/180.0);
-    matrix4RotateZf(rotz, rotation[2]*(float)M_PI/180.0);
+    matrix4RotateXf(rotx, -rotation[0]*(float)M_PI/180.0);
+    matrix4RotateYf(roty, -rotation[1]*(float)M_PI/180.0);
+    matrix4RotateZf(rotz, -rotation[2]*(float)M_PI/180.0);
     /*
     matrix4MulMatf(trans,scalem,rotx);
     matrix4MulMatf(scalem,trans,roty);

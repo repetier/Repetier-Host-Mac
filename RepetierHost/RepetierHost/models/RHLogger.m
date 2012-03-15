@@ -49,6 +49,8 @@ NSDateFormatter *logDateFormatter = nil;
     if (p==0) return YES;
     p = [message rangeOfString:@"T:"].location;
     if (p!=NSNotFound && (p==0 || [message characterAtIndex:p-1]==' ')) return YES;
+    p = [message rangeOfString:@"MTEMP:"].location;
+    if (p!=NSNotFound && (p==0 || [message characterAtIndex:p-1]==' ')) return YES;
     if ([message rangeOfString:@"SD printing byte"].location!=NSNotFound) return YES;
     if ([message rangeOfString:@"Not SD printing"].location!=NSNotFound) return YES;
     return NO;
@@ -107,7 +109,7 @@ NSDateFormatter *logDateFormatter = nil;
             if(sendButton.state==0) return NO;
             break;
         case RHLogError:
-            if(sendButton.state==0) return NO;
+            if(errorsButton.state==0) return NO;
             break;
         default:
             break;
@@ -149,6 +151,9 @@ NSDateFormatter *logDateFormatter = nil;
 }
 -(void)addInfo:(NSString*)aText {
     [self add:aText level:RHLogInfo];
+}
+-(void)addPrg:(NSString*)aText {
+    [self add:aText level:RHLogPrg];
 }
 -(void)addWarning:(NSString*)aText {
     [self add:aText level:RHLogWarning];

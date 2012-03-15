@@ -52,7 +52,8 @@
             @"extrusionWidth",@"bridgeFlowRatio",@"fillPattern",@"solidFillPattern",@"comments",
             @"coolBridgeFanSpeed",@"coolDisplayLayer",@"coolEnableBelow",@"coolMaxFanSpeed",@"coolMinFanSpeed",
             @"coolMinPrintSpeed",@"coolSlowDownBelow",@"coolEnable",@"generateSupportMaterial",
-            @"GCodeFlavor",@"supportMaterialTool",@"firstLayerTemperature",nil];
+            @"GCodeFlavor",@"supportMaterialTool",@"firstLayerTemperature",
+            @"keepFanAlwaysOn",@"bedtemperature",@"firstLayerBedTemperature",nil];
     
 }
 -(void)toCurrent {
@@ -264,5 +265,13 @@
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     return ((Slic3rSettings*)[configs objectAtIndex:(int)rowIndex])->name;
 }
-
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    return NO;
+}
+- (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {
+    Slic3rSettings *set = [configs objectAtIndex:rowIndex];
+    [set->name release];
+    set->name = [anObject retain];
+    [self updateConfig];
+}
 @end

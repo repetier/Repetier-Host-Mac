@@ -574,6 +574,8 @@
     colbufSize = 0;
     if (startOnClear)
         [ana start];
+    else
+        ana->layer = 0;
     [changeLock unlock];
 }
 -(void) printerStateChanged:(GCodeAnalyzer*)analyzer {}

@@ -1,3 +1,4 @@
+
 /*
  Copyright 2011 repetier repetierdev@googlemail.com
  
@@ -24,10 +25,13 @@
 #import "RHOpenGLView.h"
 #import "Slicer.h"
 #import "RHLogger.h"
+#import "RectPacker.h"
 
 STLComposer *stlComposer=nil;
 
 @implementation STLComposer
+
+@synthesize autoplaceCopies;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -47,6 +51,9 @@ STLComposer *stlComposer=nil;
             savePanel = [[NSSavePanel savePanel] retain];
             [view registerForDraggedTypes:[NSArray arrayWithObjects:
                                            NSURLPboardType, NSFilenamesPboardType, nil]];
+            autosizeFailed = NO;
+            self.autoplaceCopies = YES;
+            self.numberOfCopies = 1;
         }
     }
     stlComposer = self;
@@ -62,7 +69,13 @@ STLComposer *stlComposer=nil;
 {
     // Drawing code here.
 }
-
+-(void)setNumberOfCopies:(int)_numberOfCopies {
+    if(_numberOfCopies>0 && _numberOfCopies<100)
+        numberOfCopies = _numberOfCopies;
+}
+-(int)numberOfCopies {
+    return numberOfCopies;
+}
 -(void)objectSelected:(NSNotification*)obj {
     int idx = 0;
     for(STL *stl in files) {
@@ -88,9 +101,11 @@ STLComposer *stlComposer=nil;
     NSIndexSet *set = [filesTable selectedRowIndexes];
     NSInteger idx = [filesTable selectedRow];
     int cnt = (int)set.count;
+    [autoplaceButton setEnabled:files->count>0];
     if(cnt!=1) { // Deselected
         [removeSTLfileButton setEnabled:cnt>0];
         [dropObjectButton setEnabled:cnt>0];
+        [multiplyButton setEnabled:cnt>0];
         [centerObjectButton setEnabled:NO];
         [translationX setEnabled:NO];
         [translationY setEnabled:NO];
@@ -109,6 +124,7 @@ STLComposer *stlComposer=nil;
             i++;
         }
     } else {
+        [multiplyButton setEnabled:YES];
         [removeSTLfileButton setEnabled:YES];
         [dropObjectButton setEnabled:YES];
         [centerObjectButton setEnabled:YES];
@@ -216,6 +232,51 @@ STLComposer *stlComposer=nil;
     n[1] /= d;
     n[2] /= d;
 }
+- (IBAction)copyMarked:(id)sender {
+    [NSApp endSheet:copyObjectsPanel];
+    [copyObjectsPanel orderOut:self];
+    for(STL *act in files) {
+        if(act->selected) {
+            STL *last = act;
+            for(int i=0;i<numberOfCopies;i++) {
+                STL *stl = [last copySTL];
+                last = stl;
+                [files addLast:stl];
+                [app->stlView->models addLast:stl];     
+            }
+        }
+    }
+    if(autoplaceCopies) {
+        [self autoplace];
+    }
+    [filesTable reloadData];
+    [self updateView];
+}
+
+- (IBAction)cancelCopyMarked:(id)sender {
+    [NSApp endSheet:copyObjectsPanel];
+    [copyObjectsPanel orderOut:self];
+}
+
+- (IBAction)reloadChangedFiles:(id)sender {
+    for(STL *stl in files) {
+        if(stl.changedOnDisk) 
+            [stl reload];
+    }
+    [NSApp endSheet:changedFilesPanel];
+    [changedFilesPanel orderOut:self];
+    [self updateView];
+}
+
+- (IBAction)cancelChangedFiles:(id)sender {
+    for(STL *stl in files) {
+        if(stl.changedOnDisk) 
+            [stl reload];
+    }
+    [NSApp endSheet:changedFilesPanel];
+    [changedFilesPanel orderOut:self];
+}
+
 -(void)updateSTLState:(STL*)stl
 {
     [stl updateBoundingBox];
@@ -278,6 +339,21 @@ STLComposer *stlComposer=nil;
     }
     fclose(f); 
 }
+
+- (IBAction)autoplaceAction:(id)sender {
+    [self autoplace];
+}
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo {
+    
+}
+- (IBAction)multiplyAction:(id)sender {
+    [NSApp beginSheet: copyObjectsPanel
+       modalForWindow: app->mainWindow
+        modalDelegate: self
+       didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:)
+          contextInfo: nil];
+}
 -(void)loadSTLFile:(NSString*)fname {
     STL *stl = [STL new];
     if([stl load:fname]) {
@@ -296,7 +372,7 @@ STLComposer *stlComposer=nil;
         [rhlog addError:@"Couldn't import STL file. Invalid format?"];
     }
     [stl release];
-    
+    [self updateView];
 }
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     NSPasteboard *pboard;
@@ -355,7 +431,9 @@ STLComposer *stlComposer=nil;
         }
     } while(found);
     [filesTable reloadData];
+    [filesTable deselectAll:nil];
     actSTL=nil;
+    autosizeFailed = NO;
     [self updateView];
     [app->openGLView redraw];
 }
@@ -385,6 +463,70 @@ STLComposer *stlComposer=nil;
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     [self updateView];
 }
+// Place the objects in a compact way
+-(void)autoplace {
+    if(autosizeFailed) return;
+    RectPacker *packer = [[RectPacker alloc] initWidth:1 height:1];
+    int border = 3;
+    float maxW = currentPrinterConfiguration->width;
+    float maxH = currentPrinterConfiguration->depth;
+    float xOff=0,yOff = 0;
+    if(currentPrinterConfiguration->hasDumpArea) {
+        if(currentPrinterConfiguration->dumpAreaFront<=0) {
+            yOff = currentPrinterConfiguration->dumpAreaDepth-currentPrinterConfiguration->dumpAreaFront;
+            maxH-= yOff;
+        } else if(currentPrinterConfiguration->dumpAreaDepth+currentPrinterConfiguration->dumpAreaFront>currentPrinterConfiguration->depth) {
+            yOff = currentPrinterConfiguration->depth-currentPrinterConfiguration->dumpAreaDepth;
+            maxH += yOff;
+        } else if(currentPrinterConfiguration->dumpAreaLeft<=0) {
+            xOff = currentPrinterConfiguration->dumpAreaWidth-currentPrinterConfiguration->dumpAreaLeft;
+            maxW-= xOff;
+        } else if(currentPrinterConfiguration->dumpAreaWidth+currentPrinterConfiguration->dumpAreaLeft>currentPrinterConfiguration->width) {
+            xOff = currentPrinterConfiguration->width-currentPrinterConfiguration->dumpAreaLeft;
+            maxW += xOff;
+        }
+    }
+    for(STL *stl in files) {
+        int w = 2*border+ceil(stl->xMax-stl->xMin);
+        int h = 2*border+ceil(stl->yMax-stl->yMin);
+        if(![packer addAtEmptySpotAutoGrow:[PackerRect rectWithX:0 y:0 w:w  h:h object:stl] maxWidth:(int)currentPrinterConfiguration->width maxHeight:currentPrinterConfiguration->depth]) {
+            autosizeFailed = YES;
+        }
+    }
+    if(autosizeFailed) {
+        [packer release];
+        [app showWarning:@"Too many objects on printer bed for automatic packing. Packing disabled until elements are removed." headline:@"Printer bed full"];
+        return;
+    }
+    float xAdd = (currentPrinterConfiguration->width-packer.w)/2.0;
+    float yAdd = (currentPrinterConfiguration->depth-packer.h)/2.0;
+    for(PackerRect *rect in packer->vRects) {
+        STL *s = rect->object;
+        float xPos = xOff+xAdd+rect->x+border;
+        float yPos = yOff+yAdd+rect->y+border;
+        s->position[0]+=xPos-s->xMin;
+        s->position[1]+=yPos-s->yMin;
+        [s updateBoundingBox];
+    }
+    [self updateView];
+    [packer release];
+}
+-(void)recheckChangedFiles {
+    BOOL changed = NO;
+    for(STL *stl in files) {
+        if(stl.changedOnDisk) {
+            changed = YES;
+            break;
+        }
+    }
+    if(changed) {
+        [NSApp beginSheet: changedFilesPanel
+           modalForWindow: app->mainWindow
+            modalDelegate: self
+           didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:)
+              contextInfo: nil];  
+    }
+}
 // NSTableViewDelegates
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     return files->count;
@@ -392,4 +534,8 @@ STLComposer *stlComposer=nil;
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     return ((STL*)[files objectAtIndex:(int)rowIndex])->name;
 }
+- (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    return NO;
+}
+
 @end

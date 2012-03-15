@@ -11,6 +11,7 @@
 		FD13BF7614C090620007E33D /* RHAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = FD13BF7514C090620007E33D /* RHAnimation.m */; };
 		FD13BF7914C174D40007E33D /* STLComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD13BF7814C174D40007E33D /* STLComposer.xib */; };
 		FD13BF7C14C1756D0007E33D /* STLComposer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD13BF7B14C1756D0007E33D /* STLComposer.m */; };
+		FD141AD5150E5E5D00D74E18 /* RectPacker.m in Sources */ = {isa = PBXBuildFile; fileRef = FD141AD4150E5E5D00D74E18 /* RectPacker.m */; };
 		FD1719CF148D35750023E262 /* RHLinkedList.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719CE148D35750023E262 /* RHLinkedList.m */; };
 		FD1719D3148E83540023E262 /* GCode.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D2148E83540023E262 /* GCode.m */; };
 		FD1719D6148EA3040023E262 /* GCodeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */; };
@@ -127,6 +128,8 @@
 		FD13BF7814C174D40007E33D /* STLComposer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STLComposer.xib; sourceTree = "<group>"; };
 		FD13BF7A14C1756D0007E33D /* STLComposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STLComposer.h; sourceTree = "<group>"; };
 		FD13BF7B14C1756D0007E33D /* STLComposer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STLComposer.m; sourceTree = "<group>"; };
+		FD141AD3150E5E5D00D74E18 /* RectPacker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RectPacker.h; sourceTree = "<group>"; };
+		FD141AD4150E5E5D00D74E18 /* RectPacker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RectPacker.m; sourceTree = "<group>"; };
 		FD1719CD148D35750023E262 /* RHLinkedList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHLinkedList.h; sourceTree = "<group>"; };
 		FD1719CE148D35750023E262 /* RHLinkedList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHLinkedList.m; sourceTree = "<group>"; };
 		FD1719D1148E83540023E262 /* GCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCode.h; sourceTree = "<group>"; };
@@ -622,6 +625,8 @@
 				FD92675814D71E3E005B31FF /* RHTask.m */,
 				FD28663A14DD8E1A0081750D /* RHFileHistory.h */,
 				FD28663B14DD8E1A0081750D /* RHFileHistory.m */,
+				FD141AD3150E5E5D00D74E18 /* RectPacker.h */,
+				FD141AD4150E5E5D00D74E18 /* RectPacker.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -794,6 +799,7 @@
 				FD283A9414EAC4ED00597203 /* FlippedNSView.m in Sources */,
 				FD283A9B14EFB10D00597203 /* HistoryTextField.m in Sources */,
 				FD22AFC41501822D009BE821 /* GCodeShort.m in Sources */,
+				FD141AD5150E5E5D00D74E18 /* RectPacker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -651,7 +651,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{196, 240}, {783, 467}}</string>
 				<int key="NSWTFlags">1685585920</int>
-				<string key="NSWindowTitle">Repetier-Host Mac 0.14 beta</string>
+				<string key="NSWindowTitle">Repetier-Host Mac 0.15 beta</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="903388398">
 					<object class="NSMutableString" key="NSToolbarIdentifier">
@@ -1055,7 +1055,6 @@
 															<string key="NSFrameSize">{402, 295}</string>
 															<reference key="NSSuperview" ref="884853086"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="465902623"/>
 															<string key="NSReuseIdentifierKey">_NS:608</string>
 															<object class="NSMutableArray" key="NSTabViewItems">
 																<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1154,7 +1153,6 @@
 															<string key="NSFrameSize">{369, 295}</string>
 															<reference key="NSSuperview" ref="871100352"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="985714336"/>
 															<int key="NSViewLayerContentsRedrawPolicy">2</int>
 															<string key="NSReuseIdentifierKey">_NS:608</string>
 															<object class="NSMutableArray" key="NSTabViewItems">
@@ -1693,7 +1691,6 @@ AADzUQABAAAAARbMY3VydgAAAAAAAAABAc0AAA</bytes>
 									<string key="NSFrame">{{692, 0}, {74, 17}}</string>
 									<reference key="NSSuperview" ref="126501988"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:3944</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSTextFieldCell" key="NSCell" id="779822539">
@@ -2466,6 +2463,14 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<reference key="destination" ref="290580787"/>
 					</object>
 					<int key="connectionID">1225</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="513744381"/>
+						<reference key="destination" ref="368578537"/>
+					</object>
+					<int key="connectionID">1411</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3484,11 +3489,11 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference ref="244499712"/>
 							<reference ref="433390449"/>
 							<reference ref="707704913"/>
-							<reference ref="914501208"/>
 							<reference ref="184755852"/>
 							<reference ref="744652856"/>
 							<reference ref="822601335"/>
 							<reference ref="988601881"/>
+							<reference ref="914501208"/>
 						</object>
 						<reference key="parent" ref="248635597"/>
 					</object>
@@ -5086,7 +5091,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">1408</int>
+			<int key="maxID">1411</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -6548,6 +6553,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>powerAction:</string>
 							<string>retractExtruderAction:</string>
 							<string>sendAction:</string>
+							<string>setHomeAction:</string>
 							<string>stopMotorAction:</string>
 							<string>xHomeAction:</string>
 							<string>xMoveAction:</string>
@@ -6575,6 +6581,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
+							<string>id</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSSegmentedControl</string>
@@ -6605,6 +6612,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>powerAction:</string>
 							<string>retractExtruderAction:</string>
 							<string>sendAction:</string>
+							<string>setHomeAction:</string>
 							<string>stopMotorAction:</string>
 							<string>xHomeAction:</string>
 							<string>xMoveAction:</string>
@@ -6684,6 +6692,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">setHomeAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">stopMotorAction:</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
@@ -6745,6 +6757,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>retractDistanceText</string>
 							<string>retractExtruderButton</string>
 							<string>sendButton</string>
+							<string>setHomeButton</string>
 							<string>stopMotorButton</string>
 							<string>view</string>
 							<string>xHomeButton</string>
@@ -6785,6 +6798,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
@@ -6832,6 +6846,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string>retractDistanceText</string>
 							<string>retractExtruderButton</string>
 							<string>sendButton</string>
+							<string>setHomeButton</string>
 							<string>stopMotorButton</string>
 							<string>view</string>
 							<string>xHomeButton</string>
@@ -6956,6 +6971,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">sendButton</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">setHomeButton</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">
@@ -7304,20 +7323,32 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>addSTLFile:</string>
+							<string>autoplaceAction:</string>
+							<string>cancelChangedFiles:</string>
+							<string>cancelCopyMarked:</string>
 							<string>centerObject:</string>
 							<string>changeLockAspect:</string>
+							<string>copyMarked:</string>
 							<string>dropObject:</string>
 							<string>generateGCode:</string>
+							<string>multiplyAction:</string>
+							<string>reloadChangedFiles:</string>
 							<string>removeSTLFile:</string>
 							<string>saveAsSTL:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
+							<string>id</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
+							<string>id</string>
+							<string>id</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 						</object>
@@ -7327,10 +7358,16 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>addSTLFile:</string>
+							<string>autoplaceAction:</string>
+							<string>cancelChangedFiles:</string>
+							<string>cancelCopyMarked:</string>
 							<string>centerObject:</string>
 							<string>changeLockAspect:</string>
+							<string>copyMarked:</string>
 							<string>dropObject:</string>
 							<string>generateGCode:</string>
+							<string>multiplyAction:</string>
+							<string>reloadChangedFiles:</string>
 							<string>removeSTLFile:</string>
 							<string>saveAsSTL:</string>
 						</object>
@@ -7338,6 +7375,18 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
 								<string key="name">addSTLFile:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">autoplaceAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">cancelChangedFiles:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">cancelCopyMarked:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
@@ -7349,12 +7398,24 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">copyMarked:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">dropObject:</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">generateGCode:</string>
 								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">multiplyAction:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">reloadChangedFiles:</string>
+								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">removeSTLFile:</string>
@@ -7370,11 +7431,15 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>autoplaceButton</string>
 							<string>centerObjectButton</string>
+							<string>changedFilesPanel</string>
+							<string>copyObjectsPanel</string>
 							<string>dropObjectButton</string>
 							<string>filesColumn</string>
 							<string>filesTable</string>
 							<string>lockAspect</string>
+							<string>multiplyButton</string>
 							<string>removeSTLfileButton</string>
 							<string>rotateX</string>
 							<string>rotateY</string>
@@ -7391,8 +7456,12 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSButton</string>
 							<string>NSButton</string>
+							<string>NSPanel</string>
+							<string>NSPanel</string>
+							<string>NSButton</string>
 							<string>NSTableColumn</string>
 							<string>NSTableView</string>
+							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSButton</string>
 							<string>NSTextField</string>
@@ -7411,11 +7480,15 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>autoplaceButton</string>
 							<string>centerObjectButton</string>
+							<string>changedFilesPanel</string>
+							<string>copyObjectsPanel</string>
 							<string>dropObjectButton</string>
 							<string>filesColumn</string>
 							<string>filesTable</string>
 							<string>lockAspect</string>
+							<string>multiplyButton</string>
 							<string>removeSTLfileButton</string>
 							<string>rotateX</string>
 							<string>rotateY</string>
@@ -7431,8 +7504,20 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBToOneOutletInfo">
+								<string key="name">autoplaceButton</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">centerObjectButton</string>
 								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">changedFilesPanel</string>
+								<string key="candidateClassName">NSPanel</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">copyObjectsPanel</string>
+								<string key="candidateClassName">NSPanel</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">dropObjectButton</string>
@@ -7448,6 +7533,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">lockAspect</string>
+								<string key="candidateClassName">NSButton</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">multiplyButton</string>
 								<string key="candidateClassName">NSButton</string>
 							</object>
 							<object class="IBToOneOutletInfo">

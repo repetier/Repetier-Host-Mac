@@ -23,8 +23,8 @@
 @interface ThreeDView : NSView
 {
     IBOutlet NSView *view;
-    IBOutlet RHOpenGLView *glView;
 @public    
+    IBOutlet RHOpenGLView *glView;
     ThreeDContainer *act;
     IBOutlet NSButton *rotateButton;
     IBOutlet NSButton *moveCameraButton;

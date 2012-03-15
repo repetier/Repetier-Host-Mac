@@ -68,6 +68,7 @@
     int numberExtruder;
     double extruderTemp;
     double bedTemp;
+    int extruderOutput;
     double x, y, z, e;
     int lastline;
     long lastReceived;

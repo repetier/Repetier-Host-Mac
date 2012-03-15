@@ -43,6 +43,7 @@
     IBOutlet NSButton *extruderExtrudeButton;
     IBOutlet NSButton *heatedBedOnButton;
     IBOutlet NSButton *heatedBedSetTempButton;
+    IBOutlet NSButton *setHomeButton;
     IBOutlet NSButton *fanOnButton;
     IBOutlet NSSlider *fanSpeedSlider;
     IBOutlet NSSlider *extruderLengthSlider;
@@ -90,6 +91,7 @@
 - (IBAction)fanOnAction:(NSButton *)sender;
 - (IBAction)fanSpeedChangedAction:(NSSlider *)sender;
 - (IBAction)retractExtruderAction:(NSButton *)sender;
+- (IBAction)setHomeAction:(id)sender;
 
 -(void)sendDebug;
 

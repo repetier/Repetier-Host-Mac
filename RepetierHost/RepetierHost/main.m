@@ -195,6 +195,9 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithInt:200] forKey:@"slic3r#Default#firstLayerTemperature"];
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#coolEnable"];
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#generateSupportMaterial"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#keepFanAlwaysOn"];
+    [d setObject:[NSNumber numberWithInt:0] forKey:@"slic3r#Default#bedtemperature"];
+    [d setObject:[NSNumber numberWithInt:0] forKey:@"slic3r#Default#firstLayerBedTemperature"];
     // Other data
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"extruder.Speed"];
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];

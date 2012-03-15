@@ -30,6 +30,7 @@
     int totalLines;
     int linesSend;
     BOOL exclusive;
+    int maxLayer;
     int mode; // 0 = no job defines, 1 = printing, 2 = finished, 3 = aborted
 }
 

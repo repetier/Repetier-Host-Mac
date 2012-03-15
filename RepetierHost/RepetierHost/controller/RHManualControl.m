@@ -48,7 +48,7 @@
 }
 - (void)timerTick:(NSTimer*)theTimer {
     if(connection->connected==NO) return;
-    if (connection->analyzer->x != -lastx)
+    if (connection->analyzer->x != lastx || lastx==0)
     {
         [xLabel setStringValue:[NSString stringWithFormat:@"X=%.2f",connection->analyzer->x]];
         if (connection->analyzer->hasXHome)
@@ -57,7 +57,7 @@
           [xLabel setTextColor:[NSColor redColor]];
         lastx = connection->analyzer->x;
     }
-    if (connection->analyzer->y != lasty)
+    if (connection->analyzer->y != lasty || lasty==0)
     {
         [yLabel setStringValue:[NSString stringWithFormat:@"Y=%.2f",connection->analyzer->y]];
         if (connection->analyzer->hasYHome)
@@ -66,7 +66,7 @@
             [yLabel setTextColor:[NSColor redColor]];
         lasty = connection->analyzer->y;
     }
-    if (connection->analyzer->z != lastz)
+    if (connection->analyzer->z != lastz || lastz==0)
     {
         [zLabel setStringValue:[NSString stringWithFormat:@"Z=%.2f",connection->analyzer->z]];
         if (connection->analyzer->hasZHome)
@@ -110,6 +110,7 @@
     [extrudeDistanceText setEnabled:c];
     [retractDistanceText setEnabled:c];
     [retractExtruderButton setEnabled:c];
+    [setHomeButton setEnabled:c];
 }
 - (void)connectionOpened:(NSNotification *)notification {
     [self updateConnectionStatus:YES];
@@ -383,6 +384,13 @@
     if (!wasrel) [connection injectManualCommand:@"G91"];
     [connection injectManualCommand:[NSString stringWithFormat:@"G1 E-%1.4f F%1f",[retractDistanceText doubleValue],[extruderSpeedText doubleValue]]];
     if (!wasrel) [connection injectManualCommand:@"G90"];
+    [connection returnInjectLock ];
+}
+
+- (IBAction)setHomeAction:(id)sender {
+    [connection getInjectLock];
+    [connection injectManualCommandFirst:@"G92 X0 Y0 Z0"];
+    [connection injectManualCommandFirst:@"@isathome"];
     [connection returnInjectLock ];
 }
 @end

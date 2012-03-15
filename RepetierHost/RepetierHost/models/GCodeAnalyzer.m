@@ -19,6 +19,8 @@
 #import "RHAppDelegate.h"
 #import "RHFileHistory.h"
 #import "ThreadedNotification.h"
+#import "PrinterConnection.h"
+#import "RHLogger.h"
 
 @implementation GCodeAnalyzer
 
@@ -107,14 +109,29 @@
                 {
                     if(code.hasX) x += code.getX;
                     if(code.hasY) y += code.getY;
-                    if(code.hasZ) z += code.getZ;
+                    if(code.hasZ) {
+                        layer++;
+                        z += code.getZ;
+                        if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
+                            [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
+                        }
+                    }
                     if(code.hasE) e += code.getE;
                 }
                 else
                 {
                     if (code.hasX) x = xOffset+code.getX;
                     if (code.hasY) y = yOffset+code.getY;
-                    if (code.hasZ) z = zOffset+code.getZ;
+                    if (code.hasZ) {
+                        float oldz = z;
+                        z = zOffset+code.getZ;
+                        if(z!=oldz) {
+                            layer++;
+                            if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
+                                [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
+                            }                            
+                        }
+                    }
                     if (code.hasE)
                     {
                         if (eRelative)

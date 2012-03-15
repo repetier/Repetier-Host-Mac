@@ -68,7 +68,7 @@
                 NSString *p = [s substringWithRange:NSMakeRange(0,range.location)];
                 p = [p stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 if(p.length>0)
-                    [rhlog addInfo:[logPrefix stringByAppendingString:p]];
+                    [rhlog addPrg:[logPrefix stringByAppendingString:p]];
                 [s deleteCharactersInRange:NSMakeRange(0,range.location+1)];
             }
         } while(range.location!=NSNotFound);

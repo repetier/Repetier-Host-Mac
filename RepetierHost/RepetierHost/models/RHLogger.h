@@ -24,7 +24,8 @@ typedef enum {
     RHLogError=2,
     RHLogInfo=3,
     RHLogResponse=4,
-    RHLogSend=5
+    RHLogSend=5,
+    RHLogPrg=6
 } RHLogType;
 @interface RHLogEntry : NSObject {
 @public
@@ -59,6 +60,7 @@ typedef enum {
 -(void)add:(NSString*)aText level:(RHLogType)aType;
 -(void)addText:(NSString*)aText;
 -(void)addInfo:(NSString*)aText;
+-(void)addPrg:(NSString*)aText;
 -(void)addWarning:(NSString*)aText;
 -(void)addError:(NSString*)aText;
 -(void)addSend:(NSString*)aText;

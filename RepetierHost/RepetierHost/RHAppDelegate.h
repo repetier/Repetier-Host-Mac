@@ -37,7 +37,7 @@
 @class RHTempertuareController;
 @class RHManualControl;
 
-@interface RHAppDelegate : NSObject <NSApplicationDelegate>
+@interface RHAppDelegate : NSObject <NSApplicationDelegate,NSWindowDelegate>
 {
     @public
     __unsafe_unretained NSToolbarItem *toolbarConnect;

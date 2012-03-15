@@ -37,11 +37,25 @@
     IBOutlet NSButton *centerObjectButton;
     IBOutlet NSButton *dropObjectButton;
     IBOutlet NSButton *removeSTLfileButton;
+    IBOutlet NSButton *autoplaceButton;
+    IBOutlet NSButton *multiplyButton;
     NSOpenPanel* openPanel;
     NSSavePanel* savePanel;
     RHLinkedList *files;
     STL *actSTL;
+    BOOL autosizeFailed;
+    int numberOfCopies;
+    BOOL autoplaceCopies;
+    IBOutlet NSPanel *copyObjectsPanel;
+    IBOutlet NSPanel *changedFilesPanel;
 }
+@property int numberOfCopies;
+@property BOOL autoplaceCopies;
+- (IBAction)copyMarked:(id)sender;
+- (IBAction)cancelCopyMarked:(id)sender;
+- (IBAction)reloadChangedFiles:(id)sender;
+- (IBAction)cancelChangedFiles:(id)sender;
+-(void)recheckChangedFiles;
 -(void)updateSTLState:(STL*)stl;
 -(void)objectMoved:(id)omove;
 -(void)objectSelected:(id)obj;
@@ -55,6 +69,9 @@
 -(void)loadSTLFile:(NSString*)fname;
 -(void)updateView;
 -(void)saveSTLToFile:(NSString*)file;
+- (IBAction)autoplaceAction:(id)sender;
+- (IBAction)multiplyAction:(id)sender;
+-(void)autoplace;
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification;
 // NSTableViewDelegate methods
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView;

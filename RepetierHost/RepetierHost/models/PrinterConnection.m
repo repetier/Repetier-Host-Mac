@@ -63,6 +63,7 @@
         virtualPrinter = [VirtualPrinter new];
         x = y = z = e = 0;
         extruderTemp = bedTemp = 0;
+        extruderOutput = -1;
         injectCommands = [RHLinkedList new];
         nackLines = [RHLinkedList new];
         read = [[NSMutableString stringWithCapacity:100] retain];
@@ -223,6 +224,7 @@
         comErrorsReceived = 0;
 		[rhlog add:@"Connection closed" level:RHLogInfo];
     }
+    extruderOutput = -1;
     [ThreadedNotification notifyNow:@"RHConnectionClosed" object:nil]; 
     [self firePrinterState:@"Idle"];
     [job updateJobButtons];
@@ -436,6 +438,10 @@
 {
     resendError++;
     errorsReceived++;
+    if(!config->pingPongMode && errorsReceived==3 && config->receiveCacheSize>63) {
+        config->receiveCacheSize = 63;
+        [rhlog addError:@"You are getting many communication errors. Perhaps your receive cache is is too large. Reduced size to 63 byte."];
+    }
     if (config->pingPongMode)
         readyForNextSend = YES;
     else  {
@@ -770,6 +776,12 @@
         level = RHLogText; // dont log, we see result in status
         extruderTemp = h.doubleValue;
         tempChange = true;
+        h = [self extract:res identifier:@"@:"];
+        if (h != nil)
+        {
+            extruderOutput = h.intValue;
+            if(isMarlin) extruderOutput*=2;
+        }
     }
     h = [self extract:res identifier:@"B:"];
     if (h != nil)
@@ -831,6 +843,8 @@
             [temperatureDelegate receivedTemperature:extruderTemp bed:bedTemp];
         [ThreadedNotification notifyASAP:@"RHTemperatureRead" object:nil];
         TempertureEntry *te = [[TempertureEntry alloc] initWithExtruder:extruderTemp bed:bedTemp targetBed:analyzer->bedTemp targetExtruder:analyzer->extruderTemp];
+        if(extruderOutput>0)
+            te->output = extruderOutput;
         [ThreadedNotification notifyASAP:@"RHTempMonitor" object:te];
         [te release];
     }

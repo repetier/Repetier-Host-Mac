@@ -197,7 +197,7 @@
     updateCode = nil;
     [updateViewThread release];
     updateViewThread = nil;
-    nextView = nil;
+    //nextView = nil; now done if displayed.
     //red = 1000*(CFAbsoluteTimeGetCurrent()-red);
     //start = 1000*(CFAbsoluteTimeGetCurrent()-start);    
     //NSLog(@"update finished red = %f total = %f",red,start);

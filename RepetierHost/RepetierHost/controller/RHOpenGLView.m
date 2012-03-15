@@ -16,12 +16,13 @@
 
 
 #import "RHOpenGLView.h"
-#include <OpenGL/gl.h>
-#include "ThreeDConfig.h"
-#include "RHLogger.h"
-#include "RHAppDelegate.h"
-#include "ThreeDModel.h"
-#include "ThreeDView.h"
+#import <OpenGL/gl.h>
+#import "ThreeDConfig.h"
+#import "RHLogger.h"
+#import "RHAppDelegate.h"
+#import "ThreeDModel.h"
+#import "ThreeDView.h"
+#import "GCodeEditorController.h"
 
 @implementation RHPoint
 
@@ -173,7 +174,6 @@
     }
     starttime = CFAbsoluteTimeGetCurrent()-starttime;
     [app->printFrames setStringValue:[NSString stringWithFormat:@"%d FPS",(int)(1/starttime)]];
-    //NSLog(@"Opengl paint finished");
 }
 -(void)glThreadLoop:(id)obj {
     if([glContext view]!=self)
@@ -386,6 +386,16 @@
     ThreeDContainer *c = topView->act;
     if (theEvent.deltaY != 0)
     {
+        NSInteger k = [NSEvent modifierFlags];
+        if(topView->act == app->codePreview) {
+            if(k==NSShiftKeyMask) {
+                [app->gcodeView setShowMinLayer:(app->gcodeView).showMinLayer-theEvent.deltaY];
+                return;
+            } else if(k==NSControlKeyMask) {
+                [app->gcodeView setShowMaxLayer:(app->gcodeView).showMaxLayer-theEvent.deltaY];
+                return;
+            }
+        }
         c->zoom *= 1 - theEvent.deltaY / 200;
         if (c->zoom < 0.01) c->zoom = 0.01;
         if (c->zoom > 5.9) c->zoom = 5.9;

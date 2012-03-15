@@ -159,6 +159,7 @@
                 fontBrush = errorBrush;
                 break;
             case RHLogInfo:
+            case RHLogPrg:
                 fontBrush = infoBrush;
                 break;
             default:

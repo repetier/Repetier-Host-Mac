@@ -47,7 +47,7 @@
         afterJobDisableExtruder = YES;
         afterJobDisableHeatedBed = YES;
         pingPongMode = NO;
-        receiveCacheSize = 120;
+        receiveCacheSize = 63;
         autocheckTemp = YES;
         dontLogM105 = YES;
         autocheckInterval = 1;
