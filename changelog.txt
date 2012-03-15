@@ -1,3 +1,12 @@
+Version 0.15 2012-03-15
+  Added auto place for objects.
+  Added copy for objects.
+  Reload stl files, if changed on disk.
+  Slic3r 0.7.1 now included.
+  Printing shows printing layer x of y.
+  Better handling of single layer preview. Switch selected layer with Shift/ctrl + mousewheel.
+  Some bug fixes.
+
 Version 0.14 2012-03-05
   G-Code editor now shows layer and tool of codeline.
   G-Code editor can preview all/single layer/layer range.
