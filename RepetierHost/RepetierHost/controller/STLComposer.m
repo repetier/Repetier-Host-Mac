@@ -242,7 +242,8 @@ STLComposer *stlComposer=nil;
                 STL *stl = [last copySTL];
                 last = stl;
                 [files addLast:stl];
-                [app->stlView->models addLast:stl];     
+                [app->stlView->models addLast:stl];
+                [stl release];
             }
         }
     }
@@ -271,7 +272,7 @@ STLComposer *stlComposer=nil;
 - (IBAction)cancelChangedFiles:(id)sender {
     for(STL *stl in files) {
         if(stl.changedOnDisk) 
-            [stl reload];
+            [stl resetModifiedDate];
     }
     [NSApp endSheet:changedFilesPanel];
     [changedFilesPanel orderOut:self];
@@ -476,7 +477,7 @@ STLComposer *stlComposer=nil;
             yOff = currentPrinterConfiguration->dumpAreaDepth-currentPrinterConfiguration->dumpAreaFront;
             maxH-= yOff;
         } else if(currentPrinterConfiguration->dumpAreaDepth+currentPrinterConfiguration->dumpAreaFront>currentPrinterConfiguration->depth) {
-            yOff = currentPrinterConfiguration->depth-currentPrinterConfiguration->dumpAreaDepth;
+            yOff = -(currentPrinterConfiguration->depth-currentPrinterConfiguration->dumpAreaFront);
             maxH += yOff;
         } else if(currentPrinterConfiguration->dumpAreaLeft<=0) {
             xOff = currentPrinterConfiguration->dumpAreaWidth-currentPrinterConfiguration->dumpAreaLeft;
@@ -487,9 +488,10 @@ STLComposer *stlComposer=nil;
         }
     }
     for(STL *stl in files) {
+        [stl land];
         int w = 2*border+ceil(stl->xMax-stl->xMin);
         int h = 2*border+ceil(stl->yMax-stl->yMin);
-        if(![packer addAtEmptySpotAutoGrow:[PackerRect rectWithX:0 y:0 w:w  h:h object:stl] maxWidth:(int)currentPrinterConfiguration->width maxHeight:currentPrinterConfiguration->depth]) {
+        if(![packer addAtEmptySpotAutoGrow:[PackerRect rectWithX:0 y:0 w:w  h:h object:stl] maxWidth:(int)maxW maxHeight:maxH]) {
             autosizeFailed = YES;
         }
     }

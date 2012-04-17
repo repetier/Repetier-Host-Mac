@@ -52,6 +52,7 @@
 @property (retain)NSString* filename;
 
 -(BOOL)load:(NSString*)file;
+-(void)resetModifiedDate;
 -(BOOL)changedOnDisk;
 -(void)land;
 -(void)centerX:(float) x y:(float) y;

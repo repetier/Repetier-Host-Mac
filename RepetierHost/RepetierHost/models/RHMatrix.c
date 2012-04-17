@@ -55,7 +55,7 @@ void matrix4RotateZf(float *mat,float rot) {
     mat[2] = mat[3] = mat[6] = mat[7] = mat[8] = mat[9] = mat[11] = 
     mat[12] = mat[13] = mat[14] = 0;
     mat[5] = mat[0] = (float)cos(rot);
-    mat[1] = -(mat[4] = (float)sin(rot));    
+    mat[4] = -(mat[1] = (float)sin(rot));    
 }
 void matrix4Scalef(float *mat,float sx,float sy,float sz) {
     mat[15] = 1;

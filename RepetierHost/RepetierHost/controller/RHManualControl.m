@@ -31,9 +31,14 @@
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(connectionOpened:) name:@"RHConnectionOpen" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(connectionClosed:) name:@"RHConnectionClosed" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(printerStateChanged:) name:@"RHPrinterStateChanged" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(fanspeedChanged:) name:@"Fanspeed" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(speedMultiplyChanged2:) name:@"SpeedMultiply" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(targetBedChanged:) name:@"TargetBed" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(targetExtrChanged:) name:@"TargetExtr0" object:nil];
             [self updateConnectionStatus:NO];
             [self scrollPoint:NSMakePoint(0,0)];
             lastx = lasty = lastz = -1000;
+            dontsend = FALSE;
             timer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                      target:self selector:@selector(timerTick:)
                                                 userInfo:nil repeats:YES];
@@ -111,6 +116,7 @@
     [retractDistanceText setEnabled:c];
     [retractExtruderButton setEnabled:c];
     [setHomeButton setEnabled:c];
+    [speedMultiplySlider setEnabled:c];
 }
 - (void)connectionOpened:(NSNotification *)notification {
     [self updateConnectionStatus:YES];
@@ -118,6 +124,33 @@
 }
 - (void)connectionClosed:(NSNotification *)notification {
     [self updateConnectionStatus:NO];
+}
+- (void)fanspeedChanged:(NSNotification *)notification {
+    dontsend = TRUE;
+    [fanSpeedSlider setIntValue:[notification.object intValue]*100/255];
+    [self updatePrinterState];
+    dontsend = FALSE;
+}
+- (void)speedMultiplyChanged2:(NSNotification *)notification {
+    int tval = [notification.object intValue];
+    int nv = [speedMultiplySlider intValue];
+    if(nv!=tval) {
+        dontsend = TRUE;
+        connection->speedMultiply = tval;
+        [speedMultiplySlider setIntValue:tval];
+        [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",nv]];
+        dontsend = FALSE;
+    }
+}
+- (void)targetExtrChanged:(NSNotification *)notification {
+    dontsend = TRUE;
+    [self updatePrinterState];
+    dontsend = FALSE;
+}
+- (void)targetBedChanged:(NSNotification *)notification {
+    dontsend = TRUE;
+    [self updatePrinterState];
+    dontsend = FALSE;    
 }
 -(void)updatePrinterState {
     GCodeAnalyzer *a = connection->analyzer;
@@ -160,6 +193,16 @@
 
 - (IBAction)debugDryRunAction:(NSButton *)sender {
     [self sendDebug];
+}
+
+- (IBAction)speedMultiplyChanged:(id)sender {
+    if(dontsend) return;
+    int nv = [speedMultiplySlider intValue];
+    if(nv!=connection->speedMultiply) {
+        connection->speedMultiply = nv;
+        [connection injectManualCommand:[NSString stringWithFormat:@"M220 S%d",nv]];
+        [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",nv]];
+    }
 }
 
 - (IBAction)powerAction:(NSButton *)sender {
@@ -309,7 +352,7 @@
 }
 
 - (IBAction)heatOnAction:(NSButton *)sender {
-    if (connection->connected == false) return;
+    if (connection->connected == false || dontsend) return;
     //if (!createCommands) return;
     [connection getInjectLock];
     if (sender.state)
@@ -324,6 +367,7 @@
 }
 
 - (IBAction)extruderSetTempAction:(NSButton *)sender {
+    if(dontsend) return;
     [connection injectManualCommand:[NSString stringWithFormat:@"M104 S%d",(int)extruderTempText.intValue]];
 }
 
@@ -338,7 +382,7 @@
 }
 
 - (IBAction)heatedBedOnAction:(NSButton *)sender {
-    if (connection->connected == false) return;
+    if (connection->connected == false || dontsend) return;
     //if (!createCommands) return;
     [connection getInjectLock];
     if (sender.state)
@@ -353,11 +397,12 @@
 }
 
 - (IBAction)heatedBedSetTempAction:(NSButton *)sender {
+    if(dontsend) return;
     [connection injectManualCommand:[NSString stringWithFormat:@"M140 S%d",(int)heatedBedTempText.intValue]];
 }
 
 - (IBAction)fanOnAction:(NSButton *)sender {
-    if (connection->connected == false) return;   
+    if (connection->connected == false || dontsend) return;   
     //if (!createCommands) return;
     [connection getInjectLock];
     if (sender.state)

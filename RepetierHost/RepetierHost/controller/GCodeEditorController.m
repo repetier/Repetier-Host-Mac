@@ -142,8 +142,7 @@
         case 2:c = append;break;
         default:c = gcode;break;
     }
-    if (c == editor->cur) return editor.text;
-    return [StringUtil implode:c->textArray sep:@"\n"];
+    return [c text];
 }
 -(NSMutableArray*)getContentArray
 {

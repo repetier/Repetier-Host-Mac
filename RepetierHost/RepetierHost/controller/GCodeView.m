@@ -149,7 +149,7 @@
        // if(changedCounter==0 && contentChangedEvent!=null)
        //     contentChangedEvent();
     }
-    if(changedCounter==0 && mustUpdate && nextView==nil) {
+    if(updateCode==nil && changedCounter==0 && mustUpdate && nextView==nil) {
         mustUpdate = NO; 
         //[cur fromActive];        
         updateCode = [[controller getContentArray] retain];
@@ -242,7 +242,7 @@
         [s appendString:c->text];
         [s appendString:@"\n"];
     }
-    return s;
+    return [s autorelease];
 }
 -(void)setText:(NSString*)value {
     [cur clearUndo];
@@ -1200,6 +1200,14 @@
 {
     col = row = selCol = selRow = topRow = topCol = 0;
     hasSel = NO;
+}
+-(NSString*)text {
+    NSMutableString *s = [NSMutableString new];
+    for(GCodeShort *c in textArray) {
+        [s appendString:c->text];
+        [s appendString:@"\n"];
+    }
+    return [s autorelease];
 }
 -(void)setText:(NSString*)value {
     [self clearUndo];

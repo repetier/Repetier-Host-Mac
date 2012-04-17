@@ -156,6 +156,7 @@
 -(id)initWithEditor:(GCodeView*)ed;
 -(void)toActive;
 -(void)fromActive;
+-(NSString*)text;
 -(void)setText:(NSString*)value;
 -(void)resetPos;
 -(void)clearUndo;

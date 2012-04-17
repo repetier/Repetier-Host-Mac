@@ -97,6 +97,7 @@
     BOOL closeAfterM112;
     BOOL isRepetier; // Printer is running Repetier-Firmware
     BOOL isMarlin; // Printer is running Marlin firmware
+    int speedMultiply;
 }
 @property (retain) AMSerialPort *port;
 @property (retain) PrinterConfiguration *config;

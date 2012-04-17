@@ -59,6 +59,7 @@
         ignoreNextOk = NO;
         lastCommandSend = 0;
         lastProgress = -1000;
+        speedMultiply = 100;
         isVirtualActive = NO;
         virtualPrinter = [VirtualPrinter new];
         x = y = z = e = 0;
@@ -191,6 +192,9 @@
             [self injectManualCommand:@"M115"]; // Check firmware
             [self injectManualCommand:@"M105"]; // Read temperature
             [self injectManualCommand:@"M111 S6"]; // Read temperature
+            if(speedMultiply!=100) {
+                [self injectManualCommand:[NSString stringWithFormat:@"M220 S%d",speedMultiply]];    
+            }
             [self returnInjectLock ];
             [job updateJobButtons];
             [[NSNotificationQueue defaultQueue] enqueueNotification:notifyOpen postingStyle:NSPostNow];
@@ -669,7 +673,10 @@
         [analyzer analyze:gc];
         if(lastCommandSend-lastETA>1) {
             lastETA = lastCommandSend;
-            [self firePrinterState:[@"Printing...ETA " stringByAppendingString:job.ETA]];
+            if(job->maxLayer>0)
+                [self firePrinterState:[NSString stringWithFormat:@"Printing...ETA %@ Layer %d/%d",job.ETA,analyzer->layer,(int)job->maxLayer]];
+            else
+                [self firePrinterState:[@"Printing...ETA " stringByAppendingString:job.ETA]];
         }
         if (job.percentDone >= 0 && fabs(lastProgress-job.percentDone)>0.3) {
             lastProgress = job.percentDone;
@@ -750,18 +757,27 @@
     {
         level = RHLogInfo;
         x = h.doubleValue;
+        analyzer->x = x;
+        if(x==0)
+            analyzer->hasXHome = true;
     }
     h = [self extract:res identifier:@"Y:"];
     if (h != nil)
     {
         level = RHLogInfo;
         y = h.doubleValue;
+        analyzer->y = y;
+        if(y==0)
+            analyzer->hasYHome = true;
     }
     h = [self extract:res identifier:@"Z:"];
     if (h != nil)
     {
         level = RHLogInfo;
         z = h.doubleValue;
+        analyzer->z = z;
+        if(z==0)
+            analyzer->hasZHome = true;
     }
     h = [self extract:res identifier:@"E:"];
     if (h != nil)
@@ -792,6 +808,28 @@
     }
     if ([StringUtil string:res startsWith:@"EPR:"])  {
         [eeprom add:res];
+    }
+    if ((h = [self extract:res identifier:@"SpeedMultiply:"])!=nil)  {
+        speedMultiply = h.intValue;
+        [ThreadedNotification notifyNow:@"SpeedMultiply" object:h];
+    }
+    if ((h = [self extract:res identifier:@"TargetExtr0:"])!=nil)  {
+        if(analyzer->activeExtruder==0)
+            analyzer->extruderTemp = h.intValue;
+        [ThreadedNotification notifyNow:@"TargetExtr0" object:h];
+    }
+    if ((h = [self extract:res identifier:@"TargetExtr1:"])!=nil)  {
+        if(analyzer->activeExtruder==1)
+            analyzer->extruderTemp = h.intValue;
+        [ThreadedNotification notifyNow:@"TargetExtr1" object:h];
+    }
+    if ((h = [self extract:res identifier:@"TargetBed:"])!=nil)  {
+        analyzer->bedTemp = h.intValue;
+        [ThreadedNotification notifyNow:@"TargetBed" object:h];
+    }
+    if ((h = [self extract:res identifier:@"Fanspeed:"])!=nil)  {
+        analyzer->fanVoltage = h.intValue;
+        [ThreadedNotification notifyNow:@"Fanspeed" object:h];
     }
     if ([StringUtil string:res startsWith:@"MTEMP:"]) // Temperature monitor 
     {
@@ -843,7 +881,7 @@
             [temperatureDelegate receivedTemperature:extruderTemp bed:bedTemp];
         [ThreadedNotification notifyASAP:@"RHTemperatureRead" object:nil];
         TempertureEntry *te = [[TempertureEntry alloc] initWithExtruder:extruderTemp bed:bedTemp targetBed:analyzer->bedTemp targetExtruder:analyzer->extruderTemp];
-        if(extruderOutput>0)
+        if(extruderOutput>=0)
             te->output = extruderOutput;
         [ThreadedNotification notifyASAP:@"RHTempMonitor" object:te];
         [te release];

@@ -739,7 +739,7 @@
     //NSLog(@"Parsing %f",parse);
 }
 -(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear {
-    double start = CFAbsoluteTimeGetCurrent();
+    //double start = CFAbsoluteTimeGetCurrent();
     if (clear)
         [self clear];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -754,7 +754,7 @@
         }            
     }
     [pool release];
-    double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
+    //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
     //NSLog(@"Parsing %f",parse);
     
 }

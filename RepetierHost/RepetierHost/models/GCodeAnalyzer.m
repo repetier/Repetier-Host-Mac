@@ -105,17 +105,12 @@
             case 0:
             case 1:
                 isG1Move = YES;
+                float oldz = z;
                 if (relative)
                 {
                     if(code.hasX) x += code.getX;
                     if(code.hasY) y += code.getY;
-                    if(code.hasZ) {
-                        layer++;
-                        z += code.getZ;
-                        if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
-                            [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
-                        }
-                    }
+                    if(code.hasZ) z += code.getZ;
                     if(code.hasE) e += code.getE;
                 }
                 else
@@ -123,14 +118,7 @@
                     if (code.hasX) x = xOffset+code.getX;
                     if (code.hasY) y = yOffset+code.getY;
                     if (code.hasZ) {
-                        float oldz = z;
                         z = zOffset+code.getZ;
-                        if(z!=oldz) {
-                            layer++;
-                            if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
-                                [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
-                            }                            
-                        }
                     }
                     if (code.hasE)
                     {
@@ -147,6 +135,12 @@
                 if (y > printerDepth) { hasYHome = NO; }
                 if (z > printerHeight) { hasZHome = NO; }
                 if (e > emax) emax = e;
+                if(z!=oldz) {
+                    layer++;
+                    if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
+                        [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
+                    }                            
+                }
                 [delegate positionChanged:self];
                 break;
             case 28:

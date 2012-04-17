@@ -657,7 +657,7 @@
 		FDEDF79B148961D800E6CFF1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = Repetier;
 			};
 			buildConfigurationList = FDEDF79E148961D800E6CFF1 /* Build configuration list for PBXProject "RepetierHost" */;
@@ -874,7 +874,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -907,6 +907,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				"DEBUG_INFORMATION_FORMAT[arch=*]" = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RepetierHost/RepetierHost-Prefix.pch";
 				INFOPLIST_FILE = "RepetierHost/RepetierHost-Info.plist";

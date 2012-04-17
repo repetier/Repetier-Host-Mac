@@ -62,6 +62,9 @@
     IBOutlet NSButton *retractExtruderButton;
     NSTimer *timer;
     float lastx,lasty,lastz;
+    IBOutlet NSSlider *speedMultiplySlider;
+    IBOutlet NSTextField *speedMultiplyLabel;
+    BOOL dontsend;
 }
 -(void)updateConnectionStatus:(BOOL)c;
 
@@ -71,6 +74,7 @@
 - (IBAction)debugInfoAction:(NSButton *)sender;
 - (IBAction)debugErrorsAction:(NSButton *)sender;
 - (IBAction)debugDryRunAction:(NSButton *)sender;
+- (IBAction)speedMultiplyChanged:(id)sender;
 - (IBAction)powerAction:(NSButton *)sender;
 - (IBAction)sendAction:(NSButton *)sender;
 - (IBAction)xHomeAction:(NSButton *)sender;

@@ -127,11 +127,33 @@
     [ana analyze:code];
     [outputLock lock];
     if (code.hasM) switch (code.getM) {
+        case 20:
+            [output addLast:@"Begin file list"];
+            [output addLast:@"DUMMY1.GCO 77288"];
+            [output addLast:@"DUMMY2.GCO 53445"];
+            [output addLast:@"End file list"];
+            break;
+        case 27:
+            [output addLast:@"Not SD printing"];
+            break;
+        case 28:
+            [output addLast:[NSString stringWithFormat:@"Writing to file: %@",code->text]];
+            break;
+        case 29:
+            [output addLast:@"Done saving file."];
+            break;
         case 115: // Firmware
             [output addLast:@"FIRMWARE_NAME:RepetierVirtualPrinter FIRMWARE_URL:https://github.com/repetier/Repetier-Firmware/ PROTOCOL_VERSION:1.0 MACHINE_TYPE:Mendel EXTRUDER_COUNT:1 REPETIER_PROTOCOL:1"];
             break;
         case 105: // Print Temperatures
-            [output addLast:[NSString stringWithFormat:@"T:%d B:%d",(int)extruderTemp,(int)bedTemp]];;
+            {
+                double time = CFAbsoluteTimeGetCurrent();
+                unsigned int millis = (unsigned int)((time-floor(time/2000000.0)*2000000.0)*1000.0);
+                int outp = (ana->extruderTemp-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897)); 
+                if(outp<0) outp = 0;
+                if(outp>255) outp = 255;
+                [output addLast:[NSString stringWithFormat:@"T:%d B:%d @:%d",(int)extruderTemp,(int)bedTemp,outp]];
+            }
             break;
         case 205: // EEPROM Settings
             [output addLast:@"EPR:2 75 76800 Baudrate"];

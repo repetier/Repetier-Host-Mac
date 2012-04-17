@@ -106,7 +106,7 @@
     stl->rotation[2] = rotation[2];
     stl->selected = YES;
     [stl updateBoundingBox];
-    return [stl retain];
+    return stl;
 }
 -(BOOL)changedOnDisk {
     NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil];
@@ -210,9 +210,9 @@
     float transl[16],scalem[16],rotx[16],roty[16],rotz[16];
     matrix4Translatef(transl, position[0], position[1],position[2]);
     matrix4Scalef(scalem,scale[0],scale[1],scale[2]);
-    matrix4RotateXf(rotx, -rotation[0]*(float)M_PI/180.0);
-    matrix4RotateYf(roty, -rotation[1]*(float)M_PI/180.0);
-    matrix4RotateZf(rotz, -rotation[2]*(float)M_PI/180.0);
+    matrix4RotateXf(rotx, rotation[0]*(float)M_PI/180.0);
+    matrix4RotateYf(roty, rotation[1]*(float)M_PI/180.0);
+    matrix4RotateZf(rotz, rotation[2]*(float)M_PI/180.0);
     /*
     matrix4MulMatf(trans,scalem,rotx);
     matrix4MulMatf(scalem,trans,roty);
