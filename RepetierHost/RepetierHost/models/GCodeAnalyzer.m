@@ -41,6 +41,7 @@
         eRelative = NO;
         debugLevel = 6;
         lastline = 0;
+        lastZPrint = 0;
         layer=0;
         hasXHome = hasYHome = hasZHome = NO;
         privateAnalyzer = NO;
@@ -66,6 +67,7 @@
     drawing = YES;
     fanVoltage = 0;
     lastline = 0;
+    lastZPrint = 0;
     tempMonitor = -1;
     x = y = z = e = emax = 0;
     xOffset = yOffset = zOffset = eOffset = 0;
@@ -105,7 +107,6 @@
             case 0:
             case 1:
                 isG1Move = YES;
-                float oldz = z;
                 if (relative)
                 {
                     if(code.hasX) x += code.getX;
@@ -134,12 +135,16 @@
                 if (x > printerWidth) { hasXHome = NO; }
                 if (y > printerDepth) { hasYHome = NO; }
                 if (z > printerHeight) { hasZHome = NO; }
-                if (e > emax) emax = e;
-                if(z!=oldz) {
+                if (e > emax) {
+                    
+                emax = e;
+                if(z!=lastZPrint) {
+                    lastZPrint = z;
                     layer++;
                     if(!privateAnalyzer && connection->job->dataComplete && connection->job->maxLayer>=0) {
                         [rhlog addInfo:[NSString stringWithFormat:@"Printing layer %d of %d",layer,connection->job->maxLayer]];
                     }                            
+                    }
                 }
                 [delegate positionChanged:self];
                 break;
@@ -259,14 +264,19 @@
                     //if (y > printerDepth) { hasYHome = NO; }
                 }
                 if(code.hasZ) {
-                    if(code->z!=0) layer++;
                     z += code->z;
                     //if (z < 0) { z = 0; hasZHome = NO; }
                     //if (z > printerHeight) { hasZHome = NO; }
                 }
                 if(code.hasE) {
                     e += code->e;
-                    if (e > emax) emax = e;
+                    if (e > emax) {
+                        emax = e;
+                        if(z>lastZPrint) {
+                            lastZPrint = z;
+                            layer++;
+                        }
+                    }
                 }
             } else {
                 if (code->x!=-99999) {
@@ -280,9 +290,7 @@
                     //if (y > printerDepth) { hasYHome = NO; }
                 }
                 if (code->z!=-99999) {
-                    float lastz = z;
                     z = zOffset+code->z;
-                    if(z!=lastz) layer++;
                     //if (z < 0) { z = 0; hasZHome = NO; }
                     //if (z > printerHeight) { hasZHome = NO; }
                 }
@@ -291,7 +299,13 @@
                         e += code->e;
                     else
                         e = eOffset + code->e;
-                    if (e > emax) emax = e;
+                    if (e > emax) {
+                        emax = e;
+                        if(z>lastZPrint) {
+                            lastZPrint = z;
+                            layer++;
+                        }
+                    }
                 }
             }
             [delegate positionChangedFastX:x y:y z:z e:e];

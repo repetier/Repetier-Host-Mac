@@ -161,12 +161,17 @@
         garbageCleared = NO;
 		// register as self as delegate for port
 		self.port.readDelegate = self;
-		
+    //NSLog(@"ClearDTR: %i",(int)[port clearDTR]);
+        [port setHangupOnClose:NO];
+    //    [port setDTRInputFlowControl:NO];
+        [port commitChanges];
 		[rhlog addInfo:@"Attempting to connect to printer"];
 		
 		// open port - may take a few seconds ...
 		if ([self.port open]) {
             // Set connection parameter
+            // [port clearDTR];
+            //[port setHangupOnClose:NO];
             [port setSpeed:config->baud];
             [port setParity:config->parity];
             [port setStopBits:config->stopBits];
@@ -811,6 +816,7 @@
     }
     if ((h = [self extract:res identifier:@"SpeedMultiply:"])!=nil)  {
         speedMultiply = h.intValue;
+        level = RHLogResponse;
         [ThreadedNotification notifyNow:@"SpeedMultiply" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetExtr0:"])!=nil)  {

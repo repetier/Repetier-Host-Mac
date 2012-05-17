@@ -86,7 +86,7 @@
             free(elements);
             elements = newelements;
             float *newnormals = nil;
-            if (normals != nil) newnormals = malloc(sizeof(float)*( + path->positionsLength));
+            if (normals != nil) newnormals = malloc(sizeof(float)*(positionsLength + path->positionsLength));
             float *newpoints = malloc(sizeof(float)*(positionsLength + path->positionsLength));
             if (normals != nil)
             {
@@ -243,8 +243,10 @@
        // w *= 0.5f;
         for (RHLinkedList * points in pointsLists)
         {
-            if (points->count < 2) 
+            if (points->count < 2) {
+                // NSLog(@"Low point count %i",(int)points->count);
                 continue;
+            }
             first = YES;
             RHListNode *ptNode = points.firstNode;
             while(ptNode!=nil)
@@ -364,6 +366,9 @@
                 first = NO;
             }
         }
+        if(pos>elementsLength) 
+            NSLog(@"Wrong elements length: %i to %i",pos,elementsLength);
+        else if(pos<elementsLength) elementsLength = pos;
         if (buffer)
         {
             glGenBuffers(3, buf);
@@ -471,6 +476,7 @@
 }        
 -(void)dealloc
 {
+    NSLog(@"dealloc GCodeVisual");
     for (GCodePath *p in segments)
         [p free];
     [segments clear];

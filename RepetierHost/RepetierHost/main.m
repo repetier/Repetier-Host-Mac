@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
     [d setObject:@"" forKey:@"skeinforgeApplication"];
     [d setObject:@"" forKey:@"skeinforgeCraft"];
     [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePython"];
-    [d setObject:@".gcode" forKey:@"skeinforgeExtension"];
-    [d setObject:@"_export" forKey:@"skeinforgePostfix"];
+    //[d setObject:@".gcode" forKey:@"skeinforgeExtension"];
+    //[d setObject:@"_export" forKey:@"skeinforgePostfix"];
         
     //Slic3r defaults
     [d setObject:@"" forKey:@"slic3rExternalPath"];
@@ -207,7 +207,11 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithFloat:516] forKey:@"editorSplitterWidth"];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
-
+    if([defaults objectForKey:@"firstcall"]==nil) {
+        [defaults setObject:@".gcode" forKey:@"skeinforgeExtension"];
+        [defaults setObject:@"_export" forKey:@"skeinforgePostfix"];
+        [defaults setObject:@"called" forKey:@"firstcall"];
+    }
     connection = nil;
     [PrinterConfiguration initPrinter];
     conf3d = [ThreeDConfig new];

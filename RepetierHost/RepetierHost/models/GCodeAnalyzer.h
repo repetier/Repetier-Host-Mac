@@ -35,6 +35,7 @@
     int bedTemp;
     float x, y, z, e,emax;
     float xOffset, yOffset, zOffset, eOffset;
+    float lastZPrint;
     BOOL fanOn;
     int fanVoltage;
     BOOL powerOn;

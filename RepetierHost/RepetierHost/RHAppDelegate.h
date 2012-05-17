@@ -143,6 +143,7 @@
 - (IBAction)ShowForum:(id)sender;
 - (IBAction)ShowSlic3rHomepage:(id)sender;
 - (IBAction)ShowSkeinforgeHomepage:(id)sender;
+- (IBAction)showWorkdir:(id)sender;
 
 @end
 

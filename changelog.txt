@@ -1,3 +1,12 @@
+Version 0.17
+  Grid distance is always 1cm.
+  Hop/Z-Lift does not create new layer for every hop.
+  CMD+F/File->Show workdir opens workdir with finder.
+  Fixed bug in filament visualization.
+
+Version 0.16
+  Slic3r 0.7.2b
+
 Version 0.15 2012-03-15
   Added auto place for objects.
   Added copy for objects.

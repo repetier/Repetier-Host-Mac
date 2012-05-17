@@ -53,6 +53,11 @@ NSDateFormatter *logDateFormatter = nil;
     if (p!=NSNotFound && (p==0 || [message characterAtIndex:p-1]==' ')) return YES;
     if ([message rangeOfString:@"SD printing byte"].location!=NSNotFound) return YES;
     if ([message rangeOfString:@"Not SD printing"].location!=NSNotFound) return YES;
+    if ([message rangeOfString:@"SpeedMultiply:"].location!=NSNotFound) return YES;
+    if ([message rangeOfString:@"TargetExtr0:"].location!=NSNotFound) return YES;
+    if ([message rangeOfString:@"TargetExtr1:"].location!=NSNotFound) return YES;
+    if ([message rangeOfString:@"TargetBed:"].location!=NSNotFound) return YES;
+    if ([message rangeOfString:@"Fanspeed:"].location!=NSNotFound) return YES;
     return NO;
 }
 -(NSString*)asText {

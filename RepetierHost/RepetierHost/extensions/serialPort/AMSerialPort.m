@@ -364,6 +364,7 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 
 - (BOOL)clearDTR
 {
+    NSLog(@"Clear error:%i",(int)ioctl(fileDescriptor, TIOCCDTR));
 	BOOL result = (ioctl(fileDescriptor, TIOCCDTR) != -1);
 	return result;
 }
@@ -393,9 +394,8 @@ NSString * const AMSerialOptionCanonicalMode = @"AMSerialOptionCanonicalMode";
 	[optionsDictionary setObject:[NSString stringWithFormat:@"%d", self.stopBits] forKey:AMSerialOptionStopBits];
 	if (self.RTSInputFlowControl)
 		[optionsDictionary setObject:@"RTS" forKey:AMSerialOptionInputFlowControl];
-	if (self.DTRInputFlowControl)
-		[optionsDictionary setObject:@"DTR" forKey:AMSerialOptionInputFlowControl];
-	
+    if (self.DTRInputFlowControl)
+		[optionsDictionary setObject:@"DTR" forKey:AMSerialOptionInputFlowControl];	
 	if (self.CTSOutputFlowControl)
 		[optionsDictionary setObject:@"CTS" forKey:AMSerialOptionOutputFlowControl];
 	if (self.DSROutputFlowControl)

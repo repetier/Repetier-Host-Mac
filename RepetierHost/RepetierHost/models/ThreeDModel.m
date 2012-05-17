@@ -31,6 +31,7 @@
 }
 -(void)dealloc {
     [animations release];
+    [super dealloc];
 }
 -(void)addAnimation:(ModelAnimation*) anim
 {

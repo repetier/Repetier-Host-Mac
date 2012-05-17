@@ -74,7 +74,7 @@
         printPreview = [ThreeDContainer new];
         codeVisual = [[GCodeVisual alloc] init];
         [codePreview->models addLast:codeVisual];
-        
+        [codeVisual release];
         printVisual = [[GCodeVisual alloc] initWithAnalyzer:connection->analyzer];
         printVisual->liveView = YES;
         [printPreview->models addLast:printVisual];
@@ -148,8 +148,7 @@
 }
 -(void)replaceGCodeView:(NSNotification*)event {
     [codePreview->models remove:codeVisual];
-    [codeVisual release];
-    codeVisual = [event.object retain];
+    codeVisual = event.object;
     [codePreview->models addLast:codeVisual];
     [openGLView redraw];
     gcodeView->editor->nextView = nil;
@@ -377,6 +376,14 @@
 
 - (IBAction)ShowSkeinforgeHomepage:(id)sender {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://fabmetheus.crsndoo.com"]];
+}
+
+- (IBAction)showWorkdir:(id)sender {
+    NSString *folder = @"~/Library/Repetier/";
+    folder = [folder stringByExpandingTildeInPath];
+    //   NSArray *fileURLs = [NSArray arrayWithObjects:folder,nil];
+    //    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
+    [[NSWorkspace sharedWorkspace] openFile:folder];
 }
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
     NSString *ext = filename.pathExtension;

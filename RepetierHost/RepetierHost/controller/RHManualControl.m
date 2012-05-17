@@ -138,7 +138,7 @@
         dontsend = TRUE;
         connection->speedMultiply = tval;
         [speedMultiplySlider setIntValue:tval];
-        [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",nv]];
+        [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",tval]];
         dontsend = FALSE;
     }
 }

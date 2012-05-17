@@ -210,25 +210,13 @@
             glVertex3d(dx1, dy2, 0);
             glVertex3d(dx1, dy1, 0);
         }
-        double dx = conf->width / 20;
-        double dy = conf->depth / 20;
+        double dx = 10; //conf->width / 20;
+        double dy = 10; //conf->depth / 20;
         double x,y;
-        for (i = 0; i < 21; i++)
+        for (i = 0; i < 201; i++)
         {
             x = (double)i*dx;
-            y = (double)i*dy;
-            if (conf->hasDumpArea && y >= dy1 && y <= dy2)
-            {
-                glVertex3d(0, y, 0);
-                glVertex3d(dx1, y, 0);
-                glVertex3d(dx2, y, 0);
-                glVertex3d(conf->width, y, 0);
-            }
-            else
-            {
-                glVertex3d(0, y, 0);
-                glVertex3d(conf->width, y, 0);
-            }
+            if(x>conf->width) x = conf->width;
             if (conf->hasDumpArea && x >= dx1 && x <= dx2)
             {
                 glVertex3d(x, 0, 0);
@@ -241,6 +229,25 @@
                 glVertex3d(x, 0, 0);
                 glVertex3d(x, conf->depth, 0);
             }
+            if(x >=conf->width) break;
+        }
+        for (i = 0; i < 21; i++)
+        {
+            y = (double)i*dy;
+            if(y>conf->depth) y = conf->depth;
+            if (conf->hasDumpArea && y >= dy1 && y <= dy2)
+            {
+                glVertex3d(0, y, 0);
+                glVertex3d(dx1, y, 0);
+                glVertex3d(dx2, y, 0);
+                glVertex3d(conf->width, y, 0);
+            }
+            else
+            {
+                glVertex3d(0, y, 0);
+                glVertex3d(conf->width, y, 0);
+            }
+            if(y>=conf->depth) break;
         }
         glEnd();
     }

@@ -179,21 +179,24 @@
 {
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@"Updating..."];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    GCodeVisual *v = nextView;
     //double start = CFAbsoluteTimeGetCurrent();
     if(controller->showMode==1) {
-        nextView->minLayer = nextView->maxLayer = controller->showMinLayer;
+        v->minLayer = v->maxLayer = controller->showMinLayer;
     } else if(controller->showMode==2) {
-        nextView->minLayer = controller->showMinLayer;
-        nextView->maxLayer = controller->showMaxLayer;
+        v->minLayer = controller->showMinLayer;
+        v->maxLayer = controller->showMaxLayer;
     }
-    [nextView parseGCodeShortArray:updateCode clear:YES];
+    [v parseGCodeShortArray:updateCode clear:YES];
     [controller setMaxLayer:nextView->ana->layer];
     //double red = CFAbsoluteTimeGetCurrent();
-    [nextView reduce];
+    [v reduce];
     if(!conf3d->disableFilamentVisualization)
         [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
     [updateCode release];
-    [nextView release];
+    [v release];
+    if(conf3d->disableFilamentVisualization)
+        nextView = nil; // do it only if visualization is disabled
     updateCode = nil;
     [updateViewThread release];
     updateViewThread = nil;
