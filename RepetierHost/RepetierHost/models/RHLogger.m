@@ -24,8 +24,8 @@ NSDateFormatter *logDateFormatter = nil;
 
 @implementation RHLogEntry
 
-@synthesize time;
-@synthesize message;
+@synthesize time = time;
+@synthesize message = message;
 
 -(void)dealloc {
     [time release];
@@ -34,11 +34,12 @@ NSDateFormatter *logDateFormatter = nil;
 }
 +(id)fromMessage:(NSString*)msg level:(RHLogType)aType response:(BOOL)isResp {
     RHLogEntry *e = [[RHLogEntry alloc] init];
-    NSDate *date = [NSDate date];
+    NSDate *date = [[NSDate alloc] init];
     e->level = aType;
     e->response = isResp;
     [e setMessage:msg];
     [e setTime:[logDateFormatter stringFromDate:date]];
+    [date release];
     return [e autorelease];
 }
 -(BOOL)isACK {

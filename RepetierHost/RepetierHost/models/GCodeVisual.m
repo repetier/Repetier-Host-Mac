@@ -30,6 +30,8 @@
 -(id)init {
     if((self=[super init])) {
         pointsCount = 0;
+        elementsLength = 0;
+        positionsLength = 0;
         drawMethod = -1;
         positions = nil;
         normals = nil;
@@ -130,6 +132,12 @@
         }
         else
         {
+            if(positions!=nil)
+                free(positions);
+            if(elements!=nil)
+                free(elements);
+            if(normals!=nil)
+                free(normals);
             elements = nil;
             normals = nil;
             positions = nil;
@@ -162,6 +170,7 @@
         elements = nil;
         normals = nil;
         positions = nil;
+        pointsCount = 0;
         [pointsLists clear];
         if (hasBuf)
             glDeleteBuffers(3, buf);
@@ -197,7 +206,8 @@
 }
 -(void)updateVBO:(BOOL)buffer
 {
-    if (pointsCount < 2) return;
+    if (pointsCount < 2) 
+        return;
     if (hasBuf)
         glDeleteBuffers(3, buf);
     hasBuf = NO;
@@ -377,7 +387,7 @@
             glBindBuffer(GL_ARRAY_BUFFER, buf[1]);
             glBufferData(GL_ARRAY_BUFFER, (positionsLength * sizeof(float)), normals, GL_STATIC_DRAW);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buf[2]);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, (elementsLength * sizeof(int)), elements,GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, (elementsLength * sizeof(GLuint)), elements,GL_STATIC_DRAW);
             // GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             hasBuf = YES;
         }
@@ -476,7 +486,6 @@
 }        
 -(void)dealloc
 {
-    NSLog(@"dealloc GCodeVisual");
     for (GCodePath *p in segments)
         [p free];
     [segments clear];
@@ -508,7 +517,9 @@
         while (actn->next != nil)
         {
             next = actn->next;
-            if (next->next == nil) return; // Don't touch last segment we are writing to
+            if (next->next == nil) {
+                return; // Don't touch last segment we are writing to
+            }
             GCodePath *nextval = next->value;
             if (nextval->pointsCount < 2)
             {
@@ -1098,7 +1109,14 @@
     if (conf3d->disableFilamentVisualization) return; // Disabled too much for card
     hotFilamentLength = conf3d->hotFilamentLength;
     minHotDist = totalDist - hotFilamentLength;
+    RHLinkedList *sl = [RHLinkedList new];
+    [changeLock lock];
     [self reduce]; // Minimize number of VBO
+    for (GCodePath *path in segments)
+    {
+        [sl addLast:path];
+    }
+    [changeLock unlock];
     //long timeStart = DateTime.Now.Ticks;
     float *col;
     col = conf3d->filamentColor;
@@ -1111,7 +1129,6 @@
     hotColor[1] = (float)col[1];
     hotColor[2] = (float)col[2];
     hotColor[3] = curColor[3] = col[3];
-    //           GL.Material(MaterialFace.FrontAndBack, MaterialParameter.AmbientAndDiffuse, new OpenTK.Graphics.Color4(col.R, col.G, col.B, 255));
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, defaultColor);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION, conf3d->blackColor);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, conf3d->specularColor);
@@ -1127,10 +1144,12 @@
     lastFilWidth = w;
     lastFilDiameter = dfac;
     lastFilUseHeight = fixedH;
-    for (GCodePath *path in segments)
+    //   int cnt=0;
+    for (GCodePath *path in sl)
     {
         [self drawSegment:path];
     }
+    [sl release];
     // timeStart = DateTime.Now.Ticks - timeStart;
     //  double time = (double)timeStart * 0.1;
     // Main.conn.log("OpenGL paint time " + time.ToString("0.0", GCode.format) + " microseconds",false,4);
