@@ -45,15 +45,15 @@
 +(NSArray*)configNames {
     return [NSArray arrayWithObjects:@"nozzleDiameter",@"useRealtiveE",@"zOffset",
             @"filamentDiameter",@"extrusionMultiplier",@"temperature",@"perimeterSpeed",@"smallPerimeterSpeed",
-            @"infillSpeed",@"solidInfillSpeed",@"bridgesSpeed",@"travelSpeed",@"bottomLayerSpeedRatio",
-            @"layerHeight",@"firstLayerHeightRatio",@"infillEveryNLayers",@"skirtLoops",@"skirtDistance",
+            @"infillSpeed",@"solidInfillSpeed",@"bridgesSpeed",@"travelSpeed",@"firstLayerSpeed",
+            @"layerHeight",@"firstLayerHeight",@"infillEveryNLayers",@"skirtLoops",@"skirtDistance",
             @"skirtHeight",@"perimeters",@"solidLayers",@"fillDensity",@"fillAngle",
             @"retractLength",@"retractZLift",@"retractSpeed",@"retractExtraLength",@"retractMinTravel",
             @"extrusionWidth",@"bridgeFlowRatio",@"fillPattern",@"solidFillPattern",@"comments",
             @"coolBridgeFanSpeed",@"coolDisplayLayer",@"coolEnableBelow",@"coolMaxFanSpeed",@"coolMinFanSpeed",
             @"coolMinPrintSpeed",@"coolSlowDownBelow",@"coolEnable",@"generateSupportMaterial",
             @"GCodeFlavor",@"supportMaterialTool",@"firstLayerTemperature",
-            @"keepFanAlwaysOn",@"bedtemperature",@"firstLayerBedTemperature",nil];
+            @"keepFanAlwaysOn",@"bedtemperature",@"firstLayerBedTemperature",@"randomizeStartingPoint",@"threads",nil];
     
 }
 -(void)toCurrent {

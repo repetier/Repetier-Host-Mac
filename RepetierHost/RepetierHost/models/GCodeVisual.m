@@ -217,6 +217,7 @@
     float w = h * wfac;
     BOOL fixedH = conf3d->useLayerHeight;
     float dfac = (float)(M_PI * conf3d->filamentDiameter * conf3d->filamentDiameter * 0.25 / wfac);
+    // nv = number vertices around circumsphere of filament
     int nv = 8 * (method - 1), i;
     if (method == 1) nv = 4;
     if (method == 0) nv = 1;
@@ -254,7 +255,7 @@
         for (RHLinkedList * points in pointsLists)
         {
             if (points->count < 2) {
-                // NSLog(@"Low point count %i",(int)points->count);
+                //NSLog(@"Low point count %i",(int)points->count);
                 continue;
             }
             first = YES;
@@ -262,10 +263,11 @@
             while(ptNode!=nil)
             {
                 GCodePoint *pt = ptNode->value;
+                //NSLog(@"P: %f %f %f",pt->p[0],pt->p[1],pt->p[2]);
                 GCodePoint *ptn = nil;
                 if (ptNode->next != nil)
                     ptn = ptNode->next->value;
-                ptNode = ptNode->next;
+                ptNode = ptNode->next;                
                 float *v = pt->p;
                 if (first)
                 {
@@ -312,9 +314,12 @@
                 dir[1] = actdir[1] + lastdir[1];
                 dir[2] = actdir[2] + lastdir[2];
                 [self normalize:dir];
-                double vacos = acos(dir[0] * lastdir[0] + dir[1] * lastdir[1] + dir[2] * lastdir[2]);
-                if(vacos<-1) vacos = -1; else if(vacos>1) vacos = 1;
-                float zoomw = cos(0.5*vacos);
+                //NSLog(@"dir %f %f %f",dir[0],dir[1],dir[2]);
+                //NSLog(@"lastdir %f %f %f",lastdir[0],lastdir[1],lastdir[2]);
+                double vacos = dir[0] * lastdir[0] + dir[1] * lastdir[1] + dir[2] * lastdir[2];
+                if(vacos<-0.97) vacos = -0.97; else if(vacos>1) vacos = 1;
+                float zoomw = cos(0.5*acos(vacos));
+                //NSLog(@"vacos %f,zoomz %f",vacos,zoomw);
                 lastdir[0] = actdir[0];
                 lastdir[1] = actdir[1];
                 lastdir[2] = actdir[2];
@@ -330,6 +335,7 @@
                 {
                     c = (float)cos(alpha) * dh;
                     s = (float)sin(alpha) * dw/zoomw;
+                    //NSLog(@"c=%f s=%f a=%f dh=%f,zoomw=%f",c,s,alpha,dh,zoomw);
                     norm[0] = (float)(s * dirs[0] + c * diru[0]);
                     norm[1] = (float)(s * dirs[1] + c * diru[1]);
                     norm[2] = (float)(s * dirs[2] + c * diru[2]);
@@ -340,6 +346,7 @@
                         elements[pos++] = b + i;//1
                         elements[pos++] = b + i + nv;//4
                         elements[pos++] = b + (i + 1) % nv + nv;//3
+                                                                //NSLog(@"Pts %i %i %i %i", elements[pos-4], elements[pos-3], elements[pos-2], elements[pos-1]);
                     }
                     normals[npos++] = norm[0];
                     normals[npos++] = norm[1];
@@ -347,10 +354,12 @@
                     positions[vpos++] = v[0] + s * dirs[0] + c * diru[0];
                     positions[vpos++] = v[1] + s * dirs[1] + c * diru[1];
                     positions[vpos++] = v[2] - dh + s * dirs[2] + c * diru[2];
+                    //NSLog(@"pos %i %f %f %f",(vpos/3)-1,positions[vpos-3],positions[vpos-2],positions[vpos-1]);
                     alpha += dalpha;
                 }
                 if (first || ptNode == nil) // Draw cap
                 {
+                    //NSLog(@"Cap");
                     b = vpos / 3 - nv;
                     int nn  = (nv-2)/2;
                     for (i = 0; i < nn; i++)
@@ -398,6 +407,10 @@
         BOOL first = YES;
         for (RHLinkedList *points in pointsLists)
         {
+            if (points->count < 2) {
+                // NSLog(@"Low point count %i",(int)points->count);
+                continue;
+            }
             first = YES;
             for (GCodePoint *pt in points)
             {
@@ -408,13 +421,16 @@
                         
                 if (!first)
                 {
-                    elements[pos] = pos / 2;
-                    elements[pos + 1] = pos / 2 + 1;
+                    elements[pos] = vpos / 3-1;
+                    elements[pos + 1] = vpos / 3 -2;
                     pos += 2;
                 }
                 first = NO;
             }
         }
+        if(pos>elementsLength) 
+            NSLog(@"Wrong elements length: %i to %i",pos,elementsLength);
+        else if(pos<elementsLength) elementsLength = pos;
         if (buffer)
         {
             glGenBuffers(3, buf);
@@ -449,6 +465,7 @@
         method = 0;
         colbufSize = 0;
         lastx = 1e20f; lasty = 0; lastz = 0;
+        lastLayer = -1;
         changed = NO;
         startOnClear = YES;
         changeLock = [NSLock new];
@@ -475,6 +492,7 @@
         method = 0;
         colbufSize = 0;
         lastx = 1e20f; lasty = 0; lastz = 0;
+        lastLayer = -1;
         changed = NO;
         startOnClear = NO;
         changeLock = [NSLock new];
@@ -651,11 +669,24 @@
         lasty = yp;
         lastz = zp;
         laste = ana->emax;
+        lastLayer = ana->layer;
         return;
     }
     float locDist = (float)sqrt((xp - lastx) * (xp - lastx) + (yp - lasty) * (yp - lasty) + (zp - lastz) * (zp - lastz));
     BOOL isLastPos = locDist < 0.00001;
     float mypos[3] = {xp,yp,zp};
+    if(lastLayer == minLayer-1 && laste<e && lastx<1e19) {
+        GCodePath *p = [GCodePath new];
+        float mypos2[3] = {lastx,lasty,lastz};
+        [p add:mypos2 extruder:laste distance:totalDist];
+        if (segments->count > 0 && ((RHLinkedList*)((GCodePath*)(segments.peekLastFast))->pointsLists.peekLastFast)->count == 1)
+        {
+            [segments removeLast];
+        }
+        [segments addLast:p];
+        [p release];
+        
+    }
     if (segments->count == 0 || laste >= e) // start new segment
     {
         if (!isLastPos) // no move, no action
@@ -684,6 +715,7 @@
     lasty = yp;
     lastz = zp;
     laste = ana->emax;
+    lastLayer = ana->layer;
 }
 
 -(void)parseText:(NSString*)text clear:(BOOL)clear

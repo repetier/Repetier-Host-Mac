@@ -231,7 +231,7 @@
                 }
                 break;
             case 140:
-            case 141:
+            case 190:
                 if (code.hasS) bedTemp = code.getS;
                 [self fireChanged];
                 break;

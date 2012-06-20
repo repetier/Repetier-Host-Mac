@@ -39,6 +39,7 @@
     IBOutlet NSTabViewItem *threedLights;
     IBOutlet NSTabViewItem *temperatureColorsTab;
     IBOutlet NSTabViewItem *loggingTab;
+    IBOutlet NSTabViewItem *soundsTab;
     IBOutlet NSWindow *prefWindow;
     IBOutlet NSTabView *tabView;
     NSOpenPanel* openPanel;
@@ -48,6 +49,8 @@
     IBOutlet NSTextField *skeinforgeExtension;
     IBOutlet NSTextField *skeinforgePostfix;
     NSButton *browseSlic3rConfigFile;
+    NSButton *browsePrintjobFinished;
+    NSButton *browsePrintjobPaused;
 }
 - (IBAction)openSkeinforgeHomepage:(id)sender;
 - (IBAction)openSlic3rHomepage:(id)sender;
@@ -57,6 +60,15 @@
 - (IBAction)testSkeinforge:(id)sender;
 - (IBAction)browseSlic3rExecuteable:(id)sender;
 - (IBAction)browseSlic3rConfigFile:(id)sender;
+- (IBAction)playPrintjobFinished:(id)sender;
+- (IBAction)playPrintjobPaused:(id)sender;
+- (IBAction)playError:(id)sender;
+- (IBAction)playCommand:(id)sender;
+- (IBAction)browsePrintjobFinished:(id)sender;
+- (IBAction)browsePrintjobPaused:(id)sender;
+- (IBAction)browseError:(id)sender;
+- (IBAction)browseCommand:(id)sender;
+
 
 
 

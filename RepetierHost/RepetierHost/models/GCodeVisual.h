@@ -78,6 +78,7 @@
     float wfac,h,w;
     BOOL fixedH;
     float dfac,lastx,lasty,lastz;
+    int lastLayer;
     BOOL changed;
     BOOL startOnClear;
     NSLock *changeLock;

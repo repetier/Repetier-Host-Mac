@@ -16,6 +16,7 @@
 		FD1719D3148E83540023E262 /* GCode.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D2148E83540023E262 /* GCode.m */; };
 		FD1719D6148EA3040023E262 /* GCodeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */; };
 		FD1719D9148EAD850023E262 /* RHPrintjob.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1719D8148EAD850023E262 /* RHPrintjob.m */; };
+		FD1C3169158F87C100B13408 /* RHSound.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1C3168158F87C100B13408 /* RHSound.m */; };
 		FD1E241E14966F67008AF30C /* ThreeD.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD1E241D14966F67008AF30C /* ThreeD.xib */; };
 		FD1E242314967310008AF30C /* ThreeDContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E242214967310008AF30C /* ThreeDContainer.m */; };
 		FD1E24261497A612008AF30C /* RHOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD1E24251497A612008AF30C /* RHOpenGLView.m */; };
@@ -138,6 +139,8 @@
 		FD1719D5148EA3040023E262 /* GCodeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeAnalyzer.m; sourceTree = "<group>"; };
 		FD1719D7148EAD850023E262 /* RHPrintjob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHPrintjob.h; sourceTree = "<group>"; };
 		FD1719D8148EAD850023E262 /* RHPrintjob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHPrintjob.m; sourceTree = "<group>"; };
+		FD1C3167158F87C100B13408 /* RHSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHSound.h; sourceTree = "<group>"; };
+		FD1C3168158F87C100B13408 /* RHSound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHSound.m; sourceTree = "<group>"; };
 		FD1E241D14966F67008AF30C /* ThreeD.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThreeD.xib; sourceTree = "<group>"; };
 		FD1E242114967310008AF30C /* ThreeDContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDContainer.h; sourceTree = "<group>"; };
 		FD1E242214967310008AF30C /* ThreeDContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreeDContainer.m; sourceTree = "<group>"; };
@@ -627,6 +630,8 @@
 				FD28663B14DD8E1A0081750D /* RHFileHistory.m */,
 				FD141AD3150E5E5D00D74E18 /* RectPacker.h */,
 				FD141AD4150E5E5D00D74E18 /* RectPacker.m */,
+				FD1C3167158F87C100B13408 /* RHSound.h */,
+				FD1C3168158F87C100B13408 /* RHSound.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -800,6 +805,7 @@
 				FD283A9B14EFB10D00597203 /* HistoryTextField.m in Sources */,
 				FD22AFC41501822D009BE821 /* GCodeShort.m in Sources */,
 				FD141AD5150E5E5D00D74E18 /* RectPacker.m in Sources */,
+				FD1C3169158F87C100B13408 /* RHSound.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

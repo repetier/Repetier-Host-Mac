@@ -25,6 +25,7 @@
 #import "ThreadedNotification.h"
 #import "TemperatureHistory.h"
 #import "SDCardManager.h"
+#import "RHSound.h"
 
 @implementation PrinterConnection
 @synthesize port;
@@ -504,7 +505,12 @@
     }
     else if ([com compare:@"@pause"]==NSOrderedSame)
     {
+        [sound playPrintjobPaused:NO];
         [self pause:gc.hostParameter];
+    }
+    else if ([com compare:@"@sound"]==NSOrderedSame)
+    {
+        [sound playCommand:NO];
     }
 }
 -(void)trySendNextLine
@@ -881,6 +887,7 @@
     if ([self extract:res identifier:@"Error:"]!=nil)
     {
         level = RHLogError;
+        [sound playError:NO];
     }
     if (tempChange) {
         if(temperatureDelegate != nil)

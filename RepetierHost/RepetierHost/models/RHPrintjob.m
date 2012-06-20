@@ -19,6 +19,7 @@
 #import "PrinterConnection.h"
 #import "ThreadedNotification.h"
 #import "GCodeShort.h"
+#import "RHSound.h"
 
 @implementation PrintTime
 
@@ -202,6 +203,7 @@
         [rhlog addInfo:[NSString stringWithFormat:@"Printing time: %@",s]];
         [rhlog addInfo:[NSString stringWithFormat:@"lines send: %d",linesSend]];
         [connection firePrinterState:[NSString stringWithFormat:@"Finished in %@",s]];
+        [sound playPrintjobFinished:NO];
         [self doEndKillActions];
         [ThreadedNotification notifyASAP:@"RHJobChanged" object:self];
     }

@@ -17,6 +17,7 @@
 #import "Preferences.h"
 #import "RHAppDelegate.h"
 #import "Slicer.h"
+#import "RHSound.h"
 
 @implementation PrefTab
 
@@ -85,7 +86,10 @@
     [super windowDidLoad];
     
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
-    PrefTab *g = [[PrefTab alloc] initGroup:@"Slicer"];
+    PrefTab *g = [[PrefTab alloc] initGroup:@"Host"];
+    [groups addObject:g];
+    [g addTab:@"Sounds" tab:soundsTab];
+    g = [[PrefTab alloc] initGroup:@"Slicer"];
     [groups addObject:g];
     [g addTab:@"Skeinforge" tab:skeinforgeTab];
     [g addTab:@"Slic3r" tab:slic3rTab];
@@ -216,6 +220,73 @@
             if(urls.count>0) {
                 NSURL *url = [urls objectAtIndex:0];
                 [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"slic3rExternalConfig"];
+            }
+        }        
+    }];
+}
+
+- (IBAction)playPrintjobFinished:(id)sender {
+    [sound playPrintjobFinished:YES];
+}
+- (IBAction)playPrintjobPaused:(id)sender {
+    [sound playPrintjobPaused:YES];
+}
+
+- (IBAction)playError:(id)sender {
+    [sound playError:YES];
+}
+
+- (IBAction)playCommand:(id)sender {
+    [sound playCommand:YES];
+}
+
+- (IBAction)browsePrintjobFinished:(id)sender {
+    [openPanel setMessage:@"Select sound for printjob finished"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"soundPrintjobFinished"];
+            }
+        }        
+    }];
+}
+
+- (IBAction)browsePrintjobPaused:(id)sender {
+    [openPanel setMessage:@"Select sound for printjob paused"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"soundPrintjobPaused"];
+            }
+        }        
+    }];
+}
+
+- (IBAction)browseError:(id)sender {
+    [openPanel setMessage:@"Select sound for errors"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"soundError"];
+            }
+        }        
+    }];
+}
+
+- (IBAction)browseCommand:(id)sender {
+    [openPanel setMessage:@"Select sound for @sound command"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"soundCommand"];
             }
         }        
     }];

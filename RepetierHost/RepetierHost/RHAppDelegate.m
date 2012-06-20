@@ -35,6 +35,7 @@
 #import "Slic3rConfig.h"
 #import "STLComposer.h"
 #import "GCodeView.h"
+#import "RHSound.h"
 
 @implementation RHAppDelegate
 
@@ -145,6 +146,7 @@
     //[logScrollView setScrollerStyle:NSScrollerStyleLegacy];
     [logSplitterDelegate setAutosaveName:@"logSplitterHeight"];
     [editorSplitterDelegate setAutosaveName:@"editorSplitterWidth"];
+    [RHSound createSounds];
 }
 -(void)replaceGCodeView:(NSNotification*)event {
     [codePreview->models remove:codeVisual];

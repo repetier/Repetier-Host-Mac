@@ -162,9 +162,9 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"slic3r#Default#solidInfillSpeed"];
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"slic3r#Default#bridgesSpeed"];
     [d setObject:[NSNumber numberWithDouble:130] forKey:@"slic3r#Default#travelSpeed"];
-    [d setObject:[NSNumber numberWithDouble:0.3] forKey:@"slic3r#Default#bottomLayerSpeedRatio"];
+    [d setObject:[NSNumber numberWithDouble:20] forKey:@"slic3r#Default#firstLayerSpeed"];
     [d setObject:[NSNumber numberWithDouble:0.4] forKey:@"slic3r#Default#layerHeight"];
-    [d setObject:[NSNumber numberWithDouble:1] forKey:@"slic3r#Default#firstLayerHeightRatio"];
+    [d setObject:[NSNumber numberWithDouble:0.4] forKey:@"slic3r#Default#firstLayerHeight"];
     [d setObject:[NSNumber numberWithDouble:1] forKey:@"slic3r#Default#infillEveryNLayers"];
     [d setObject:[NSNumber numberWithInt:1] forKey:@"slic3r#Default#skirtLoops"];
     [d setObject:[NSNumber numberWithDouble:6] forKey:@"slic3r#Default#skirtDistance"];
@@ -198,6 +198,9 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"slic3r#Default#keepFanAlwaysOn"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"slic3r#Default#bedtemperature"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"slic3r#Default#firstLayerBedTemperature"];
+    [d setObject:[NSNumber numberWithBool:YES] forKey:@"slic3r#Default#randomizeStartingPoint"];
+    [d setObject:[NSNumber numberWithInt:2] forKey:@"slic3r#Default#threads"];
+    
     // Other data
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"extruder.Speed"];
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];
@@ -205,6 +208,15 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithBool:YES] forKey:@"showFirstSteps"];
     [d setObject:[NSNumber numberWithFloat:170] forKey:@"logSplitterHeight"];
     [d setObject:[NSNumber numberWithFloat:516] forKey:@"editorSplitterWidth"];
+    // Sounds
+    [d setObject:@"" forKey:@"soundPrintjobFinished"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"soundPrintjobFinishedEnabled"];
+    [d setObject:@"" forKey:@"soundPrintjobPaused"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"soundPrintjobPausedEnabled"];
+    [d setObject:@"" forKey:@"soundError"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"soundErrorEnabled"];
+    [d setObject:@"" forKey:@"soundCommand"];
+    [d setObject:[NSNumber numberWithBool:NO] forKey:@"soundCommandEnabled"];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
     if([defaults objectForKey:@"firstcall"]==nil) {

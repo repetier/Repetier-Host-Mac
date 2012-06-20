@@ -275,6 +275,9 @@
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];
     NSArray *arr = [NSArray arrayWithObjects:skein,file,nil];
     skeinforgeOut = [[NSString stringWithFormat:@"%@%@%@",[file stringByDeletingPathExtension],[d stringForKey:@"skeinforgePostfix"],[d stringForKey:@"skeinforgeExtension"]] retain];
+    if([self fileExists:skeinforgeOut]) {
+        [[NSFileManager defaultManager] removeItemAtPath:skeinforgeOut error:nil];
+    }
     skeinforgeSlice = [[RHTask alloc] initProgram:python args:arr logPrefix:@"<Skeinforge> "];
     
 }
@@ -311,6 +314,9 @@
     double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
     [stl release];
     slic3rIntOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
+    if([self fileExists:slic3rIntOut]) {
+        [[NSFileManager defaultManager] removeItemAtPath:slic3rIntOut error:nil];
+    }
     arr = [NSMutableArray arrayWithObjects:@"--print-center",
            [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],nil];
     Slic3rSettings *s = app->slic3r->current;
@@ -320,6 +326,10 @@
         [arr addObject:@"--use-relative-e-distances"];
     if ([s getBool:@"comments"])
         [arr addObject:@"--gcode-comments"];
+    [arr addObject:@"-j"];
+    [arr addObject:[s getString:@"threads"]];
+    if ([s getBool:@"randomizeStartingPoint"])
+        [arr addObject:@"--randomize-start"];
     [arr addObject:@"--z-offset"];
     [arr addObject:[s getString:@"zOffset"]];
     [arr addObject:@"--filament-diameter"];
@@ -340,14 +350,14 @@
     [arr addObject:[s getString:@"perimeterSpeed"]];
     [arr addObject:@"--small-perimeter-speed"];
     [arr addObject:[s getString:@"smallPerimeterSpeed"]];
-    [arr addObject:@"--bottom-layer-speed-ratio"];
-    [arr addObject:[s getString:@"bottomLayerSpeedRatio"]];
+    [arr addObject:@"--first-layer-speed"];
+    [arr addObject:[s getString:@"firstLayerSpeed"]];
     [arr addObject:@"--bridge-flow-ratio"];
     [arr addObject:[s getString:@"bridgeFlowRatio"]];
     [arr addObject:@"--layer-height"];
     [arr addObject:[s getString:@"layerHeight"]];
-    [arr addObject:@"--first-layer-height-ratio"];
-    [arr addObject:[s getString:@"firstLayerHeightRatio"]];
+    [arr addObject:@"--first-layer-height"];
+    [arr addObject:[s getString:@"firstLayerHeight"]];
     [arr addObject:@"--infill-every-layers"];
     [arr addObject:[s getString:@"infillEveryNLayers"]];
     [arr addObject:@"--perimeters"];
@@ -378,7 +388,7 @@
     [arr addObject:[s getString:@"skirtDistance"]];
     [arr addObject:@"--skirt-height"];
     [arr addObject:[s getString:@"skirtHeight"]];
-    [arr addObject:@"--extrusion-width-ratio"];
+    [arr addObject:@"--extrusion-width"];
     [arr addObject:[s getString:@"extrusionWidth"]];
     if ([s getBool:@"coolEnable"])
     {
@@ -438,7 +448,7 @@
     [arr addObject:@"-o"];
     [arr addObject:slic3rIntOut];
     [arr addObject:file];
-    //NSLog(@"Call %@ %@",exe,[StringUtil implode:arr sep:@" "]);
+    NSLog(@"Call %@ %@",exe,[StringUtil implode:arr sep:@" "]);
     slic3rIntSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    
 }
 -(void)sliceSlic3rExternal:(NSString*)file {
@@ -466,6 +476,9 @@
     double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
     [stl release];
     slic3rExtOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
+    if([self fileExists:slic3rExtOut]) {
+        [[NSFileManager defaultManager] removeItemAtPath:slic3rExtOut error:nil];
+    }
     arr = [NSArray arrayWithObjects:@"--load",slic3rConfig,@"--print-center",
            [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],@"-o",slic3rExtOut,file,nil];
     slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    

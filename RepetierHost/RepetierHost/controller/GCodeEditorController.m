@@ -121,6 +121,7 @@
 }
 -(void)loadGCodeGCode:(NSString*)file {
     if(editor->cur!=gcode) {
+        [fileSelector selectItemAtIndex:0];
         [editor->cur fromActive];
         editor->cur = gcode;
         [editor->cur toActive];
