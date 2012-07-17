@@ -162,7 +162,7 @@
         [self setNeedsDisplay:YES];
 }
 -(void)triggerViewUpdate{
-    if(nextView==nil) {
+    if(nextView==nil && updateViewThread==nil) {
         mustUpdate = NO; 
         //[cur fromActive];        
         updateCode = [[controller getContentArray] retain];

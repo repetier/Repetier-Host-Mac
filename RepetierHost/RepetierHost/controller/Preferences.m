@@ -89,6 +89,7 @@
     PrefTab *g = [[PrefTab alloc] initGroup:@"Host"];
     [groups addObject:g];
     [g addTab:@"Sounds" tab:soundsTab];
+    [g release];
     g = [[PrefTab alloc] initGroup:@"Slicer"];
     [groups addObject:g];
     [g addTab:@"Skeinforge" tab:skeinforgeTab];
