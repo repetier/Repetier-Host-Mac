@@ -122,6 +122,7 @@
     if(connected) return;
     isMarlin = NO;
     isRepetier = NO;
+    isSprinter = NO;
     [self setConfig:currentPrinterConfiguration];
     closeAfterM112 = NO;
     NSString *deviceName = [config port];
@@ -566,10 +567,10 @@
         gc = injectCommands.peekFirst;
         if (gc->hostCommand)
         {
-            [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
-            [analyzer analyze:gc];
             [injectCommands removeFirst];
             [historyLock unlock];
+            [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
+            [analyzer analyze:gc];
             [nextlineLock unlock];
             return;
         }

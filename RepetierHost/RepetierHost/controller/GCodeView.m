@@ -23,6 +23,7 @@
 #import "RHAppDelegate.h"
 #import "ThreeDConfig.h"
 #import "GCodeShort.h"
+#import "PrinterConnection.h"
 
 @implementation GCodeView
 
@@ -194,6 +195,7 @@
     if(!conf3d->disableFilamentVisualization)
         [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
     [updateCode release];
+    controller->printingTime = v->ana->printingTime;
     [v release];
     if(conf3d->disableFilamentVisualization)
         nextView = nil; // do it only if visualization is disabled
@@ -711,6 +713,10 @@
         txt = [NSString stringWithFormat:@"Layer: %d Tool: %d",(int)acode.layer,(int)acode.tool];
     else
         txt = @"Layer: - Tool: -";
+    if(controller->printingTime>0) {
+        int tm = (int)(controller->printingTime*(1.0+0.01*currentPrinterConfiguration->addPrintingTime)/60.0);
+        txt = [NSString stringWithFormat:@"%@ Printing time:%d min",txt,tm];
+    }
     [controller->layerText setStringValue:txt];
 }
 -(void)positionShowCursor

@@ -158,6 +158,9 @@
     [defaultExtruderTempText setIntValue:c->defaultExtruderTemp];
     [defaultBedTempText setIntValue:c->defaultHeatedBedTemp];
     [dontLogM105Checkbox setState:c->dontLogM105];
+    [addPrintingTime setDoubleValue:c->addPrintingTime];
+    [disableMotorAfterJob setState:c->afterJobDisableMotors];
+    
     
 }
 -(void)saveToConfig {
@@ -193,6 +196,8 @@
     c->defaultExtruderTemp = [defaultExtruderTempText intValue];
     c->defaultHeatedBedTemp = [defaultBedTempText intValue];
     c->dontLogM105 = [dontLogM105Checkbox state];
+    c->addPrintingTime = [addPrintingTime doubleValue];
+    c->afterJobDisableMotors = [disableMotorAfterJob state];
     [c saveToRepository];
 }
 

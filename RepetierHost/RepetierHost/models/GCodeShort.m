@@ -14,7 +14,7 @@
     if((self=[super init])) {
         text = [cmd retain];
         flags = 1048575+(0<<24);
-        x=y=z=e=-99999;
+        x=y=z=e=f=-99999;
         [self parse];
     }
     return self;
@@ -54,6 +54,7 @@
 -(BOOL)hasY {return y!=-99999;}
 -(BOOL)hasZ {return z!=-99999;}
 -(BOOL)hasE {return e!=-99999;}
+-(BOOL)hasF {return f!=-99999;}
 
 /**
 Command values:
@@ -112,6 +113,9 @@ Command values:
             break;
         case 'E':
             e = (float)d;
+            break;
+        case 'F':
+            f = (float)d;
             break;
     }
     return NO;

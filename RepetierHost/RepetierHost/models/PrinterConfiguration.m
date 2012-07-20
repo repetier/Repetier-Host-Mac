@@ -30,6 +30,7 @@
 @synthesize port;
 @synthesize startCode;
 @synthesize endCode;
+@synthesize jobkillCode;
 @synthesize filterPrg;
 
 -(id)init {
@@ -46,6 +47,7 @@
         afterJobGoDispose = YES;
         afterJobDisableExtruder = YES;
         afterJobDisableHeatedBed = YES;
+        afterJobDisableMotors = NO;
         pingPongMode = NO;
         receiveCacheSize = 63;
         autocheckTemp = YES;
@@ -69,6 +71,7 @@
         enableFilterPrg = NO;
         [self setStartCode:@""];
         [self setEndCode:@""];
+        [self setJobkillCode:@""];
         [self setFilterPrg:@""];
     }
     return self;
@@ -97,6 +100,7 @@
     afterJobGoDispose = [d boolForKey:[b stringByAppendingString:@".afterJobGoDispose"]];
     afterJobDisableExtruder = [d boolForKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
     afterJobDisableHeatedBed = [d boolForKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    afterJobDisableMotors = [d boolForKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
     dontLogM105 = [d boolForKey:[b stringByAppendingString:@".dontLogM105"]];
     autocheckTemp = [d boolForKey:[b stringByAppendingString:@".autocheckTemp"]];
     okAfterResend = [d boolForKey:[b stringByAppendingString:@".okAfterResend"]];
@@ -111,6 +115,7 @@
     disposeZ = [d doubleForKey:[b stringByAppendingString:@".disposeZ"]];
     [self setStartCode:[d stringForKey:[b stringByAppendingString:@".startCode"]]];
     [self setEndCode:[d stringForKey:[b stringByAppendingString:@".endCode"]]];
+    [self setJobkillCode:[d stringForKey:[b stringByAppendingString:@".jobkillCode"]]];
     [self setFilterPrg:[d stringForKey:[b stringByAppendingString:@".filterPrg"]]];
     enableFilterPrg = [d boolForKey:[b stringByAppendingString:@".enableFilterPrg"]];
     hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
@@ -118,6 +123,7 @@
     dumpAreaFront = [d doubleForKey:[b stringByAppendingString:@".dumpAreaFront"]];
     dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
+    addPrintingTime = [d doubleForKey:[b stringByAppendingString:@".addPrintingTime"]];
     return self;
 }
 -(void)initDefaultsRepository:(NSString*)confname {
@@ -136,6 +142,7 @@
     [d setObject:[NSNumber numberWithBool:afterJobGoDispose] forKey:[b stringByAppendingString:@".afterJobGoDispose"]];
     [d setObject:[NSNumber numberWithBool:afterJobDisableExtruder] forKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
     [d setObject:[NSNumber numberWithBool:afterJobDisableHeatedBed] forKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    [d setObject:[NSNumber numberWithBool:afterJobDisableMotors] forKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
     [d setObject:[NSNumber numberWithBool:dontLogM105] forKey:[b stringByAppendingString:@".dontLogM105"]];
     [d setObject:[NSNumber numberWithBool:autocheckTemp] forKey:[b stringByAppendingString:@".autocheckTemp"]];
     [d setObject:[NSNumber numberWithBool:okAfterResend] forKey:[b stringByAppendingString:@".okAfterResend"]];
@@ -150,6 +157,7 @@
     [d setObject:[NSNumber numberWithDouble:disposeZ] forKey:[b stringByAppendingString:@".disposeZ"]];
     [d setObject:@"" forKey:[b stringByAppendingString:@".startCode"]];
     [d setObject:@"" forKey:[b stringByAppendingString:@".endCode"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".jobkillCode"]];
     [d setObject:@"" forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setObject:[NSNumber numberWithBool:enableFilterPrg] forKey:[b stringByAppendingString:@".enableFilterPrg"]];
     
@@ -166,6 +174,7 @@
     [d setObject:[NSNumber numberWithDouble:0] forKey:[b stringByAppendingString:@".dumpAreaFront"]];
     [d setObject:[NSNumber numberWithDouble:40] forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setObject:[NSNumber numberWithDouble:22] forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
+    [d setObject:[NSNumber numberWithDouble:8] forKey:[b stringByAppendingString:@".addPrintingTime"]];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
@@ -187,6 +196,7 @@
     [d setBool:afterJobGoDispose forKey:[b stringByAppendingString:@".afterJobGoDispose"]];
     [d setBool:afterJobDisableExtruder forKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
     [d setBool:afterJobDisableHeatedBed forKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    [d setBool:afterJobDisableMotors forKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
     [d setBool:autocheckTemp forKey:[b stringByAppendingString:@".autocheckTemp"]];
     [d setBool:okAfterResend forKey:[b stringByAppendingString:@".okAfterResend"]];
     [d setBool:pingPongMode forKey:[b stringByAppendingString:@".pingPongMode"]];
@@ -201,6 +211,7 @@
     [d setDouble:disposeZ forKey:[b stringByAppendingString:@".disposeZ"]];
     [d setObject:startCode forKey:[b stringByAppendingString:@".startCode"]];
     [d setObject:endCode forKey:[b stringByAppendingString:@".endCode"]];
+    [d setObject:jobkillCode forKey:[b stringByAppendingString:@".jobkillCode"]];
     [d setObject:filterPrg forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setBool:enableFilterPrg forKey:[b stringByAppendingString:@".enableFilterPrg"]];
     [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
@@ -208,6 +219,7 @@
     [d setDouble:dumpAreaFront forKey:[b stringByAppendingString:@".dumpAreaFront"]];
     [d setDouble:dumpAreaWidth forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
+    [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
     
 }
 +(void)initPrinter {
@@ -247,6 +259,7 @@
         [connection setConfig:currentPrinterConfiguration];
     [app->gcodeView setContent:1 text:currentPrinterConfiguration->startCode];
     [app->gcodeView setContent:2 text:currentPrinterConfiguration->endCode];
+    [app->gcodeView setContent:3 text:currentPrinterConfiguration->jobkillCode];
     [app->manualControl->extruderTempText setIntValue:currentPrinterConfiguration->defaultExtruderTemp];
     [app->manualControl->heatedBedTempText setIntValue:currentPrinterConfiguration->defaultHeatedBedTemp];
     [app->openGLView redraw];

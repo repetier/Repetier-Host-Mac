@@ -57,6 +57,8 @@
     IBOutlet NSButton *goDisposeCheckbox;
     IBOutlet NSButton *disableExtruderCheckbox;
     IBOutlet NSButton *disableBedCheckbox;
+    IBOutlet NSButton *disableMotorAfterJob;
+    IBOutlet NSTextField *addPrintingTime;
     IBOutlet NSButton *dontLogM105Checkbox;
 }
 @property (retain)NSArray* baudRates;

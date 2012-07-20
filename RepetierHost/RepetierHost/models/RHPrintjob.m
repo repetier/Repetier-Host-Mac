@@ -20,6 +20,9 @@
 #import "ThreadedNotification.h"
 #import "GCodeShort.h"
 #import "RHSound.h"
+#import "RHAppDelegate.h"
+#import "GCodeEditorController.h"
+#import "GCodeView.h"
 
 @implementation PrintTime
 
@@ -39,18 +42,22 @@
 
 @synthesize jobStarted;
 @synthesize jobFinished;
+@synthesize ana;
 
 -(id)init {
     if((self = [super init])) {
+        self.ana = [[GCodeAnalyzer alloc] init];
+        ana->privateAnalyzer = YES;
         jobList = [RHLinkedList new];
-        times = [RHLinkedList new];
-        timeLock = [[NSLock alloc] init];
+        //times = [RHLinkedList new];
+        //timeLock = [[NSLock alloc] init];
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         [dateFormatter setTimeStyle:NSDateFormatterLongStyle];
         dataComplete = NO;
         totalLines = 0;
         linesSend = 0;
+        computedPrintingTime = 0;
         exclusive = NO;
         mode = 0;
     }
@@ -58,9 +65,10 @@
 }
 
 -(void)dealloc {
+    self.ana = nil;
     [jobList release];
-    [times release];
-    [timeLock release];
+    //[times release];
+    //[timeLock release];
     [dateFormatter release];
     [super dealloc];
 }
@@ -69,14 +77,18 @@
 }
 -(void) beginJob
 {
+    [app->rightTabView selectTabViewItem:app->printTab];
     [connection firePrinterState:@"Building print job..."];
     dataComplete = NO;
+    [ana start];
     [jobList clear];
-    [times clear];
+    //[times clear];
     totalLines = 0;
     linesSend = 0;
+    computedPrintingTime = 0;
     mode = 1;
     maxLayer = 0;
+    [connection->analyzer startJob];
     [ThreadedNotification notifyASAP:@"RHJobChanged" object:self];
 }
 -(void) endJob
@@ -104,6 +116,9 @@
     [connection injectManualCommandFirst:@"M29"];
     [ThreadedNotification notifyASAP:@"RHJobChanged" object:self];
     [connection firePrinterState:@"Job killed" ];
+    for(GCodeShort *code in app->gcodeView->killjob->textArray) {
+        [connection injectManualCommand:code->text];
+    }
     [self doEndKillActions];
 }
 -(void) doEndKillActions
@@ -121,6 +136,10 @@
         [connection injectManualCommand:@"M140 S0"];
     if (currentPrinterConfiguration->afterJobGoDispose)
         [connection doDispose];
+    if (currentPrinterConfiguration->afterJobDisableMotors)
+    {
+        [connection injectManualCommand:@"M84"];
+    }
 }
 -(void) pushData:(NSString*)code
 {
@@ -140,8 +159,9 @@
 -(void)pushShortArray:(NSArray*)codes {
     for (GCodeShort *code in codes)
     {
-        NSString *line = code->text;
+        NSString *line = code->text;        
         if (line.length == 0) continue;
+        [ana analyzeShort:code];
         GCode *gcode = [[GCode alloc] initFromString:line];
         if (!gcode->comment)
         {
@@ -152,6 +172,7 @@
         if(code.hasLayer)
             maxLayer = code.layer;
     }    
+    computedPrintingTime = ana->printingTime;
 }
 /// <summary>
 /// Check, if more data is stored
@@ -170,11 +191,11 @@
     if (jobList->count == 0) return nil;
     linesSend++;
     GCode *gc = [jobList removeFirst];
-    [timeLock lock];
+    /*[timeLock lock];
     [times addLast:[[[PrintTime alloc] initWithLine:linesSend] autorelease]];
     if (times->count > 1500)
         [times removeFirst];
-    [timeLock unlock];
+    [timeLock unlock];*/
     if (jobList->count == 0)
     {
         dataComplete = false;
@@ -215,15 +236,15 @@
 }
 -(NSString*) ETA {
     if (linesSend < 3) return @"---";
-    double ticks = 0;
-    [timeLock lock];
+    double ticks = (computedPrintingTime - connection->analyzer->printingTime) * (1.0 + 0.01 * currentPrinterConfiguration->addPrintingTime)*100.0/(double)connection->speedMultiply;
+    /*[timeLock lock];
     if (times->count > 100) {
        PrintTime *t1 = times.peekFirst;
        PrintTime *t2 = times.peekLast;
        ticks = (t2->time - t1->time) * (totalLines - linesSend) / (t2->line - t1->line + 1);
     } else
        ticks = (((NSDate*)[NSDate date]).timeIntervalSince1970 - jobStarted.timeIntervalSince1970) * (totalLines - linesSend) / linesSend;
-    [timeLock unlock];
+    [timeLock unlock];*/
             long hours = ticks / 3600;
             ticks -= 3600 * hours;
             long min = ticks / 60;

@@ -33,7 +33,8 @@
     int extruderTemp;
     BOOL uploading;
     int bedTemp;
-    float x, y, z, e,emax;
+    float x, y, z, e,emax,f;
+    float lastX,lastY,lastZ,lastE;
     float xOffset, yOffset, zOffset, eOffset;
     float lastZPrint;
     BOOL fanOn;
@@ -50,10 +51,12 @@
     BOOL drawing;
     int layer;
     BOOL isG1Move;
+    float printingTime;
     GCode *actCode;
 }
 -(void)fireChanged;
 -(void)analyze:(GCode*) code;
 -(void)analyzeShort:(GCodeShort*)code;
 -(void) start;
+-(void) startJob;
 @end

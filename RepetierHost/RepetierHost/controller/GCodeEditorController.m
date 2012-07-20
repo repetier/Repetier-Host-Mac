@@ -34,20 +34,24 @@
         [self addSubview:view];
         editor->controller = self;
         showMode = 0;
+        printingTime = 0;
         triggerUpdate = YES;
         showMinLayer = showMaxLayer = maxLayer = 0;
         documents = [NSMutableArray new];
         gcode = [[GCodeContent alloc] initWithEditor:editor];
         prepend = [[GCodeContent alloc] initWithEditor:editor];
         append = [[GCodeContent alloc] initWithEditor:editor];
+        killjob = [[GCodeContent alloc] initWithEditor:editor];
         [documents addObject:gcode];
         [documents addObject:prepend];
         [documents addObject:append];
+        [documents addObject:killjob];
         [gcode toActive];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gcodeUpdateStatus:) name:@"RHGCodeUpdateStatus" object:nil];    
         [editor registerScrollView:scrollView];
         [self setContent:1 text:currentPrinterConfiguration->startCode];
         [self setContent:2 text:currentPrinterConfiguration->endCode];
+        [self setContent:3 text:currentPrinterConfiguration->jobkillCode];
         [firstLayerSlider setAltIncrementValue:1];
         [lastLayerSlider setAltIncrementValue:1];
     }
@@ -55,6 +59,10 @@
 }
 
 -(void)dealloc {
+    [gcode release];
+    [prepend release];
+    [append release];
+    [killjob release];
     [documents release];
     [super dealloc];
 }
@@ -141,6 +149,7 @@
         case 0:c = gcode;break;
         case 1:c = prepend;break;
         case 2:c = append;break;
+        case 3:c = killjob;break;
         default:c = gcode;break;
     }
     return [c text];
@@ -155,7 +164,10 @@
     [updateCode addObjectsFromArray:append->textArray];
     return [updateCode autorelease];
 }
-
+-(NSMutableArray*)getContentArrayAtIndex:(int)idx
+{
+    return ((GCodeContent*)[documents objectAtIndex:idx])->textArray;
+}
 -(void)setContent:(int)idx text:(NSString*)text
 {
     GCodeContent *c = nil;
@@ -163,6 +175,7 @@
         case 0:c = gcode;break;
         case 1:c = prepend;break;
         case 2:c = append;break;
+        case 3:c = killjob;break;
     }
     if(c==nil) return;
     if (c == editor->cur)
@@ -192,6 +205,9 @@
         [currentPrinterConfiguration saveToRepository];
     } else if(editor->cur==append) {
         [currentPrinterConfiguration setEndCode:editor.text];
+        [currentPrinterConfiguration saveToRepository];        
+    } else if(editor->cur==killjob) {
+        [currentPrinterConfiguration setJobkillCode:editor.text];
         [currentPrinterConfiguration saveToRepository];        
     }
 }

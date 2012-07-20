@@ -17,25 +17,28 @@
 #import <Foundation/Foundation.h>
 #import "RHLinkedList.h"
 #import "GCode.h"
-
+#import "GCodeAnalyzer.h"
 
 @interface RHPrintjob : NSObject {
     RHLinkedList *jobList;
-    RHLinkedList *times;
+    //RHLinkedList *times;
     NSDate *jobStarted, *jobFinished;
-    NSLock *timeLock;
+    GCodeAnalyzer *ana;
+    //NSLock *timeLock;
     NSDateFormatter *dateFormatter;
 @public
     BOOL dataComplete;
     int totalLines;
     int linesSend;
     BOOL exclusive;
+    double computedPrintingTime;
     int maxLayer;
     int mode; // 0 = no job defines, 1 = printing, 2 = finished, 3 = aborted
 }
 
 @property (retain) NSDate *jobStarted;
 @property (retain) NSDate *jobFinished;
+@property (retain) GCodeAnalyzer *ana;
 
 -(id)init;
 -(void)dealloc;

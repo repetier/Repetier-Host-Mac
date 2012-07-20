@@ -33,6 +33,8 @@
         uploading = NO;
         bedTemp = 0;
         x = y = z = e = emax = 0;
+        f = 1000;
+        lastX = lastY = lastZ = lastE = 0;
         xOffset = yOffset = zOffset = eOffset = 0;
         fanOn = NO;
         fanVoltage = 0;
@@ -42,6 +44,7 @@
         debugLevel = 6;
         lastline = 0;
         lastZPrint = 0;
+        printingTime = 0;
         layer=0;
         hasXHome = hasYHome = hasZHome = NO;
         privateAnalyzer = NO;
@@ -68,8 +71,11 @@
     fanVoltage = 0;
     lastline = 0;
     lastZPrint = 0;
+    printingTime = 0;
     tempMonitor = -1;
     x = y = z = e = emax = 0;
+    f = 1000;
+    lastX = lastY = lastZ = lastE = 0;
     xOffset = yOffset = zOffset = eOffset = 0;
     hasXHome = hasYHome = hasZHome = NO;
     printerWidth = currentPrinterConfiguration->width;
@@ -77,6 +83,17 @@
     printerHeight = currentPrinterConfiguration->height;
     [self fireChanged];
 }
+-(void) startJob {
+    layer = 0;
+    drawing = YES;
+    lastline = 0;
+    lastZPrint = 0;
+    printingTime = 0;
+    x = y = z = e = emax = 0;
+    lastX = lastY = lastZ = lastE = 0;
+    xOffset = yOffset = zOffset = eOffset = 0;
+}
+
 -(void) analyze:(GCode*) code
 {
     isG1Move = false;
@@ -107,6 +124,7 @@
             case 0:
             case 1:
                 isG1Move = YES;
+                if(code.hasF) f = code.getF;
                 if (relative)
                 {
                     if(code.hasX) x += code.getX;
@@ -146,6 +164,19 @@
                     }                            
                     }
                 }
+                float dx = abs(x - lastX);
+                float dy = abs(y - lastY);
+                float dz = abs(z - lastZ);
+                float de = abs(e - lastE);
+                if (dx + dy + dz > 0.001)
+                {
+                    printingTime += sqrt(dx * dx + dy * dy + dz * dz) * 60.0f / f;
+                }
+                else printingTime += de * 60.0f / f;
+                lastX = x;
+                lastY = y;
+                lastZ = z;
+                lastE = e;
                 [delegate positionChanged:self];
                 break;
             case 28:
@@ -178,7 +209,7 @@
                 if (code.hasX) { xOffset = x-code.getX; x = xOffset; }
                 if (code.hasY) { yOffset = y-code.getY; y = yOffset; }
                 if (code.hasZ) { zOffset = z-code.getZ; z = zOffset; }
-                if (code.hasE) { eOffset = e-code.getE; e = eOffset; }
+                if (code.hasE) { eOffset = e-code.getE; lastE = e = eOffset; }
                 [delegate positionChanged:self];
                 break;
         }
@@ -252,6 +283,7 @@
     {
         case 1:
             isG1Move = YES;
+            if(code.hasF) f = code->f;
             if (relative) {
                 if(code.hasX) {
                     x += code->x;
@@ -308,6 +340,19 @@
                     }
                 }
             }
+            float dx = abs(x - lastX);
+            float dy = abs(y - lastY);
+            float dz = abs(z - lastZ);
+            float de = abs(e - lastE);
+            if (dx + dy + dz > 0.001)
+            {
+                printingTime += sqrt(dx * dx + dy * dy + dz * dz) * 60.0f / f;
+            }
+            else printingTime += de * 60.0f / f;
+            lastX = x;
+            lastY = y;
+            lastZ = z;
+            lastE = e;
             [delegate positionChangedFastX:x y:y z:z e:e];
             break;
         case 4:
@@ -339,7 +384,7 @@
             if (code.hasX) { xOffset = x-code->x; x = xOffset; }
             if (code.hasY) { yOffset = y-code->y; y = yOffset; }
             if (code.hasZ) { zOffset = z-code->z; z = zOffset; }
-            if (code.hasE) { eOffset = e-code->e; e = eOffset; }
+            if (code.hasE) { eOffset = e-code->e; lastE = e = eOffset; }
             break;
         case 12: // Host command
             {

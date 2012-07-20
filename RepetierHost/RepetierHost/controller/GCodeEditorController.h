@@ -28,6 +28,7 @@
     GCodeContent *prepend;
     GCodeContent *append;
     GCodeContent *gcode;
+    GCodeContent *killjob;
     IBOutlet NSPopUpButton *fileSelector;
     IBOutlet NSTextField *updateText;
     IBOutlet NSScrollView *scrollView;
@@ -43,6 +44,7 @@
     int showMinLayer,showMaxLayer,maxLayer;
     int showMode;
     BOOL triggerUpdate;
+    float printingTime;
 }
 -(int)showMode;
 -(void)setShowMode:(int)mode;
@@ -62,5 +64,6 @@
 -(void)setContent:(int)idx text:(NSString*)text;
 - (IBAction)save:(id)sender;
 - (IBAction)clear:(id)sender;
+-(NSMutableArray*)getContentArrayAtIndex:(int)idx;
 
 @end

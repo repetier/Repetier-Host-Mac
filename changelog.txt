@@ -1,3 +1,10 @@
+Version 0.19
+  Show estimated printing time in editor.
+  Improved ETA during print.
+  Printer definable kill job actions.
+  Jump to print panel on job start.
+  Fixed memory access bug.
+
 Version 0.18 2012-06-20
   Slic3r 0.8.3
   Sounds for print finished/paused/error/@sound command.

@@ -164,7 +164,14 @@
 }
 -(void)openRecentGCode:(NSMenuItem*)item {
     NSString *file = item.title;
-    [gcodeView loadGCode:file];
+    [gcodeView loadGCodeGCode:file];
+}
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+    if(connection->job.hasData) {
+        [self showWarning:@"Stop your printing process before quitting the program!" headline:@"Termination aborted"];
+        return NO; 
+    }
+    return YES;
 }
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
     
@@ -289,7 +296,7 @@
         if (result == NSFileHandlingPanelOKButton) {
             NSArray* urls = [openPanel URLs];
             if(urls.count>0) {
-                [gcodeView loadGCode:[[urls objectAtIndex:0] path]];
+                [gcodeView loadGCodeGCode:[[urls objectAtIndex:0] path]];
             }
             // Use the URLs to build a list of items to import.
         }        
@@ -390,7 +397,7 @@
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
     NSString *ext = filename.pathExtension;
     if([ext compare:@"gcode" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
-        [gcodeView loadGCode:filename];
+        [gcodeView loadGCodeGCode:filename];
         return YES;
     } else if([ext compare:@"stl" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
         [stlComposer loadSTLFile:filename];

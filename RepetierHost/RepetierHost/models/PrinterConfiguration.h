@@ -34,6 +34,7 @@
     BOOL afterJobGoDispose;
     BOOL afterJobDisableExtruder;
     BOOL afterJobDisableHeatedBed;
+    BOOL afterJobDisableMotors;
     BOOL autocheckTemp;
     BOOL dontLogM105;
     int autocheckInterval;
@@ -47,8 +48,10 @@
     double dumpAreaFront;
     double dumpAreaWidth;
     double dumpAreaDepth;
+    double addPrintingTime;
     NSString *startCode;
     NSString *endCode;
+    NSString *jobkillCode;
     NSString *filterPrg;
     BOOL enableFilterPrg;
 }
@@ -56,6 +59,7 @@
 @property (copy) NSString *port;
 @property (copy) NSString *startCode;
 @property (copy) NSString *endCode;
+@property (copy) NSString *jobkillCode;
 @property (copy) NSString *filterPrg;
 
 -(void)initDefaultsRepository:(NSString*)confname;

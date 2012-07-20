@@ -15,7 +15,7 @@
 */
 @interface GCodeShort : NSObject {
     @public
-    float x,y,z,e;
+    float x,y,z,e,f;
     // Bit 0-19 : Layer 
     // Bit 20-23 : Tool
     // Bit 24-29 : Compressed command
@@ -34,5 +34,6 @@
 -(BOOL)hasY;
 -(BOOL)hasZ;
 -(BOOL)hasE;
+-(BOOL)hasF;
 -(NSUInteger)length;
 @end
