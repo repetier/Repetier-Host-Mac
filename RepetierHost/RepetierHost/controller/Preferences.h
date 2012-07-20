@@ -45,6 +45,7 @@
     NSOpenPanel* openPanel;
     IBOutlet NSTextField *skeinforgeApplication;
     IBOutlet NSTextField *skeinforgeCraft;
+    IBOutlet NSTextField *skeinforgePythonCraft;
     IBOutlet NSTextField *skeinforgePython;
     IBOutlet NSTextField *skeinforgeExtension;
     IBOutlet NSTextField *skeinforgePostfix;
@@ -68,6 +69,7 @@
 - (IBAction)browsePrintjobPaused:(id)sender;
 - (IBAction)browseError:(id)sender;
 - (IBAction)browseCommand:(id)sender;
+- (IBAction)browseSkeinforgePythonCraft:(id)sender;
 
 
 

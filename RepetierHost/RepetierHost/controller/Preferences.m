@@ -292,4 +292,17 @@
         }        
     }];
 }
+
+- (IBAction)browseSkeinforgePythonCraft:(id)sender {
+    [openPanel setMessage:@"Select python interpreter"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"skeinforgePythonCraft"];
+            }
+        }        
+    }];
+}
 @end

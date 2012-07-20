@@ -271,7 +271,7 @@
 -(void)sliceSkeinforge:(NSString*)file {
     if(skeinforgeSlice!=nil) return;
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
-    NSString *python = [d stringForKey:@"skeinforgePython"];
+    NSString *python = [d stringForKey:@"skeinforgePythonCraft"];
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];
     NSArray *arr = [NSArray arrayWithObjects:skein,file,nil];
     skeinforgeOut = [[NSString stringWithFormat:@"%@%@%@",[file stringByDeletingPathExtension],[d stringForKey:@"skeinforgePostfix"],[d stringForKey:@"skeinforgeExtension"]] retain];

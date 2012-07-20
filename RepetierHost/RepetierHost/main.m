@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     [d setObject:@"" forKey:@"skeinforgeApplication"];
     [d setObject:@"" forKey:@"skeinforgeCraft"];
     [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePython"];
+    [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePythonCraft"];
     //[d setObject:@".gcode" forKey:@"skeinforgeExtension"];
     //[d setObject:@"_export" forKey:@"skeinforgePostfix"];
         
