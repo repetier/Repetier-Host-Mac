@@ -23,7 +23,7 @@
     RHLinkedList *jobList;
     //RHLinkedList *times;
     NSDate *jobStarted, *jobFinished;
-    GCodeAnalyzer *ana;
+    GCodeAnalyzer *_ana;
     //NSLock *timeLock;
     NSDateFormatter *dateFormatter;
 @public

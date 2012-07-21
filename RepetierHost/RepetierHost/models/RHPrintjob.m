@@ -42,12 +42,12 @@
 
 @synthesize jobStarted;
 @synthesize jobFinished;
-@synthesize ana;
+@synthesize ana=_ana;
 
 -(id)init {
     if((self = [super init])) {
-        self.ana = [[GCodeAnalyzer alloc] init];
-        ana->privateAnalyzer = YES;
+        self.ana = [[[GCodeAnalyzer alloc] init] autorelease];
+        self.ana->privateAnalyzer = YES;
         jobList = [RHLinkedList new];
         //times = [RHLinkedList new];
         //timeLock = [[NSLock alloc] init];
@@ -65,7 +65,7 @@
 }
 
 -(void)dealloc {
-    self.ana = nil;
+    self.ana=nil;
     [jobList release];
     //[times release];
     //[timeLock release];
@@ -80,7 +80,7 @@
     [app->rightTabView selectTabViewItem:app->printTab];
     [connection firePrinterState:@"Building print job..."];
     dataComplete = NO;
-    [ana start];
+    [self.ana start];
     [jobList clear];
     //[times clear];
     totalLines = 0;
@@ -161,7 +161,7 @@
     {
         NSString *line = code->text;        
         if (line.length == 0) continue;
-        [ana analyzeShort:code];
+        [self.ana analyzeShort:code];
         GCode *gcode = [[GCode alloc] initFromString:line];
         if (!gcode->comment)
         {
@@ -172,7 +172,7 @@
         if(code.hasLayer)
             maxLayer = code.layer;
     }    
-    computedPrintingTime = ana->printingTime;
+    computedPrintingTime = self.ana->printingTime;
 }
 /// <summary>
 /// Check, if more data is stored

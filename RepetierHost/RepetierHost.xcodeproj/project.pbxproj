@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FD01F4A815BB0AD900754A5F /* autoposition.png in Resources */ = {isa = PBXBuildFile; fileRef = FD01F4A415BB0AD900754A5F /* autoposition.png */; };
+		FD01F4A915BB0AD900754A5F /* center.png in Resources */ = {isa = PBXBuildFile; fileRef = FD01F4A515BB0AD900754A5F /* center.png */; };
+		FD01F4AA15BB0AD900754A5F /* drop.png in Resources */ = {isa = PBXBuildFile; fileRef = FD01F4A615BB0AD900754A5F /* drop.png */; };
+		FD01F4AB15BB0AD900754A5F /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = FD01F4A715BB0AD900754A5F /* home.png */; };
+		FD01F4AE15BB0BA800754A5F /* generate.png in Resources */ = {isa = PBXBuildFile; fileRef = FD01F4AD15BB0BA800754A5F /* generate.png */; };
 		FD0AE1D514DB446A002356B8 /* Slic3rSettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */; };
 		FD13BF7614C090620007E33D /* RHAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = FD13BF7514C090620007E33D /* RHAnimation.m */; };
 		FD13BF7914C174D40007E33D /* STLComposer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD13BF7814C174D40007E33D /* STLComposer.xib */; };
@@ -123,6 +128,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FD01F4A415BB0AD900754A5F /* autoposition.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = autoposition.png; sourceTree = "<group>"; };
+		FD01F4A515BB0AD900754A5F /* center.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = center.png; sourceTree = "<group>"; };
+		FD01F4A615BB0AD900754A5F /* drop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drop.png; sourceTree = "<group>"; };
+		FD01F4A715BB0AD900754A5F /* home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home.png; sourceTree = "<group>"; };
+		FD01F4AD15BB0BA800754A5F /* generate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = generate.png; sourceTree = "<group>"; };
 		FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Slic3rSettings.xib; sourceTree = "<group>"; };
 		FD13BF7414C090620007E33D /* RHAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHAnimation.h; sourceTree = "<group>"; };
 		FD13BF7514C090620007E33D /* RHAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHAnimation.m; sourceTree = "<group>"; };
@@ -550,6 +560,11 @@
 		FDEDF7D2148A16EB00E6CFF1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FD01F4AD15BB0BA800754A5F /* generate.png */,
+				FD01F4A415BB0AD900754A5F /* autoposition.png */,
+				FD01F4A515BB0AD900754A5F /* center.png */,
+				FD01F4A615BB0AD900754A5F /* drop.png */,
+				FD01F4A715BB0AD900754A5F /* home.png */,
 				FD283A9514EACEFC00597203 /* emergencystop.png */,
 				FD283A8914E97ED100597203 /* preferences.png */,
 				FD283A8A14E97ED100597203 /* printersettings.png */,
@@ -743,6 +758,11 @@
 				FD283A8E14EAB8CA00597203 /* SDCard.xib in Resources */,
 				FD283A9614EACEFC00597203 /* emergencystop.png in Resources */,
 				FD283A9814EFAFD000597203 /* pauseiconbig.png in Resources */,
+				FD01F4A815BB0AD900754A5F /* autoposition.png in Resources */,
+				FD01F4A915BB0AD900754A5F /* center.png in Resources */,
+				FD01F4AA15BB0AD900754A5F /* drop.png in Resources */,
+				FD01F4AB15BB0AD900754A5F /* home.png in Resources */,
+				FD01F4AE15BB0BA800754A5F /* generate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

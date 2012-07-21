@@ -715,7 +715,7 @@
         txt = @"Layer: - Tool: -";
     if(controller->printingTime>0) {
         int tm = (int)(controller->printingTime*(1.0+0.01*currentPrinterConfiguration->addPrintingTime)/60.0);
-        txt = [NSString stringWithFormat:@"%@ Printing time:%d min",txt,tm];
+        txt = [NSString stringWithFormat:@"%@ Printing time:%d:%02d",txt,tm/60,tm%60];
     }
     [controller->layerText setStringValue:txt];
 }

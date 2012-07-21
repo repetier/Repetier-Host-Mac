@@ -3,6 +3,8 @@ Version 0.19
   Improved ETA during print.
   Printer definable kill job actions.
   Jump to print panel on job start.
+  Separate python interpreter for skeinforge craft lets you select pypy for 300% and more
+    speed improvement. The gui doesn't work with pypy, so I made 2 interpreter of it.
   Fixed memory access bug.
 
 Version 0.18 2012-06-20

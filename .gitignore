@@ -4,3 +4,5 @@ RepetierHost/RepetierHost/Slic3r.app
 RepetierHost/RepetierHost.xcodeproj/project.xcworkspace/xcuserdata
 xcuserdata
 *.pkg
+
+RepetierHost/RepetierHost/images/Thumbs.db
