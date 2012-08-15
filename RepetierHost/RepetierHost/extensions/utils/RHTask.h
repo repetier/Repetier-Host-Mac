@@ -30,4 +30,5 @@
 -(void)taskThread:(id)obj;
 -(void)bringToFront;
 -(BOOL)finishedSuccessfull;
+-(void)kill;
 @end

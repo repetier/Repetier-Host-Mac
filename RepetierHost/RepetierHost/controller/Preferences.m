@@ -207,7 +207,14 @@
             NSArray* urls = [openPanel URLs];
             if(urls.count>0) {
                 NSURL *url = [urls objectAtIndex:0];
-                [NSUserDefaults.standardUserDefaults setObject:[url.path stringByAppendingString:@"/Contents/MacOS/slic3r"] forKey:@"slic3rExternalPath"];
+                NSString *path = [url.path stringByAppendingString:@"/Contents/MacOS/slic3r"];
+                NSFileManager *fm = [NSFileManager defaultManager];
+                BOOL isDir;
+                BOOL fileExists = [fm fileExistsAtPath:path isDirectory:&isDir];
+                fileExists&=!isDir;
+                if(!fileExists)
+                    path = url.path;
+                [NSUserDefaults.standardUserDefaults setObject:path forKey:@"slic3rPath"];
             }
         }        
     }];
@@ -303,6 +310,19 @@
                 [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"skeinforgePythonCraft"];
             }
         }        
+    }];
+}
+
+- (IBAction)browseSkeinforgeProfiles:(id)sender {
+    [openPanel setMessage:@"Select profiles directory"];
+    [openPanel beginSheetModalForWindow:prefWindow completionHandler:^(NSInteger result){
+        if (result == NSFileHandlingPanelOKButton) {
+            NSArray* urls = [openPanel URLs];
+            if(urls.count>0) {
+                NSURL *url = [urls objectAtIndex:0];
+                [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"skeinforgeProfiles"];
+            }
+        }
     }];
 }
 @end

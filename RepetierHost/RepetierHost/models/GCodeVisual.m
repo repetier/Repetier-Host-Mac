@@ -148,7 +148,7 @@
             glDeleteBuffers(3, buf);
             hasBuf = NO;
         }
-    }
+    } else drawMethod = -1; 
     [pointsLock unlock];
 }
 -(void)dealloc
@@ -318,7 +318,7 @@
                 //NSLog(@"lastdir %f %f %f",lastdir[0],lastdir[1],lastdir[2]);
                 double vacos = dir[0] * lastdir[0] + dir[1] * lastdir[1] + dir[2] * lastdir[2];
                 if(vacos<-0.97) vacos = -0.97; else if(vacos>1) vacos = 1;
-                float zoomw = cos(0.5*acos(vacos));
+                float zoomw = vacos; //cos(acos(vacos));
                 //NSLog(@"vacos %f,zoomz %f",vacos,zoomw);
                 lastdir[0] = actdir[0];
                 lastdir[1] = actdir[1];
@@ -977,9 +977,9 @@
             {
                 glDisable(GL_COLOR_MATERIAL);
                 glDisableClientState(GL_COLOR_ARRAY);
-                if(cp!=nil)
-                    free(cp);
             }
+            if(cp!=nil)
+                free(cp);
             glDisableClientState(GL_VERTEX_ARRAY);
         }
         else

@@ -83,6 +83,9 @@
     running = NO;
     [ThreadedNotification notifyASAP:@"RHTaskFinished" object:self];
 }
+-(void)kill {
+    [task terminate];
+}
 -(BOOL)finishedSuccessfull {
     if (task==nil) {
         if (status == 0)

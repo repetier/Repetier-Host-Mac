@@ -75,6 +75,9 @@
 		FD92675914D71E3E005B31FF /* RHTask.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675814D71E3E005B31FF /* RHTask.m */; };
 		FD92675C14D85552005B31FF /* Slicer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675B14D85552005B31FF /* Slicer.m */; };
 		FD92676114D9A54D005B31FF /* Slic3r.app in Resources */ = {isa = PBXBuildFile; fileRef = FD92676014D9A54C005B31FF /* Slic3r.app */; };
+		FD9447B815D8230700AFE7F1 /* Slicer.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD9447B715D8230700AFE7F1 /* Slicer.xib */; };
+		FD9447BC15D82C6100AFE7F1 /* RHSlicer.m in Sources */ = {isa = PBXBuildFile; fileRef = FD9447BB15D82C6100AFE7F1 /* RHSlicer.m */; };
+		FD9447BF15D831A100AFE7F1 /* IniFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FD9447BE15D831A100AFE7F1 /* IniFile.m */; };
 		FD97347F14DC5DCB007D2E42 /* Slic3rConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */; };
 		FD98D9E314BB5AA00079AB43 /* GCodeVisual.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */; };
 		FD98D9E814BCEF710079AB43 /* RHActionTabDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */; };
@@ -87,6 +90,7 @@
 		FDB2C6851494B59400276479 /* switch_off.png in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C6831494B59400276479 /* switch_off.png */; };
 		FDB2C6861494B59400276479 /* switch_on.png in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C6841494B59400276479 /* switch_on.png */; };
 		FDB2C68A1494CB8C00276479 /* IntegerTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C6891494CB8C00276479 /* IntegerTransformer.m */; };
+		FDDC2FB215D9A8700036B965 /* SkeinConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FDDC2FB115D9A8700036B965 /* SkeinConfig.m */; };
 		FDEDF7A9148961D800E6CFF1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FDEDF7A8148961D800E6CFF1 /* Cocoa.framework */; };
 		FDEDF7B3148961D800E6CFF1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FDEDF7B1148961D800E6CFF1 /* InfoPlist.strings */; };
 		FDEDF7B5148961D800E6CFF1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FDEDF7B4148961D800E6CFF1 /* main.m */; };
@@ -232,6 +236,11 @@
 		FD92675A14D85552005B31FF /* Slicer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slicer.h; sourceTree = "<group>"; };
 		FD92675B14D85552005B31FF /* Slicer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slicer.m; sourceTree = "<group>"; };
 		FD92676014D9A54C005B31FF /* Slic3r.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = Slic3r.app; sourceTree = "<group>"; };
+		FD9447B715D8230700AFE7F1 /* Slicer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Slicer.xib; sourceTree = "<group>"; };
+		FD9447BA15D82C6100AFE7F1 /* RHSlicer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHSlicer.h; sourceTree = "<group>"; };
+		FD9447BB15D82C6100AFE7F1 /* RHSlicer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHSlicer.m; sourceTree = "<group>"; };
+		FD9447BD15D831A100AFE7F1 /* IniFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IniFile.h; sourceTree = "<group>"; };
+		FD9447BE15D831A100AFE7F1 /* IniFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IniFile.m; sourceTree = "<group>"; };
 		FD97347D14DC5DCA007D2E42 /* Slic3rConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slic3rConfig.h; sourceTree = "<group>"; };
 		FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Slic3rConfig.m; sourceTree = "<group>"; };
 		FD98D9E114BB5A9F0079AB43 /* GCodeVisual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCodeVisual.h; sourceTree = "<group>"; };
@@ -253,6 +262,8 @@
 		FDB2C6881494CB8C00276479 /* IntegerTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntegerTransformer.h; sourceTree = "<group>"; };
 		FDB2C6891494CB8C00276479 /* IntegerTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntegerTransformer.m; sourceTree = "<group>"; };
 		FDBAF41E14EFE96100E41B62 /* Repetier-Host MacMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Repetier-Host MacMac.entitlements"; sourceTree = "<group>"; };
+		FDDC2FB015D9A8700036B965 /* SkeinConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkeinConfig.h; sourceTree = "<group>"; };
+		FDDC2FB115D9A8700036B965 /* SkeinConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SkeinConfig.m; sourceTree = "<group>"; };
 		FDEDF7A4148961D800E6CFF1 /* Repetier-Host Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Repetier-Host Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDEDF7A8148961D800E6CFF1 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		FDEDF7AB148961D800E6CFF1 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -481,6 +492,7 @@
 				FD74DBC714D1C83F00422BFE /* Preferences.xib */,
 				FD0AE1D414DB446A002356B8 /* Slic3rSettings.xib */,
 				FD283A8D14EAB8CA00597203 /* SDCard.xib */,
+				FD9447B715D8230700AFE7F1 /* Slicer.xib */,
 			);
 			path = windows;
 			sourceTree = "<group>";
@@ -542,6 +554,8 @@
 				FD6E2F7514C2446700F57498 /* EEPROMController.m */,
 				FDB2C67514926E6500276479 /* RHTempertuareController.m */,
 				FD13BF7A14C1756D0007E33D /* STLComposer.h */,
+				FD9447BA15D82C6100AFE7F1 /* RHSlicer.h */,
+				FD9447BB15D82C6100AFE7F1 /* RHSlicer.m */,
 				FD13BF7B14C1756D0007E33D /* STLComposer.m */,
 				FDB2C67714927CA900276479 /* RHLogView.h */,
 				FDB2C67814927CA900276479 /* RHLogView.m */,
@@ -653,6 +667,10 @@
 				FD141AD4150E5E5D00D74E18 /* RectPacker.m */,
 				FD1C3167158F87C100B13408 /* RHSound.h */,
 				FD1C3168158F87C100B13408 /* RHSound.m */,
+				FD9447BD15D831A100AFE7F1 /* IniFile.h */,
+				FD9447BE15D831A100AFE7F1 /* IniFile.m */,
+				FDDC2FB015D9A8700036B965 /* SkeinConfig.h */,
+				FDDC2FB115D9A8700036B965 /* SkeinConfig.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -771,6 +789,7 @@
 				FD01F4AE15BB0BA800754A5F /* generate.png in Resources */,
 				FD01F4B115BBDE8600754A5F /* mount.png in Resources */,
 				FD01F4B215BBDE8600754A5F /* unmount.png in Resources */,
+				FD9447B815D8230700AFE7F1 /* Slicer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,6 +853,9 @@
 				FD22AFC41501822D009BE821 /* GCodeShort.m in Sources */,
 				FD141AD5150E5E5D00D74E18 /* RectPacker.m in Sources */,
 				FD1C3169158F87C100B13408 /* RHSound.m in Sources */,
+				FD9447BC15D82C6100AFE7F1 /* RHSlicer.m in Sources */,
+				FD9447BF15D831A100AFE7F1 /* IniFile.m in Sources */,
+				FDDC2FB215D9A8700036B965 /* SkeinConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

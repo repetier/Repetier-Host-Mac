@@ -14,23 +14,30 @@
  limitations under the License.
  */
 
-#import "DefaultsExtension.h"
 
-@implementation NSUserDefaults(DefaultsExtension)
+#import <Foundation/Foundation.h>
 
-- (void)setColor:(NSColor *)aColor forKey:(NSString *)aKey
-{
-    NSData *theData=[NSArchiver archivedDataWithRootObject:aColor];
-    [self setObject:theData forKey:aKey];
+@interface IniSection : NSObject {
+    NSString *name;
+    NSMutableDictionary *entries;
 }
+@property (retain)NSString *name;
+@property (retain)NSMutableDictionary *entries;
 
-- (NSColor *)colorForKey:(NSString *)aKey
-{
-    NSColor *theColor=nil;
-    NSData *theData=[self dataForKey:aKey];
-    if (theData != nil)
-        theColor=(NSColor *)[NSUnarchiver unarchiveObjectWithData:theData];
-    return theColor;
+-(id)initWithName:(NSString*)_name;
+@end
+
+@interface IniFile : NSObject {
+    NSString *path;
+    NSMutableDictionary *sections;
 }
+@property (retain)NSString *path;
+@property (retain)NSMutableDictionary *sections;
+
+-(id)init;
+-(void)read:(NSString*)_path;
+-(void)add:(IniFile*)f;
+-(void)flatten;
+-(void)write:(NSString*)_path;
 
 @end

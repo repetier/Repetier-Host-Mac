@@ -1,5 +1,5 @@
 /*
- Copyright 2011 repetier repetierdev@googlemail.com
+ Copyright 2011 repetier repetierdev@gmail.com
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+
 #import "Slicer.h"
 #import "RHAppDelegate.h"
 #import "STL.h"
@@ -22,6 +23,7 @@
 #import "GCodeEditorController.h"
 #import "StringUtil.h"
 #import "RHLogger.h"
+#import "../controller/RHSlicer.h"
 
 @implementation Slicer
 
@@ -30,6 +32,10 @@
         skeinforgeRun = skeinforgeSlice = nil;
         slic3rIntRun = slic3rIntSlice = nil;
         slic3rExtRun = slic3rExtSlice = nil;
+        profileConfig = nil;
+        exportConfig = nil;
+        extrusionConfig = nil;
+        multiplyConfig = nil;
         postprocess = nil;
         slic3rInternalPath = [[[[NSBundle mainBundle] pathForResource:@"Slic3r" ofType:@"app"] stringByAppendingString:@"/Contents/MacOS/slic3r"] retain];
         emptyPath = [[[NSBundle mainBundle] pathForResource:@"empty" ofType:@"txt"] retain];
@@ -67,6 +73,7 @@
         [slic3rIntSlice release];
     [slic3rInternalPath release];
     [emptyPath release];
+    [self restoreSkeinforgeConfigs];
     [super dealloc];
 }
 -(void)awakeFromNib
@@ -79,37 +86,58 @@
     BOOL exists = [fm fileExistsAtPath:fname isDirectory:&isDir];
     return exists & (!isDir);  
 }
+-(void)restoreSkeinforgeConfigs
+{
+    if (profileConfig != nil)
+        [profileConfig writeOriginal];
+    if (exportConfig != nil)
+        [exportConfig writeOriginal ];
+    if (extrusionConfig != nil)
+        [extrusionConfig writeOriginal];
+    if (multiplyConfig != nil)
+        [multiplyConfig writeOriginal ];
+    profileConfig = nil;
+    exportConfig = nil;
+    extrusionConfig = nil;
+    multiplyConfig = nil;
+}
 // Checks configuration settings and enables/disables menus if necessary
 -(void)checkConfig {
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     activeSlicer = (int)[d integerForKey:@"activeSlicer"];
     BOOL skeinOK = self.skeinforgeConfigured;
     if(activeSlicer==3 && !skeinOK) activeSlicer=1;
-    [skeinforgeMenu setEnabled:skeinOK];
-    [skeinforgeMenu setState:activeSlicer==3];
-    [configSkeinforgeMenu setEnabled:skeinOK];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *slic3rPath = [d stringForKey:@"slic3rExternalPath"];
-    NSString *slic3rConfig = [d stringForKey:@"slic3rExternalConfig"];
+    [app->rhslicer.skeinforgeActive setEnabled:skeinOK];
+    
+    NSString *exe = [d stringForKey:@"slic3rPath"];
+    [[NSApplication sharedApplication] deactivate];
     BOOL isDir;
-    BOOL slic3rExt = [fm fileExistsAtPath:slic3rPath isDirectory:&isDir];
-    slic3rExt&=!isDir;
-    [configSlic3rExtMenu setEnabled:slic3rExt];
-    BOOL bundeled = [d boolForKey:@"slic3rInternalBundled"];
-    if(!bundeled && !slic3rExt && activeSlicer==1) {
-        activeSlicer = 0;
-        [slic3rIntMenu setEnabled:NO];
-    } else
-        [slic3rIntMenu setEnabled:YES];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
+    fileExists&=!isDir;
+    if(!fileExists)
+        exe = slic3rInternalPath;
+    fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
+    [app->rhslicer.slic3rActive setEnabled:fileExists];
+    fm = [NSFileManager defaultManager];
     
-    slic3rExt &= [fm fileExistsAtPath:slic3rConfig isDirectory:&isDir];
-    slic3rExt&=!isDir;
-    if(activeSlicer==2 && !slic3rExt)
+    if(activeSlicer==2)
         activeSlicer=1;
-    [slic3rExtMenu setEnabled:slic3rExt];
+    //[slic3rExtMenu setEnabled:slic3rExt];
     
-    [slic3rIntMenu setState:activeSlicer==1];
-    [slic3rExtMenu setState:activeSlicer==2];
+    [app->rhslicer.slic3rActive setState:activeSlicer!=3];
+    [app->rhslicer.skeinforgeActive setState:activeSlicer==3];
+    if(activeSlicer==3) {
+        NSString *path = [d objectForKey:@"skeinforgeProfiles"];
+        if([path rangeOfString:@"sfact"].location!=NSNotFound)
+            [app->rhslicer.runSlice setTitle:@"Slice with SFACT"];
+        else
+            [app->rhslicer.runSlice setTitle:@"Slice with Skeinforge"];
+
+    } else {
+        [app->rhslicer.runSlice setTitle:@"Slice with Slic3r"];
+    }
+    [app->rhslicer updateSelections];
 }
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
@@ -169,6 +197,7 @@
         [slic3rExtOut release];
         [slic3rExtSlice release];
         slic3rExtSlice = nil;
+        [app->rhslicer.killButton setEnabled:NO];
     } else if(t==slic3rIntSlice) {
         if(slic3rIntSlice.finishedSuccessfull) {
             [self executePostprocess:slic3rIntOut];
@@ -178,6 +207,7 @@
         [slic3rIntOut release];
         [slic3rIntSlice release];
         slic3rIntSlice = nil;
+        [app->rhslicer.killButton setEnabled:NO];
     } else if(t==skeinforgeSlice) {
         if(skeinforgeSlice.finishedSuccessfull) {
             if([self fileExists:skeinforgeOut]) {
@@ -190,6 +220,8 @@
         [skeinforgeOut release];
         [skeinforgeSlice release];
         skeinforgeSlice = nil;
+        [self restoreSkeinforgeConfigs];
+        [app->rhslicer.killButton setEnabled:NO];
     } else if(t==skeinforgeRun) {
         [skeinforgeRun release];
         skeinforgeRun = nil;
@@ -197,7 +229,15 @@
         [slic3rExtRun release];
         slic3rExtRun = nil;
     }
+    [app->rhslicer updateSelections];
 }
+-(void)killSlicing {
+    if(skeinforgeSlice!=nil)
+        [skeinforgeSlice kill];
+    if(slic3rExtSlice!=nil)
+        [slic3rExtSlice kill];
+}
+
 -(BOOL)skeinforgeConfigured {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
@@ -244,6 +284,27 @@
 - (IBAction)configSlic3rInternal:(id)sender {
     [app->slic3r->configWindow makeKeyAndOrderFront:nil];  
 }
+- (IBAction)configSlic3r:(id)sender {
+    if(slic3rExtRun!=nil) {
+        if(slic3rExtRun->running) {
+            [slic3rExtRun bringToFront];
+            return;
+        }
+        [slic3rExtRun release];
+    }
+    NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+    NSString *exe = [d stringForKey:@"slic3rPath"];
+    [[NSApplication sharedApplication] deactivate];
+    BOOL isDir;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
+    fileExists&=!isDir;
+    if(!fileExists)
+        exe = slic3rInternalPath;
+    NSArray *arr;
+    arr = [NSArray arrayWithObjects:nil];
+    slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
+}
 
 - (IBAction)configSlic3rExternal:(id)sender {
     if(slic3rExtRun!=nil) {
@@ -273,13 +334,57 @@
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *python = [d stringForKey:@"skeinforgePythonCraft"];
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];
+    NSString *sdir = [d stringForKey:@"skeinforgeProfiles"];
+    NSString *prof = [d stringForKey:@"skeinforgeSelectedProfile"];
+    profileConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/skeinforge_profile.csv",sdir]];
+    extrusionConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/extrusion.csv",sdir]];
+    exportConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/extrusion/%@/export.csv",sdir,prof]];
+    multiplyConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/extrusion/%@/multiply.csv",sdir,prof]];
+    // Set profile to extrusion
+    /* cutting	False
+     extrusion	True
+     milling	False
+     winding	False
+     */
+    [profileConfig setValue:@"False" key:@"cutting"];
+    [profileConfig setValue:@"False" key:@"milling"];
+    [profileConfig setValue:@"True" key:@"extrusion"];
+    [profileConfig setValue:@"False" key:@"winding"];
+    [profileConfig writeModified ];
+    // Set used profile
+    [extrusionConfig setValue:prof key:@"Profile Selection:"];
+    [extrusionConfig writeModified];
+    // Set export to correct values
+    [exportConfig setValue:@"True" key:@"Activate Export"];
+    [exportConfig setValue:@"False" key:@"Add Profile Extension"];
+    [exportConfig setValue:@"False" key:@"Add Profile Name to Filename"];
+    [exportConfig setValue:@"False" key:@"Add Timestamp Extension"];
+    [exportConfig setValue:@"False" key:@"Add Timestamp to Filename"];
+    [exportConfig setValue:@"False" key:@"Add Description to Filename"];
+    [exportConfig setValue:@"False" key:@"Add Descriptive Extension"];
+    [exportConfig writeModified];
+    
+    [multiplyConfig setValue:@"False" key:@"Activate Multiply:"];
+    [multiplyConfig setValue:@"False" key:@"Activate Multiply: "];
+    [multiplyConfig setValue:@"False" key:@"Activate Multiply"];
+    [multiplyConfig writeModified ];
+    
     NSArray *arr = [NSArray arrayWithObjects:skein,file,nil];
-    skeinforgeOut = [[NSString stringWithFormat:@"%@%@%@",[file stringByDeletingPathExtension],[d stringForKey:@"skeinforgePostfix"],[d stringForKey:@"skeinforgeExtension"]] retain];
+    NSString *extension = [exportConfig getValue:@"File Extension:"];
+    if (extension == nil)
+        extension = [exportConfig getValue:@"File Extension (gcode):"];
+    if(extension == nil) extension = @"";
+    NSString *export = [exportConfig getValue:@"Add Export Suffix"];
+    if (export == nil)
+        export = [exportConfig getValue:@"Add _export to filename (filename_export)"];
+    if (export == nil || [export compare:@"True"]!=NSOrderedSame)
+        export = @""; else export = @"_export";
+    skeinforgeOut = [[NSString stringWithFormat:@"%@%@.%@",[file stringByDeletingPathExtension],export,extension] retain];
     if([self fileExists:skeinforgeOut]) {
         [[NSFileManager defaultManager] removeItemAtPath:skeinforgeOut error:nil];
     }
     skeinforgeSlice = [[RHTask alloc] initProgram:python args:arr logPrefix:@"<Skeinforge> "];
-    
+    [app->rhslicer.killButton setEnabled:YES];
 }
 -(NSString*)patternName:(NSString*)pat {
     NSRange r = [pat rangeOfString:@" "];
@@ -483,13 +588,66 @@
            [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],@"-o",slic3rExtOut,file,nil];
     slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    
 }
+-(void)sliceSlic3r:(NSString*)file {
+    if(slic3rExtSlice!=nil) {
+        if(slic3rExtSlice->running) {
+            return;
+        }
+        [slic3rExtSlice release];
+    }
+    NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+    NSString *exe = [d stringForKey:@"slic3rPath"];
+    [[NSApplication sharedApplication] deactivate];
+    BOOL isDir;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
+    fileExists&=!isDir;
+    if(!fileExists)
+        exe = slic3rInternalPath;
+
+    NSArray *arr;
+    
+    NSString *sFilament = [d objectForKey:@"slic3rFilament"];
+    NSString *sPrint = [d objectForKey:@"slic3rPrint"];
+    NSString *sPrinter = [d objectForKey:@"slic3rPrinter"];
+
+    NSString *dir = @"~/Library/Repetier";
+    dir = [dir stringByExpandingTildeInPath];
+    NSString *config = [NSString stringWithFormat:@"%@/slic3r.ini",dir];
+    NSString *cdir = [RHSlicer slic3rConfigDir];
+    IniFile *ini = [[[IniFile alloc] init] autorelease];
+    NSString *fPrinter = [NSString stringWithFormat:@"%@/print/%@.ini",cdir,sPrint];
+    [ini read:fPrinter];
+    IniFile *ini2 = [[[IniFile alloc] init] autorelease];
+    [ini2 read:[NSString stringWithFormat:@"%@/printer/%@.ini",cdir,sPrinter]];
+    IniFile *ini3 = [[[IniFile alloc] init] autorelease];
+    [ini3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament]];
+    [ini add:ini2];
+    [ini add:ini3 ];
+    [ini flatten];
+    [ini write:config];
+    
+    STL *stl = [[STL alloc] init];
+    [stl load:file];
+    [stl updateBoundingBox];
+    // User assigned valid position, so we use this
+    double centerx = stl->xMin + (stl->xMax - stl->xMin) / 2;
+    double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
+    [stl release];
+    slic3rExtOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
+    if([self fileExists:slic3rExtOut]) {
+        [[NSFileManager defaultManager] removeItemAtPath:slic3rExtOut error:nil];
+    }
+    arr = [NSArray arrayWithObjects:@"--load",config,@"--print-center",
+           [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],@"-o",slic3rExtOut,file,nil];
+    slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
+    [app->rhslicer.killButton setEnabled:YES];
+}
 -(void)slice:(NSString*)file {
     switch(activeSlicer) {
         case 1:
-            [self sliceSlic3rInternal:file];
-            break;
         case 2:
-            [self sliceSlic3rExternal:file];
+            [self sliceSlic3r:file];
             break;
         case 3:
             [self sliceSkeinforge:file];

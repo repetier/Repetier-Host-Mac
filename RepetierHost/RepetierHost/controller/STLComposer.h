@@ -69,6 +69,7 @@
 -(void)loadSTLFile:(NSString*)fname;
 -(void)updateView;
 -(void)saveSTLToFile:(NSString*)file;
+- (IBAction)generateGCode:(NSButton *)sender;
 - (IBAction)autoplaceAction:(id)sender;
 - (IBAction)multiplyAction:(id)sender;
 -(void)autoplace;

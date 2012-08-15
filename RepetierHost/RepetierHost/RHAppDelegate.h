@@ -23,6 +23,7 @@
 #import "EnableToollbarItem.h"
 #import "LogSplitViewDelegate.h"
 #import "HorizontalSpliViewDelegate.h"
+#import "models/Slicer.h"
 
 @class ThreeDContainer;
 @class GCodeVisual;
@@ -36,6 +37,7 @@
 @class STLComposer;
 @class RHTempertuareController;
 @class RHManualControl;
+@class RHSlicer;
 
 @interface RHAppDelegate : NSObject <NSApplicationDelegate,NSWindowDelegate>
 {
@@ -111,6 +113,7 @@
     IBOutlet NSScrollView *logScrollView;
     IBOutlet HorizontalSplitViewDelegate *editorSplitterDelegate;
     IBOutlet LogSplitViewDelegate *logSplitterDelegate;
+    IBOutlet RHSlicer *rhslicer;
 }
 @property (assign) IBOutlet NSWindow *window;
 -(void)replaceGCodeView:(NSNotification*)event;

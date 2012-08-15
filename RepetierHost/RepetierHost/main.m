@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     // Skeinforge defaults
     [d setObject:@"" forKey:@"skeinforgeApplication"];
     [d setObject:@"" forKey:@"skeinforgeCraft"];
+    [d setObject:[NSString stringWithFormat:@"%s/.skeinforge/profiles",getenv("HOME")] forKey:@"skeinforgeProfiles"];
     [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePython"];
     [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePythonCraft"];
     //[d setObject:@".gcode" forKey:@"skeinforgeExtension"];
@@ -149,6 +150,7 @@ int main(int argc, char *argv[])
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.98 green:0.94 blue:0.9 alpha:1]] forKey:@"logBackgroundEvenColor"];
 
     // Slic3r default
+    [d setObject:@"" forKey:@"slic3rPath"];
     [d setObject:@"Default" forKey:@"slic3rCurrent"];
     [d setObject:@"Default" forKey:@"slic3rConfigs"]; // Tab seperated list
     [d setObject:[NSNumber numberWithDouble:0.5] forKey:@"slic3r#Default#nozzleDiameter"];

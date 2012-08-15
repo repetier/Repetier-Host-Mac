@@ -14,23 +14,24 @@
  limitations under the License.
  */
 
-#import "DefaultsExtension.h"
 
-@implementation NSUserDefaults(DefaultsExtension)
+#import <Foundation/Foundation.h>
 
-- (void)setColor:(NSColor *)aColor forKey:(NSString *)aKey
-{
-    NSData *theData=[NSArchiver archivedDataWithRootObject:aColor];
-    [self setObject:theData forKey:aKey];
+@interface SkeinConfig : NSObject {
+    NSMutableArray *lines;
+    NSMutableArray *orig;
+    NSString *path;
+    BOOL exists;
 }
+@property (retain)NSMutableArray *lines;
+@property (retain)NSMutableArray *orig;
+@property (retain)NSString *path;
 
-- (NSColor *)colorForKey:(NSString *)aKey
-{
-    NSColor *theColor=nil;
-    NSData *theData=[self dataForKey:aKey];
-    if (theData != nil)
-        theColor=(NSColor *)[NSUnarchiver unarchiveObjectWithData:theData];
-    return theColor;
-}
+-(id)initWithPath:(NSString*) _path;
+-(void)writeModified;
+-(void)writeOriginal;
+-(int)lineForKey:(NSString*)key;
+-(NSString*)getValue:(NSString*)key;
+-(void)setValue:(NSString*)val key:(NSString*)key;
 
 @end

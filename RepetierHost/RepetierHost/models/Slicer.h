@@ -17,6 +17,8 @@
 #import <Foundation/Foundation.h>
 #import "RHTask.h"
 #import "Slic3rConfig.h"
+#import "../extensions/utils/IniFile.h"
+#import "../extensions/utils/SkeinConfig.h"
 
 @interface Slicer : NSObject {
     RHTask *skeinforgeRun;
@@ -27,12 +29,6 @@
     RHTask *slic3rExtSlice;
     RHTask *postprocess;
     NSString *postprocessOut;
-    IBOutlet NSMenuItem *slic3rIntMenu;
-    IBOutlet NSMenuItem *slic3rExtMenu;
-    IBOutlet NSMenuItem *skeinforgeMenu;
-    IBOutlet NSMenuItem *configSlic3rIntMenu;
-    IBOutlet NSMenuItem *configSlic3rExtMenu;
-    IBOutlet NSMenuItem *configSkeinforgeMenu;
     NSString *slic3rInternalPath;
     NSString *emptyPath;
     NSArray *bindingsArray;
@@ -40,11 +36,16 @@
     NSString *slic3rExtOut;
     NSString *slic3rIntOut;
     NSString *skeinforgeOut;
+    SkeinConfig *profileConfig;
+    SkeinConfig *exportConfig;
+    SkeinConfig *extrusionConfig;
+    SkeinConfig *multiplyConfig;
 }
 -(void)checkConfig;
 -(void)slice:(NSString*)file;
 -(void)taskFinished:(NSNotification*)event;
 -(BOOL)fileExists:(NSString*)fname;
+-(void)killSlicing;
 // Start Skeinforge application
 -(IBAction)runSkeinforge:(id)sender;
 - (IBAction)configSlic3rInternal:(id)sender;
@@ -53,4 +54,5 @@
 - (IBAction)activateSlic3rInternal:(id)sender;
 - (IBAction)activateSlic3rExternal:(id)sender;
 - (IBAction)activateSkeinforge:(id)sender;
+- (IBAction)configSlic3r:(id)sender;
 @end

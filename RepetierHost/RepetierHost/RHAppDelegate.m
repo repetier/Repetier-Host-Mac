@@ -325,7 +325,7 @@
     [self updateViewFilament];
 }
 - (void)connectionClosed:(NSNotification *)notification {
-    [connectButton setLabel:@"Connect"];
+    [connectButton setLabel:@"  Connect  "];
     [connectButton setImage:connectedImage];    
     [printTempLabel setStringValue:@"Disconnected"];    
     [eepromMenuItem setEnabled:NO];

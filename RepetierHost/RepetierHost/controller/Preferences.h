@@ -70,6 +70,7 @@
 - (IBAction)browseError:(id)sender;
 - (IBAction)browseCommand:(id)sender;
 - (IBAction)browseSkeinforgePythonCraft:(id)sender;
+- (IBAction)browseSkeinforgeProfiles:(id)sender;
 
 
 
