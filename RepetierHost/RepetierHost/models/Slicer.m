@@ -236,6 +236,7 @@
         [skeinforgeSlice kill];
     if(slic3rExtSlice!=nil)
         [slic3rExtSlice kill];
+    [app->rhslicer.killButton setEnabled:NO];
 }
 
 -(BOOL)skeinforgeConfigured {

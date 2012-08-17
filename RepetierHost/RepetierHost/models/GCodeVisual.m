@@ -317,7 +317,7 @@
                 //NSLog(@"dir %f %f %f",dir[0],dir[1],dir[2]);
                 //NSLog(@"lastdir %f %f %f",lastdir[0],lastdir[1],lastdir[2]);
                 double vacos = dir[0] * lastdir[0] + dir[1] * lastdir[1] + dir[2] * lastdir[2];
-                if(vacos<-0.97) vacos = -0.97; else if(vacos>1) vacos = 1;
+                if(vacos<0.1) vacos = 0.1; else if(vacos>1) vacos = 1;
                 float zoomw = vacos; //cos(acos(vacos));
                 //NSLog(@"vacos %f,zoomz %f",vacos,zoomw);
                 lastdir[0] = actdir[0];

@@ -862,19 +862,32 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedObject: values.slic3rFilament</string>
+						<string key="label">selectedValue: values.slic3rFilament</string>
 						<reference key="source" ref="752862765"/>
 						<reference key="destination" ref="418764447"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="752862765"/>
 							<reference key="NSDestination" ref="418764447"/>
-							<string key="NSLabel">selectedObject: values.slic3rFilament</string>
-							<string key="NSBinding">selectedObject</string>
+							<string key="NSLabel">selectedValue: values.slic3rFilament</string>
+							<string key="NSBinding">selectedValue</string>
 							<string key="NSKeyPath">values.slic3rFilament</string>
+							<object class="NSDictionary" key="NSOptions">
+								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSArray" key="dict.sortedKeys">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<string>NSAllowsEditingMultipleValuesSelection</string>
+									<string>NSRaisesForNotApplicableKeys</string>
+								</object>
+								<object class="NSArray" key="dict.values">
+									<bool key="EncodedWithXMLCoder">YES</bool>
+									<boolean value="NO"/>
+									<boolean value="NO"/>
+								</object>
+							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">112</int>
+					<int key="connectionID">128</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1001,9 +1014,9 @@
 							<reference ref="571985883"/>
 							<reference ref="1029859712"/>
 							<reference ref="826852478"/>
-							<reference ref="752862765"/>
 							<reference ref="622642233"/>
 							<reference ref="696432587"/>
+							<reference ref="752862765"/>
 						</object>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -1437,7 +1450,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">122</int>
+			<int key="maxID">128</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

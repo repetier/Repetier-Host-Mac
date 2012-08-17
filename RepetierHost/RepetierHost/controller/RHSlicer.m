@@ -61,14 +61,14 @@
     NSString *oldPrinter = [d objectForKey:@"slic3rPrinter"];
     NSString *oldProfile = [d objectForKey:@"skeinforgeSelectedProfile"];
     // Filament list
-    NSDirectoryEnumerator* enumerator = [[NSFileManager defaultManager] enumeratorAtPath:[NSString stringWithFormat:@"%@/filament",cdir]];
+    NSArray* enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/filament",cdir] error:nil];
     [slic3rFilamentList removeAllObjects];
-    while (file = [enumerator nextObject])
+    for (NSString *file in enumerator)
     {
         // check if it's a directory
         BOOL isDirectory = NO;
         [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/filament/%@",cdir,file] isDirectory: &isDirectory];
-        if (!isDirectory)
+        if (!isDirectory && [file.pathExtension compare:@"ini"]==NSOrderedSame)
         {
             [slic3rFilamentList addObject:[file stringByDeletingPathExtension]];
         }
@@ -76,14 +76,14 @@
     [slic3rFilamentSettings removeAllItems];
     [slic3rFilamentSettings addItemsWithTitles:slic3rFilamentList];
     // Print list
-    enumerator = [[NSFileManager defaultManager] enumeratorAtPath:[NSString stringWithFormat:@"%@/print",cdir]];
+    enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/print",cdir] error:nil];
     [slic3rPrintList removeAllObjects];
-    while (file = [enumerator nextObject])
+    for (NSString *file in enumerator)
     {
         // check if it's a directory
         BOOL isDirectory = NO;
         [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/print/%@",cdir,file] isDirectory: &isDirectory];
-        if (!isDirectory)
+        if (!isDirectory && [file.pathExtension compare:@"ini"]==NSOrderedSame)
         {
             [slic3rPrintList addObject:[file stringByDeletingPathExtension]];
         }
@@ -91,14 +91,13 @@
     [slic3rPrintSettings removeAllItems];
     [slic3rPrintSettings addItemsWithTitles:slic3rPrintList];
     // Printer list
-    enumerator = [[NSFileManager defaultManager] enumeratorAtPath:[NSString stringWithFormat:@"%@/printer",cdir]];
-    [slic3rPrinterList removeAllObjects];
-    while (file = [enumerator nextObject])
+    enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/printer",cdir] error:nil];    [slic3rPrinterList removeAllObjects];
+    for (NSString *file in enumerator)
     {
         // check if it's a directory
         BOOL isDirectory = NO;
         [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/printer/%@",cdir,file] isDirectory: &isDirectory];
-        if (!isDirectory)
+        if (!isDirectory && [file.pathExtension compare:@"ini"]==NSOrderedSame)
         {
             [slic3rPrinterList addObject:[file stringByDeletingPathExtension]];
         }
@@ -108,9 +107,8 @@
 
     // Skeinforge profiles list
     NSString *prof = [d stringForKey:@"skeinforgeProfiles"];
-    enumerator = [[NSFileManager defaultManager] enumeratorAtPath:[NSString stringWithFormat:@"%@/extrusion",prof]];
-    [skeinforgeProfileList removeAllObjects];
-    while (file = [enumerator nextObject])
+    enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/extrusion",prof] error:nil];    [skeinforgeProfileList removeAllObjects];
+    for (NSString *file in enumerator)
     {
         // check if it's a directory
         BOOL isDirectory = NO;
