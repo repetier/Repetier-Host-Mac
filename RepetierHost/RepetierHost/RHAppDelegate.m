@@ -167,7 +167,7 @@
     [gcodeView loadGCodeGCode:file];
 }
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-    if(connection->job.hasData) {
+    if(connection->job->mode==1) {
         [self showWarning:@"Stop your printing process before quitting the program!" headline:@"Termination aborted"];
         return NO; 
     }

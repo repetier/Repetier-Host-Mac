@@ -44,7 +44,7 @@
 -(void)checkConfig;
 -(void)slice:(NSString*)file;
 -(void)taskFinished:(NSNotification*)event;
--(BOOL)fileExists:(NSString*)fname;
++(BOOL)fileExists:(NSString*)fname;
 -(void)killSlicing;
 // Start Skeinforge application
 -(IBAction)runSkeinforge:(id)sender;

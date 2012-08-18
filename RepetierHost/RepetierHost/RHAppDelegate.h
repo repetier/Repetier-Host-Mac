@@ -76,6 +76,7 @@
     IBOutlet NSToolbarItem *runJobButton;
     IBOutlet NSTabView *rightTabView;
     IBOutlet NSTabView *leftTabView;
+    IBOutlet NSTabViewItem *slicerTab;
     IBOutlet GCodeEditorController *gcodeView;
     IBOutlet NSToolbarItem *showFilamentButton;
     IBOutlet NSToolbarItem *killJobButton;

@@ -21,7 +21,7 @@
 @implementation RHActionTabDelegate
 
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem {
-    if(tabViewItem==app->composerTab)
+    if(tabViewItem==app->composerTab || tabViewItem==app->slicerTab)
         view->act = app->stlView;
     else if(tabViewItem==app->printTab)
         view->act = app->printPreview;

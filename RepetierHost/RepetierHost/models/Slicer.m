@@ -80,7 +80,7 @@
 {
     [self checkConfig];
 }
--(BOOL)fileExists:(NSString*)fname {
++(BOOL)fileExists:(NSString*)fname {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL isDir;
     BOOL exists = [fm fileExistsAtPath:fname isDirectory:&isDir];
@@ -119,7 +119,6 @@
         exe = slic3rInternalPath;
     fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
     [app->rhslicer.slic3rActive setEnabled:fileExists];
-    fm = [NSFileManager defaultManager];
     
     if(activeSlicer==2)
         activeSlicer=1;
@@ -210,7 +209,7 @@
         [app->rhslicer.killButton setEnabled:NO];
     } else if(t==skeinforgeSlice) {
         if(skeinforgeSlice.finishedSuccessfull) {
-            if([self fileExists:skeinforgeOut]) {
+            if([Slicer fileExists:skeinforgeOut]) {
                 [self executePostprocess:skeinforgeOut];
             } else
                 [app showWarning:[NSString stringWithFormat:@"Couldn't find sliced file\n%@\nCheck if the Skeinforge naming scheme matches your Skeinforge configuration!",skeinforgeOut] headline:@"File not found"];            
@@ -381,7 +380,7 @@
     if (export == nil || [export compare:@"True"]!=NSOrderedSame)
         export = @""; else export = @"_export";
     skeinforgeOut = [[NSString stringWithFormat:@"%@%@.%@",[file stringByDeletingPathExtension],export,extension] retain];
-    if([self fileExists:skeinforgeOut]) {
+    if([Slicer fileExists:skeinforgeOut]) {
         [[NSFileManager defaultManager] removeItemAtPath:skeinforgeOut error:nil];
     }
     skeinforgeSlice = [[RHTask alloc] initProgram:python args:arr logPrefix:@"<Skeinforge> "];
@@ -420,7 +419,7 @@
     double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
     [stl release];
     slic3rIntOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
-    if([self fileExists:slic3rIntOut]) {
+    if([Slicer fileExists:slic3rIntOut]) {
         [[NSFileManager defaultManager] removeItemAtPath:slic3rIntOut error:nil];
     }
     arr = [NSMutableArray arrayWithObjects:@"--print-center",
@@ -582,7 +581,7 @@
     double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
     [stl release];
     slic3rExtOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
-    if([self fileExists:slic3rExtOut]) {
+    if([Slicer fileExists:slic3rExtOut]) {
         [[NSFileManager defaultManager] removeItemAtPath:slic3rExtOut error:nil];
     }
     arr = [NSArray arrayWithObjects:@"--load",slic3rConfig,@"--print-center",
@@ -636,7 +635,7 @@
     double centery = stl->yMin + (stl->yMax - stl->yMin) / 2;
     [stl release];
     slic3rExtOut = [[[file stringByDeletingPathExtension] stringByAppendingString:@".gcode"] retain];
-    if([self fileExists:slic3rExtOut]) {
+    if([Slicer fileExists:slic3rExtOut]) {
         [[NSFileManager defaultManager] removeItemAtPath:slic3rExtOut error:nil];
     }
     arr = [NSArray arrayWithObjects:@"--load",config,@"--print-center",

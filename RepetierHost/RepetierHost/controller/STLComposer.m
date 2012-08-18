@@ -367,8 +367,11 @@ STLComposer *stlComposer=nil;
         [files addLast:stl];
         [panim release];
         [filesTable reloadData];
+        NSIndexSet *set = [NSIndexSet indexSetWithIndex:files->count-1];
+        [filesTable selectRowIndexes:set byExtendingSelection:YES];
         [self updateSTLState:stl];
         [app->stlHistory add:fname];
+        //        [self objectSelected:stl];
     } else {
         [rhlog addError:@"Couldn't import STL file. Invalid format?"];
     }

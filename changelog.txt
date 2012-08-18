@@ -1,4 +1,7 @@
-Version 0.19
+Version 0.30 2012-08-18
+  New design
+  New slicer handling
+  Bundled with Skeinforge 50 and Slic3r 0.9.1
   Show estimated printing time in editor.
   Improved ETA during print.
   Printer definable kill job actions.

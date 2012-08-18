@@ -21,6 +21,7 @@
 #import "ThreeDConfig.h"
 #import "RHLogger.h"
 #import "DefaultsExtension.h"
+#import "models/Slicer.h"
 
 int main(int argc, char *argv[])
 {
@@ -76,11 +77,24 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithDouble:2.87] forKey:@"threedFilamentDiameter"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"disableFilamentVisualization"];
     // Skeinforge defaults
-    [d setObject:@"" forKey:@"skeinforgeApplication"];
-    [d setObject:@"" forKey:@"skeinforgeCraft"];
+    NSString *skeinforge = [[NSBundle mainBundle] pathForResource:@"Skeinforge" ofType:@"app"];
+    NSString *skApp = nil,*skCraft = nil;
+    if(skeinforge!=nil) {
+        skApp = [NSString stringWithFormat:@"%@/skeinforge_application/skeinforge.py",skeinforge];
+        skCraft = [NSString stringWithFormat:@"%@/skeinforge_application/skeinforge_utilities/skeinforge_craft.py",skeinforge];
+    }
+    if(skApp==nil) skApp=@"";
+    [d setObject:skApp forKey:@"skeinforgeApplication"];
+    if(skCraft==nil) skCraft=@"";
+    [d setObject:skCraft forKey:@"skeinforgeCraft"];
     [d setObject:[NSString stringWithFormat:@"%s/.skeinforge/profiles",getenv("HOME")] forKey:@"skeinforgeProfiles"];
     [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePython"];
-    [d setObject:@"/usr/bin/pythonw" forKey:@"skeinforgePythonCraft"];
+    
+    NSString *pypy = [[NSBundle mainBundle] pathForResource:@"pypy" ofType:@"app"];
+    NSLog(@"pypy:%@",pypy);
+    if(pypy==nil) pypy = @"/usr/bin/python";
+    else pypy =[NSString stringWithFormat:@"%@/bin/pypy",pypy];
+    [d setObject:pypy forKey:@"skeinforgePythonCraft"];
     //[d setObject:@".gcode" forKey:@"skeinforgeExtension"];
     //[d setObject:@"_export" forKey:@"skeinforgePostfix"];
         
@@ -227,6 +241,15 @@ int main(int argc, char *argv[])
         [defaults setObject:@"_export" forKey:@"skeinforgePostfix"];
         [defaults setObject:@"called" forKey:@"firstcall"];
     }
+    NSString *test = [defaults stringForKey:@"skeinforgeApplication"];
+    if(test.length==0 || ![Slicer fileExists:test])
+        [defaults setObject:skApp forKey:@"skeinforgeApplication"];
+    test = [defaults stringForKey:@"skeinforge_craft"];
+    if(test.length==0 || ![Slicer fileExists:test])
+        [defaults setObject:skCraft forKey:@"skeinforge_craft"];
+    test = [defaults stringForKey:@"skeinforgePythonCraft"];
+    if(test.length==0 || ![Slicer fileExists:test])
+        [defaults setObject:pypy forKey:@"skeinforgePythonCraft"];
     connection = nil;
     [PrinterConfiguration initPrinter];
     conf3d = [ThreeDConfig new];

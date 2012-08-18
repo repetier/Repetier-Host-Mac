@@ -1,8 +1,9 @@
 RepetierHost/RepetierHost/Slic3r.app
+RepetierHost/RepetierHost/pypy.app/*
+RepetierHost/RepetierHost/Skeinforge.app/*
 .DS_Store
-
 RepetierHost/RepetierHost.xcodeproj/project.xcworkspace/xcuserdata
 xcuserdata
 *.pkg
-
 RepetierHost/RepetierHost/images/Thumbs.db
+

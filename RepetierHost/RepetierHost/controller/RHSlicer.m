@@ -54,7 +54,6 @@
 }
 -(void)updateSelections {
     NSString *cdir = [RHSlicer slic3rConfigDir];
-    NSString* file;
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *oldFilament = [d objectForKey:@"slic3rFilament"];
     NSString *oldPrint = [d objectForKey:@"slic3rPrint"];
