@@ -21,8 +21,21 @@
 #import "GCode.h"
 #include <OpenGL/OpenGL.h>
 #include <OpenGL/gl.h>
+#include "../controller/GCodeEditorController.h"
+#include "../RHAppDelegate.h"
+#include "../controller/GCodeView.h"
+
 @implementation GCodePoint
 
+-(id)init {
+    if((self=[super init])) {
+        fline = element = 0;
+    }
+    return self;
+}
++(int)toFile:(int) file line:(int)line {
+    if (file < 0) return 0; return (file << 29) + line;
+}
 @end
 
 @implementation GCodePath
@@ -42,8 +55,7 @@
     }
     return self;
 }
-
--(void)add:(float*)v extruder:(float)e distance:(float)d
+-(void)add:(float*)v extruder:(float)e distance:(float)d fline:(int)fl
 {
     if (pointsLists->count == 0) {
         RHLinkedList *newlist = [RHLinkedList new];
@@ -56,6 +68,7 @@
     pt->p[2] = v[2];
     pt->e = e;
     pt->dist = d;
+    pt->fline = fl;
     pointsCount++;
     [pointsLock lock];
     [[pointsLists peekLastFast] addLast:pt];
@@ -263,6 +276,7 @@
             while(ptNode!=nil)
             {
                 GCodePoint *pt = ptNode->value;
+                pt->element = pos;
                 //NSLog(@"P: %f %f %f",pt->p[0],pt->p[1],pt->p[2]);
                 GCodePoint *ptn = nil;
                 if (ptNode->next != nil)
@@ -414,6 +428,7 @@
             first = YES;
             for (GCodePoint *pt in points)
             {
+                pt->element = pos;
                 float *v = pt->p;
                 positions[vpos++] = v[0];
                 positions[vpos++] = v[1];
@@ -449,7 +464,9 @@
 
 -(id)init {
     if((self=[super init])) {
-        segments = [RHLinkedList new];
+        segments = [[NSMutableArray alloc] initWithCapacity:MAX_EXTRUDER];
+        for(int i=0;i<MAX_EXTRUDER;i++)
+            [segments addObject:[[RHLinkedList new] autorelease]];
         ana = [[GCodeAnalyzer alloc] init];
         ana->privateAnalyzer = YES;
         //act = nil;
@@ -472,12 +489,16 @@
         ana->delegate = self;
         minLayer = 0;
         maxLayer = 1000000;
+        fileid = actLine = 0;
+        showSelection = YES;
     }
     return self;
 }        
 -(id)initWithAnalyzer:(GCodeAnalyzer*)a {
     if((self=[super init])) {
-        segments = [RHLinkedList new];
+        segments = [[NSMutableArray alloc] initWithCapacity:MAX_EXTRUDER];
+        for(int i=0;i<MAX_EXTRUDER;i++)
+            [segments addObject:[[RHLinkedList new] autorelease]];
         ana = [a retain];
         //act = nil;
         lastFilHeight = 999;
@@ -499,14 +520,20 @@
         ana->delegate = self;
         minLayer = 0;
         maxLayer = 1000000;
+        fileid = actLine = 0;
+        showSelection = NO;
     }
     return self;
 }        
 -(void)dealloc
 {
-    for (GCodePath *p in segments)
-        [p free];
-    [segments clear];
+    for(RHLinkedList *seg in segments) {
+        for (GCodePath *p in seg)
+            [p free];
+        [seg clear];
+    }
+    [segments removeAllObjects];
+    [segments release];
     if (colbufSize > 0)
         glDeleteBuffers(1,&colbuf);
     colbufSize = 0;
@@ -517,21 +544,22 @@
 }
 -(void)reduce
 {//return; // reduce possible leaks
-    if (segments->count < 2) return;
+    for(RHLinkedList *seg in segments) {
+    if (seg->count < 2) return;
     if (!liveView)
     {
-        GCodePath *first = segments.peekFirst;
-        while (segments->count > 1)
+        GCodePath *first = seg.peekFirst;
+        while (seg->count > 1)
         {
-            GCodePath *sec = [segments objectAtIndex:1];
+            GCodePath *sec = [seg objectAtIndex:1];
             [first join:sec];
             [sec free];
-            [segments remove:sec];
+            [seg remove:sec];
         }
     }
     else
     {
-        RHListNode *actn = segments.firstNode, *next;
+        RHListNode *actn = seg.firstNode, *next;
         while (actn->next != nil)
         {
             next = actn->next;
@@ -551,7 +579,7 @@
                 {
                     [actn->value join:nextval];
                     [nextval free];
-                    [segments remove:nextval];
+                    [seg remove:nextval];
                 }
                 else
                 {
@@ -563,7 +591,7 @@
                 {
                     [actn->value join:nextval];
                     [nextval free ];
-                    [segments remove:nextval];
+                    [seg remove:nextval];
                 }
                 else
                 {
@@ -571,16 +599,21 @@
                 }
         }
     }
+    }
 }
 -(void) stats
 {
-    [rhlog addInfo:[NSString stringWithFormat:@"Path segments:%d",segments->count]];
+    int cnt = 0;
     int pts = 0;
-    for (GCodePath *p in segments)
-    {
-        pts += p->pointsCount;
-        
+    for(RHLinkedList *seg in segments) {
+        cnt+=seg->count;
+        for (GCodePath *p in seg)
+        {
+            pts += p->pointsCount;
+            
+        }
     }
+    [rhlog addInfo:[NSString stringWithFormat:@"Path segments:%d",cnt]];
     [rhlog addInfo:[NSString stringWithFormat:@"Points total:%d",pts]];
 }
 /// <summary>
@@ -599,10 +632,12 @@
 -(void)clear
 {
     [changeLock lock];
-    for(GCodePath *p in segments)
-        [p free];
-    [segments clear];
-    lastx = 1e20f; // Don't ignore first point if it was the last! 
+    for(RHLinkedList *seg in segments) {
+        for(GCodePath *p in seg)
+            [p free];
+            [seg clear];
+    }
+    lastx = 1e20f; // Don't ignore first point if it was the last!
     totalDist = 0;
     if (colbufSize > 0)
         glDeleteBuffers(1, &colbuf);
@@ -631,17 +666,20 @@
     BOOL isLastPos = locDist < 0.00001;
     float mypos[3] = {xp,yp,zp};
     [changeLock lock];
-    if (segments->count == 0 || laste >= ana->e) // start new segment
+    int segpos = analyzer->activeExtruder;
+    if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
+    RHLinkedList *seg = [segments objectAtIndex:segpos];
+    if (seg->count == 0 || laste >= ana->e) // start new segment
     {
         if (!isLastPos) // no move, no action
         {
             GCodePath *p = [GCodePath new];
-            [p add:mypos extruder:ana->emax distance:totalDist];
-            if (segments->count > 0 && ((RHLinkedList*)((GCodePath*)(segments.peekLast))->pointsLists.peekLastFast)->count == 1)
+            [p add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            if (seg->count > 0 && ((RHLinkedList*)((GCodePath*)(seg.peekLast))->pointsLists.peekLastFast)->count == 1)
             {
-                [segments removeLast];
+                [seg removeLast];
             }
-            [segments addLast:p];
+            [seg addLast:p];
             [p release];
             changed = YES;
         }
@@ -651,7 +689,7 @@
         if (!isLastPos)
         {
             totalDist += locDist;
-            [segments.peekLastFast add:mypos extruder:ana->emax distance:totalDist];
+            [seg.peekLastFast add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             changed = YES;
         }
     }
@@ -675,29 +713,32 @@
     float locDist = (float)sqrt((xp - lastx) * (xp - lastx) + (yp - lasty) * (yp - lasty) + (zp - lastz) * (zp - lastz));
     BOOL isLastPos = locDist < 0.00001;
     float mypos[3] = {xp,yp,zp};
+    int segpos = ana->activeExtruder;
+    if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
+    RHLinkedList *seg = [segments objectAtIndex:segpos];
     if(lastLayer == minLayer-1 && laste<e && lastx<1e19) {
         GCodePath *p = [GCodePath new];
         float mypos2[3] = {lastx,lasty,lastz};
-        [p add:mypos2 extruder:laste distance:totalDist];
-        if (segments->count > 0 && ((RHLinkedList*)((GCodePath*)(segments.peekLastFast))->pointsLists.peekLastFast)->count == 1)
+        [p add:mypos2 extruder:laste distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+        if (seg->count > 0 && ((RHLinkedList*)((GCodePath*)(seg.peekLastFast))->pointsLists.peekLastFast)->count == 1)
         {
-            [segments removeLast];
+            [seg removeLast];
         }
-        [segments addLast:p];
+        [seg addLast:p];
         [p release];
         
     }
-    if (segments->count == 0 || laste >= e) // start new segment
+    if (seg->count == 0 || laste >= e) // start new segment
     {
         if (!isLastPos) // no move, no action
         {
             GCodePath *p = [GCodePath new];
-            [p add:mypos extruder:ana->emax distance:totalDist];
-            if (segments->count > 0 && ((RHLinkedList*)((GCodePath*)(segments.peekLastFast))->pointsLists.peekLastFast)->count == 1)
+            [p add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            if (seg->count > 0 && ((RHLinkedList*)((GCodePath*)(seg.peekLastFast))->pointsLists.peekLastFast)->count == 1)
             {
-                [segments removeLast];
+                [seg removeLast];
             }
-            [segments addLast:p];
+            [seg addLast:p];
             [p release];
             //changed = YES;
         }
@@ -707,7 +748,7 @@
         if (!isLastPos)
         {
             totalDist += locDist;
-            [segments.peekLastFast add:mypos extruder:ana->emax distance:totalDist];
+            [seg.peekLastFast add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             //changed = YES;
         }
     }
@@ -764,7 +805,7 @@
     //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
     //NSLog(@"Parsing %f",parse);
 }
--(void)parseTextArray:(NSArray*)text clear:(BOOL)clear
+-(void)parseTextArray:(NSArray*)text clear:(BOOL)clear 
 {
     //double start = CFAbsoluteTimeGetCurrent();
     if (clear)
@@ -787,15 +828,18 @@
     //double parse = 1000*(CFAbsoluteTimeGetCurrent()-start);
     //NSLog(@"Parsing %f",parse);
 }
--(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear {
+-(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear fileid:(int)fid {
     //double start = CFAbsoluteTimeGetCurrent();
     if (clear)
         [self clear];
+    fileid = fid;
+    actLine = 0;
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     int cnt=0;
     for(GCodeShort *code in codes) {
         [ana analyzeShort:code];
         laste = ana->emax;
+        actLine++;
         if(cnt++>100000) {
             cnt = 0;
             [pool release];
@@ -1130,6 +1174,132 @@
     }
     [path->pointsLock unlock];
 }
+
+-(void)drawSegment:(GCodePath*)path start:(int)mstart end:(int)mend
+{
+    [path->pointsLock lock];
+    // Check if inside mark area
+    int estart = 0;
+    int eend = path->elementsLength;
+    GCodePoint *lastP = nil, *startP = nil, *endP = nil;
+    for (RHLinkedList *plist in path->pointsLists)
+    {
+        if (plist->count > 1)
+            for (GCodePoint *point in plist)
+        {
+            if (startP == nil)
+            {
+                if (point->fline >= mstart && point->fline <= mend)
+                    startP = point;
+            }
+            else
+            {
+                if (point->fline > mend)
+                {
+                    endP = point;
+                    break;
+                }
+            }
+            lastP = point;
+        }
+        if (endP != nil) break;
+    }
+    if (startP == nil) {
+        [path->pointsLock unlock];
+        return;
+    }
+    estart = startP->element;
+    if (endP != nil) eend = endP->element;
+    if (estart == eend)  {
+        [path->pointsLock unlock];
+        return;
+    }
+    if (conf3d->drawMethod==2)
+    {
+        glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE, defaultColor);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        if (path->drawMethod != method || recompute)
+        {
+            [path updateVBO:true];
+        }
+        else if (path->hasBuf == false && path->elements != nil)
+            [path refillVBO];
+        if (path->elements == nil) {
+            [path->pointsLock unlock];
+            return;
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, path->buf[0]);
+        glVertexPointer(3, GL_FLOAT, 0, 0);
+
+        if (method == 0)
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, path->buf[2]);
+            glDrawElements(GL_LINES, eend-estart, GL_UNSIGNED_INT, (void *)(sizeof(int)*estart));
+        }
+        else
+        {
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glBindBuffer(GL_ARRAY_BUFFER, path->buf[1]);
+            glNormalPointer(GL_FLOAT, 0, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, path->buf[2]);
+            glDrawElements(GL_QUADS, eend-estart, GL_UNSIGNED_INT, (void *)(sizeof(int)*estart));
+            glDisableClientState(GL_NORMAL_ARRAY);
+        }
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        if (path->drawMethod != method || recompute || path->hasBuf)
+            [path updateVBO:NO];
+        if (conf3d->drawMethod > 0) // Is also fallback for vbos with dynamic colors
+        {
+            glEnableClientState(GL_VERTEX_ARRAY);
+            if (path->elements == nil) {
+                [path->pointsLock unlock];
+                return;
+            }
+            glVertexPointer(3, GL_FLOAT, 0, path->positions);
+            if (method == 0)
+                glDrawElements(GL_LINES, eend-estart,GL_UNSIGNED_INT, &(path->elements[estart]));
+            else
+            {
+                glEnableClientState(GL_NORMAL_ARRAY);
+                glNormalPointer(GL_FLOAT, 0, path->normals);
+                glDrawElements(GL_QUADS, eend-estart, GL_UNSIGNED_INT, &(path->elements[estart]));
+                glDisableClientState(GL_NORMAL_ARRAY);
+            }
+            glDisableClientState(GL_VERTEX_ARRAY);
+        }
+        else
+        {
+                int i;
+                if (method == 0)
+                {
+                    glBegin(GL_LINES);
+                    for (i = estart; i < eend; i++)
+                    {
+                        int p = path->elements[i] * 3;
+                        glVertex3fv(&path->positions[p]);
+                    }
+                    glEnd();
+                }
+                else
+                {
+                    glBegin(GL_QUADS);
+                    for (i = estart; i < eend; i++)
+                    {
+                        int p = path->elements[i]*3;
+                        glNormal3fv(&path->normals[p]);
+                        glVertex3fv(&path->positions[p]);
+                    }
+                    glEnd();
+                }
+        }
+    }
+    [path->pointsLock unlock];
+}
+
 -(void)paint
 {
     changed = NO;
@@ -1141,12 +1311,18 @@
     if (conf3d->disableFilamentVisualization) return; // Disabled too much for card
     hotFilamentLength = conf3d->hotFilamentLength;
     minHotDist = totalDist - hotFilamentLength;
-    RHLinkedList *sl = [RHLinkedList new];
+
+    NSMutableArray *sla = [NSMutableArray arrayWithCapacity:MAX_EXTRUDER];
+    RHLinkedList *sl = nil;
     [changeLock lock];
     [self reduce]; // Minimize number of VBO
-    for (GCodePath *path in segments)
-    {
-        [sl addLast:path];
+    for(int i=0;i<MAX_EXTRUDER;i++) {
+        sl = [[RHLinkedList new] autorelease];
+        for (GCodePath *path in [segments objectAtIndex:i])
+        {
+            [sl addLast:path];
+        }
+        [sla addObject:sl];
     }
     [changeLock unlock];
     //long timeStart = DateTime.Now.Ticks;
@@ -1177,11 +1353,60 @@
     lastFilDiameter = dfac;
     lastFilUseHeight = fixedH;
     //   int cnt=0;
-    for (GCodePath *path in sl)
-    {
-        [self drawSegment:path];
+    for(int i=0;i<MAX_EXTRUDER;i++) {
+        if(i==0)
+            col = conf3d->filamentColor;
+        else if(i==1)
+            col = conf3d->filament2Color;
+        else if(i==2)
+            col = conf3d->filament3Color;
+        defaultColor[0] = (float)col[0];
+        defaultColor[1] = (float)col[1];
+        defaultColor[2] = (float)col[2];
+        defaultColor[3] = col[3];
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, defaultColor);
+        for (GCodePath *path in [sla objectAtIndex:i])
+        {
+            [self drawSegment:path];
+        }
     }
-    [sl release];
+    GCodeEditorController *ed = app->gcodeView;
+    int findex = ed.fileIndex;
+    if(showSelection && findex<3) {
+        GCodeView *cv = ed->editor;
+        int selectionStart = 0,selectionEnd = 0;
+        if (!cv.hasSelection)
+        {
+            selectionStart = selectionEnd = [GCodePoint toFile:findex line:cv->row];
+        }
+        else
+        {
+            if (cv->row < cv->selRow)
+            {
+                selectionStart = [GCodePoint toFile:findex line:cv->row];
+                selectionEnd = [GCodePoint toFile:findex line:cv->selRow];
+            }
+            else
+            {
+                selectionEnd = [GCodePoint toFile:findex line:cv->row];
+                selectionStart = [GCodePoint toFile:findex line:cv->selRow];
+            }
+        }
+        glDepthFunc(GL_LEQUAL);
+        col = conf3d->selectedFilamentColor;
+        defaultColor[0] = (float)col[0];
+        defaultColor[1] = (float)col[1];
+        defaultColor[2] = (float)col[2];
+        defaultColor[3] = col[3];
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, defaultColor);
+        for(int i=0;i<MAX_EXTRUDER;i++) {
+            for (GCodePath *path in [sla objectAtIndex:i])
+            {
+                [self drawSegment:path start:selectionStart end:selectionEnd];
+            }
+        }
+    }
+    [sla removeAllObjects];
     // timeStart = DateTime.Now.Ticks - timeStart;
     //  double time = (double)timeStart * 0.1;
     // Main.conn.log("OpenGL paint time " + time.ToString("0.0", GCode.format) + " microseconds",false,4);

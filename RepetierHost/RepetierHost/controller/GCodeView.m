@@ -24,6 +24,7 @@
 #import "ThreeDConfig.h"
 #import "GCodeShort.h"
 #import "PrinterConnection.h"
+#import "ThreeDView.h"
 
 @implementation GCodeView
 
@@ -62,7 +63,9 @@
         blink = YES;
         nextView = nil;
         updateViewThread = nil;
-        updateCode = nil;
+        updateCode0 = nil;
+        updateCode1 = nil;
+        updateCode2 = nil;
         overwrite = NO;
         drawFont = [[NSFont userFixedPitchFontOfSize:12] retain];
         blackBrush = [[NSColor blackColor] retain];
@@ -150,10 +153,12 @@
        // if(changedCounter==0 && contentChangedEvent!=null)
        //     contentChangedEvent();
     }
-    if(updateCode==nil && changedCounter==0 && mustUpdate && nextView==nil) {
+    if(updateCode2==nil && changedCounter==0 && mustUpdate && nextView==nil) {
         mustUpdate = NO; 
         //[cur fromActive];        
-        updateCode = [[controller getContentArray] retain];
+        updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
+        updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
+        updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
         nextView = [[GCodeVisual alloc] init];
         updateViewThread = [[NSThread alloc] initWithTarget:self
                                               selector:@selector(updateViewThread) object:nil];
@@ -166,7 +171,9 @@
     if(nextView==nil && updateViewThread==nil) {
         mustUpdate = NO; 
         //[cur fromActive];        
-        updateCode = [[controller getContentArray] retain];
+        updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
+        updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
+        updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
         nextView = [[GCodeVisual alloc] init];
         updateViewThread = [[NSThread alloc] initWithTarget:self
                                                    selector:@selector(updateViewThread) object:nil];
@@ -188,18 +195,24 @@
         v->minLayer = controller->showMinLayer;
         v->maxLayer = controller->showMaxLayer;
     }
-    [v parseGCodeShortArray:updateCode clear:YES];
+    [v parseGCodeShortArray:updateCode0 clear:YES fileid:0];
+    [v parseGCodeShortArray:updateCode1 clear:NO fileid:1];
+    [v parseGCodeShortArray:updateCode2 clear:NO fileid:2];
     [controller setMaxLayer:nextView->ana->layer];
     //double red = CFAbsoluteTimeGetCurrent();
     [v reduce];
     if(!conf3d->disableFilamentVisualization)
         [ThreadedNotification notifyASAP:@"RHReplaceGCodeView" object:nextView];
-    [updateCode release];
+    [updateCode0 release];
+    [updateCode1 release];
+    [updateCode2 release];
     controller->printingTime = v->ana->printingTime;
     [v release];
     if(conf3d->disableFilamentVisualization)
         nextView = nil; // do it only if visualization is disabled
-    updateCode = nil;
+    updateCode0 = nil;
+    updateCode1 = nil;
+    updateCode2 = nil;
     [updateViewThread release];
     updateViewThread = nil;
     //nextView = nil; now done if displayed.
@@ -779,6 +792,8 @@
     [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
     [self setNeedsDisplay:YES];
     [self updateLayer];
+    if(app && app->openGLView)
+        [app->openGLView redraw];
 }
 -(void)cursorUp
 {
@@ -1024,6 +1039,8 @@
     //if (!hasFocus) return;
     blink=YES;
     [self setNeedsDisplay:YES];
+    if(app && app->openGLView)
+        [app->openGLView redraw];
 }
 @end
 

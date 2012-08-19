@@ -73,7 +73,9 @@
     IBOutlet NSTextField *updateText;
     NSArray *bindingsArray;
     GCodeVisual *nextView;
-    NSMutableArray *updateCode;
+    NSMutableArray *updateCode0;
+    NSMutableArray *updateCode1;
+    NSMutableArray *updateCode2;
     NSThread *updateViewThread;
 }
 @property (retain)NSString* lastHelpCommand;

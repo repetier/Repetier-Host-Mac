@@ -42,7 +42,10 @@ typedef struct {
     GLfloat objectColor[4];
     GLfloat selectedObjectColor[4];
     GLfloat filamentColor[4];
+    GLfloat filament2Color[4];
+    GLfloat filament3Color[4];
     GLfloat hotFilamentColor[4];
+    GLfloat selectedFilamentColor[4];
     RHLight lights[4];
     BOOL showEdges;
     BOOL useVBOs;

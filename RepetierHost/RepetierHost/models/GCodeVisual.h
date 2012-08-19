@@ -22,12 +22,17 @@
 #import "GCodeShort.h"
 #import <OpenGL/OpenGL.h>
 
+#define MAX_EXTRUDER 3
+
 @interface GCodePoint : NSObject {
 @public
     float e;
     float dist;
     float p[3];
+    int fline;
+    int element;
 }
++(int)toFile:(int) file line:(int)line;
 @end
 
 @interface GCodePath : NSObject {
@@ -44,7 +49,7 @@
     RHLinkedList *pointsLists;
     NSLock *pointsLock;
 }
--(void)add:(float*)v extruder:(float)e distance:(float)d;
+-(void)add:(float*)v extruder:(float)e distance:(float)d fline:(int)fl;
 -(void)free;
 -(void)refillVBO;
 -(void)updateVBO:(BOOL)buffer;
@@ -56,9 +61,10 @@
 
 @interface GCodeVisual : ThreeDModel<GCodeAnalyzerDelegate> {
 @public
-    RHLinkedList *segments;
+    NSMutableArray *segments;
     GCodeAnalyzer *ana;
     //GCode *act;
+    BOOL showSelection;
     float lastFilHeight;
     float lastFilWidth;
     float lastFilDiameter;
@@ -83,6 +89,8 @@
     BOOL startOnClear;
     NSLock *changeLock;
     int minLayer,maxLayer;
+    int fileid;
+    int actLine;
 }
 -(id)initWithAnalyzer:(GCodeAnalyzer*)a;
 -(void)printerStateChanged:(GCodeAnalyzer*)analyzer;
@@ -93,10 +101,11 @@
 -(void)addGCode:(GCode*) g;
 -(void)parseText:(NSString*)text clear:(BOOL)clear;
 -(void)parseTextArray:(NSArray*)text clear:(BOOL)clear;
--(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear;
+-(void)parseGCodeShortArray:(NSArray*)codes clear:(BOOL)clear fileid:(int)fid;
 -(void)setColor:(float)dist;
 -(void)computeColor:(float) dist;
 -(void)drawSegment:(GCodePath*)path;
+-(void)drawSegment:(GCodePath*)path start:(int)mstart end:(int)mend;
 -(void)paint;
 
 @end

@@ -44,7 +44,8 @@
                 @"threedLight1AmbientColor",@"threedLight1DiffuseColor",@"threedLight1SpecularColor",        
                 @"threedLight2AmbientColor",@"threedLight2DiffuseColor",@"threedLight2SpecularColor",        
                 @"threedLight3AmbientColor",@"threedLight3DiffuseColor",@"threedLight3SpecularColor",        
-                @"threedLight4AmbientColor",@"threedLight4DiffuseColor",@"threedLight4SpecularColor",        
+                @"threedLight4AmbientColor",@"threedLight4DiffuseColor",@"threedLight4SpecularColor",
+                @"threedFilamentColor2",@"threedFilamentColor3",@"threedSelectedFilamentColor",
                         nil];
         bindingsArray = arr.retain;
         for(NSString *key in arr)
@@ -85,7 +86,10 @@
         [self setColor:@"threedEdgesColor" color:edgeColor];
         [self setColor:@"threedSelectedEdgesColor" color:selectedEdgeColor];
         [self setColor:@"threedFilamentColor" color:filamentColor];
+        [self setColor:@"threedFilamentColor2" color:filament2Color];
+        [self setColor:@"threedFilamentColor3" color:filament3Color];
         [self setColor:@"threedHotFilamentColor" color:hotFilamentColor];
+        [self setColor:@"threedSelectedFilamentColor" color:selectedFilamentColor];
         [self setColor:@"threedBackgroundColor" color:backgroundColor];
         [self setColor:@"threedPrinterColor" color:printerColor];
         [self setColor:@"threedPrinterBottomColor" color:printerBottomColor];
@@ -139,8 +143,14 @@
         [self setColor:@"threedSelectedEdgesColor" color:selectedEdgeColor];
     } else if([keyPath isEqual:@"threedFilamentColor"]) {
         [self setColor:@"threedFilamentColor" color:filamentColor];
+    } else if([keyPath isEqual:@"threedFilamentColor2"]) {
+        [self setColor:@"threedFilamentColor2" color:filament2Color];
+    } else if([keyPath isEqual:@"threedFilamentColor3"]) {
+        [self setColor:@"threedFilamentColor3" color:filament3Color];
     } else if([keyPath isEqual:@"threedHotFilamentColor"]) {
         [self setColor:@"threedHotFilamentColor" color:hotFilamentColor];
+    } else if([keyPath isEqual:@"threedSelectedFilamentColor"]) {
+        [self setColor:@"threedSelectedFilamentColor" color:selectedFilamentColor];
     } else if([keyPath isEqual:@"threedBackgroundColor"]) {
         [self setColor:@"threedBackgroundColor" color:backgroundColor];
     } else if([keyPath isEqual:@"threedPrinterColor"]) {

@@ -46,6 +46,7 @@
     BOOL triggerUpdate;
     float printingTime;
 }
+-(int)fileIndex;
 -(int)showMode;
 -(void)setShowMode:(int)mode;
 -(int)maxLayer;
@@ -65,5 +66,5 @@
 - (IBAction)save:(id)sender;
 - (IBAction)clear:(id)sender;
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx;
-
+-(NSMutableArray*)getClonedContentArrayAtIndex:(int)idx;
 @end

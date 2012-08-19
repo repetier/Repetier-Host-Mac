@@ -162,7 +162,7 @@
                 [NSUserDefaults.standardUserDefaults setObject:url.path forKey:@"skeinforgeApplication"];
                 if([NSUserDefaults.standardUserDefaults stringForKey:@"skeinforgeCraft"].length==0) {
                     NSString *craft = [NSString stringWithFormat:@"%@/skeinforge_utilities/skeinforge_craft.py",[url.path stringByDeletingLastPathComponent]];
-                    if([app->slicer fileExists:craft]) {
+                    if([Slicer fileExists:craft]) {
                         [NSUserDefaults.standardUserDefaults setObject:craft forKey:@"skeinforgeCraft"];
                     }
                 }

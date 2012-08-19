@@ -115,7 +115,17 @@
         [self setShowMaxLayer:maxLayer];
     
 }
-
+-(int)fileIndex {
+    id obj = editor->cur;
+    int idx = 0;
+    for(GCodeContent *gc in documents) {
+        if(gc == obj) break;
+        idx++;
+    }
+    if(idx==0) return 1;
+    if(idx==1) return 0;
+    return idx;
+}
 -(void)gcodeUpdateStatus:(NSNotification*)event {
     [updateText setStringValue:event.object];
     if([event.object length]==0) {
@@ -163,6 +173,12 @@
     [updateCode addObjectsFromArray:gcode->textArray];
     [updateCode addObjectsFromArray:append->textArray];
     return [updateCode autorelease];
+}
+-(NSMutableArray*)getClonedContentArrayAtIndex:(int)idx {
+    NSMutableArray *orig = [self getContentArrayAtIndex:idx];
+    NSMutableArray *updateCode = [[NSMutableArray alloc] initWithCapacity:orig.count];
+    [updateCode addObjectsFromArray:orig];
+    return updateCode;    
 }
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx
 {

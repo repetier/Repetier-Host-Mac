@@ -245,12 +245,12 @@
     } else
        ticks = (((NSDate*)[NSDate date]).timeIntervalSince1970 - jobStarted.timeIntervalSince1970) * (totalLines - linesSend) / linesSend;
     [timeLock unlock];*/
-            long hours = ticks / 3600;
-            ticks -= 3600 * hours;
-            long min = ticks / 60;
-            ticks -= 60 * min;
-            long sec = ticks;
-    NSString *s = [NSString stringWithFormat:@"%dh:%dm:%ds",hours,min,sec];
+    long hours = ticks / 3600;
+    ticks -= 3600 * hours;
+    long min = ticks / 60;
+    ticks -= 60 * min;
+    long sec = ticks;
+    NSString *s = [NSString stringWithFormat:@"%ldh:%ldm:%lds",hours,min,sec];
     return s;
 }
 @end

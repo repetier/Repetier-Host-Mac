@@ -31,7 +31,6 @@
     return self;
 }
 -(void)addLine:(NSString*)line {
-    NSLog(@"entries 2 rc %d",self.entries.retainCount);
     NSRange p = [line rangeOfString:@"="];
     NSString *key = [[line substringToIndex:p.location] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString *v = [self.entries objectForKey:key];
