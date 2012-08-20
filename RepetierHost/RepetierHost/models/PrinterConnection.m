@@ -26,6 +26,8 @@
 #import "TemperatureHistory.h"
 #import "SDCardManager.h"
 #import "RHSound.h"
+#import "../controller/GCodeEditorController.h"
+#import "../controller/GCodeView.h"
 
 @implementation PrinterConnection
 @synthesize port;
@@ -241,14 +243,36 @@
     [job updateJobButtons];
     
 }
-- (void)pauseDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
-        contextInfo:(void *)contextInfo {
+- (void)pauseDidEnd {
+    // Undo moves
+    [self injectManualCommand:@"G90"];
+    [self injectManualCommand:[NSString stringWithFormat:@"G1 X%f Y%f F%f",pauseX,pauseY,config->travelFeedrate]];
+    [self injectManualCommand:[NSString stringWithFormat:@"G1 Z%f F%f",pauseZ,config->travelZFeedrate]];
+    [self injectManualCommand:[NSString stringWithFormat:@"G92 E%f",pauseE]];
+    if (analyzer->relative != pauseRelative)
+    {
+        [self injectManualCommand:(pauseRelative ? @"G91" : @"G90")];
+    }
+    [self injectManualCommand:[NSString stringWithFormat:@"G1 F%f",pauseF]]; // Reset old speed
     paused = NO;
 }
 -(void)pause:(NSString*) text
 {
     if (paused) return;
     paused = YES;
+    
+    pauseX = analyzer->x;
+    pauseY = analyzer->y;
+    pauseZ = analyzer->z;
+    pauseF = analyzer->f;
+    pauseE = analyzer->e;
+    pauseRelative = analyzer->relative;
+
+    for (GCodeShort *code in app->gcodeView->pausejob->textArray)
+    {
+        [self injectManualCommand:code->text];
+    }
+    
     [app->pausedPanelText setStringValue:text];
     [app->pausedPanel setFloatingPanel:YES];
     [app->pausedPanel makeKeyAndOrderFront:app->mainWindow];

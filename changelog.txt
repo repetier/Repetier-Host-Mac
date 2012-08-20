@@ -1,3 +1,11 @@
+Version 0.31 2012-08-20
+  Highlight selected gcode in gcode preview.
+  Give each extruder a different color. Works for extruder 0-2.
+  Restore position where you started pause, allowing extruder moves during pause.
+  Pause script that is run when pause is clicked.
+  5 user defined scripts per printer configuration.
+  Fixed bug on Skeinforge handling.
+
 Version 0.30 2012-08-18
   New design
   New slicer handling

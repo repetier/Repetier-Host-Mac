@@ -29,6 +29,12 @@
     GCodeContent *append;
     GCodeContent *gcode;
     GCodeContent *killjob;
+    GCodeContent *pausejob;
+    GCodeContent *script1;
+    GCodeContent *script2;
+    GCodeContent *script3;
+    GCodeContent *script4;
+    GCodeContent *script5;
     IBOutlet NSPopUpButton *fileSelector;
     IBOutlet NSTextField *updateText;
     IBOutlet NSScrollView *scrollView;

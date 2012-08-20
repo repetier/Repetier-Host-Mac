@@ -52,6 +52,12 @@
     NSString *startCode;
     NSString *endCode;
     NSString *jobkillCode;
+    NSString *jobpauseCode;
+    NSString *script1Code;
+    NSString *script2Code;
+    NSString *script3Code;
+    NSString *script4Code;
+    NSString *script5Code;
     NSString *filterPrg;
     BOOL enableFilterPrg;
 }
@@ -60,6 +66,12 @@
 @property (copy) NSString *startCode;
 @property (copy) NSString *endCode;
 @property (copy) NSString *jobkillCode;
+@property (copy) NSString *jobpauseCode;
+@property (copy) NSString *script1Code;
+@property (copy) NSString *script2Code;
+@property (copy) NSString *script3Code;
+@property (copy) NSString *script4Code;
+@property (copy) NSString *script5Code;
 @property (copy) NSString *filterPrg;
 
 -(void)initDefaultsRepository:(NSString*)confname;

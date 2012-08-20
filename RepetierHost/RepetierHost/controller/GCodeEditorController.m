@@ -42,10 +42,22 @@
         prepend = [[GCodeContent alloc] initWithEditor:editor];
         append = [[GCodeContent alloc] initWithEditor:editor];
         killjob = [[GCodeContent alloc] initWithEditor:editor];
+        pausejob = [[GCodeContent alloc] initWithEditor:editor];
+        script1 = [[GCodeContent alloc] initWithEditor:editor];
+        script2 = [[GCodeContent alloc] initWithEditor:editor];
+        script3 = [[GCodeContent alloc] initWithEditor:editor];
+        script4 = [[GCodeContent alloc] initWithEditor:editor];
+        script5 = [[GCodeContent alloc] initWithEditor:editor];
         [documents addObject:gcode];
         [documents addObject:prepend];
         [documents addObject:append];
         [documents addObject:killjob];
+        [documents addObject:pausejob];
+        [documents addObject:script1];
+        [documents addObject:script2];
+        [documents addObject:script3];
+        [documents addObject:script4];
+        [documents addObject:script5];
         [gcode toActive];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gcodeUpdateStatus:) name:@"RHGCodeUpdateStatus" object:nil];    
         [editor registerScrollView:scrollView];
@@ -63,6 +75,12 @@
     [prepend release];
     [append release];
     [killjob release];
+    [pausejob release];
+    [script1 release];
+    [script2 release];
+    [script3 release];
+    [script4 release];
+    [script5 release];
     [documents release];
     [super dealloc];
 }
@@ -160,6 +178,12 @@
         case 1:c = prepend;break;
         case 2:c = append;break;
         case 3:c = killjob;break;
+        case 4:c = pausejob;break;
+        case 5:c = script1;break;
+        case 6:c = script2;break;
+        case 7:c = script3;break;
+        case 8:c = script4;break;
+        case 9:c = script5;break;
         default:c = gcode;break;
     }
     return [c text];
@@ -192,6 +216,12 @@
         case 1:c = prepend;break;
         case 2:c = append;break;
         case 3:c = killjob;break;
+        case 4:c = pausejob;break;
+        case 5:c = script1;break;
+        case 6:c = script2;break;
+        case 7:c = script3;break;
+        case 8:c = script4;break;
+        case 9:c = script5;break;
     }
     if(c==nil) return;
     if (c == editor->cur)
@@ -225,6 +255,24 @@
     } else if(editor->cur==killjob) {
         [currentPrinterConfiguration setJobkillCode:editor.text];
         [currentPrinterConfiguration saveToRepository];        
+    } else if(editor->cur==pausejob) {
+        [currentPrinterConfiguration setJobpauseCode:editor.text];
+        [currentPrinterConfiguration saveToRepository];
+    } else if(editor->cur==script1) {
+        [currentPrinterConfiguration setScript1Code:editor.text];
+        [currentPrinterConfiguration saveToRepository];
+    } else if(editor->cur==script2) {
+        [currentPrinterConfiguration setScript2Code:editor.text];
+        [currentPrinterConfiguration saveToRepository];
+    } else if(editor->cur==script3) {
+        [currentPrinterConfiguration setScript3Code:editor.text];
+        [currentPrinterConfiguration saveToRepository];
+    } else if(editor->cur==script4) {
+        [currentPrinterConfiguration setScript4Code:editor.text];
+        [currentPrinterConfiguration saveToRepository];
+    } else if(editor->cur==script5) {
+        [currentPrinterConfiguration setScript5Code:editor.text];
+        [currentPrinterConfiguration saveToRepository];
     }
 }
 

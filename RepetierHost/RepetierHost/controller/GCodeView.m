@@ -256,9 +256,12 @@
 }
 -(NSString*)text {
     NSMutableString *s = [NSMutableString new];
+    BOOL first = YES;
     for(GCodeShort *c in lines) {
+        if(!first)
+            [s appendString:@"\n"];
+        first = NO;
         [s appendString:c->text];
-        [s appendString:@"\n"];
     }
     return [s autorelease];
 }

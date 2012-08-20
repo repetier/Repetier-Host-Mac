@@ -32,7 +32,8 @@
         if (!exists) return self;
         NSString *lineString = [StringUtil normalizeLineends:[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil]];
         self.lines = [StringUtil explode:lineString sep:@"\n"];
-        orig = [NSMutableArray arrayWithArray:self.lines];
+        self.orig = [NSMutableArray arrayWithCapacity:self.lines.count];
+        [self.orig addObjectsFromArray:self.lines];
     }
     return self;
 }

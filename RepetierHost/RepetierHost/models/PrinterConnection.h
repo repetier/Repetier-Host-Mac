@@ -99,6 +99,8 @@
     BOOL isMarlin; // Printer is running Marlin firmware
     BOOL isSprinter;
     int speedMultiply;
+    float pauseX,pauseY,pauseZ,pauseF,pauseE;
+    BOOL pauseRelative;
 }
 @property (retain) AMSerialPort *port;
 @property (retain) PrinterConfiguration *config;
@@ -130,6 +132,7 @@
 -(NSString*)extract:(NSString*)source identifier:(NSString*)ident;
 -(void)virtualResponse:(NSString*)response;
 -(void)pause:(NSString*) text;
+- (void)pauseDidEnd;
 @end
 
 extern PrinterConnection *connection;

@@ -39,7 +39,6 @@
 
 @implementation RHAppDelegate
 
-//@synthesize sendGCodeAction;
 @synthesize toolbarConnect;
 
 @synthesize window;
@@ -232,6 +231,11 @@
     [printTempLabel setStringValue:@"Waiting for temperature"];  
     [eepromMenuItem setEnabled:YES];
     [emergencyButton setTag:YES];
+    [sendScript1Menu setEnabled:YES];
+    [sendScript2Menu setEnabled:YES];
+    [sendScript3Menu setEnabled:YES];
+    [sendScript4Menu setEnabled:YES];
+    [sendScript5Menu setEnabled:YES];
 }
 -(void)updateJobButtons {
     if(connection->connected) {
@@ -330,6 +334,11 @@
     [printTempLabel setStringValue:@"Disconnected"];    
     [eepromMenuItem setEnabled:NO];
     [emergencyButton setTag:NO];
+    [sendScript1Menu setEnabled:NO];
+    [sendScript2Menu setEnabled:NO];
+    [sendScript3Menu setEnabled:NO];
+    [sendScript4Menu setEnabled:NO];
+    [sendScript5Menu setEnabled:NO];
 }
 
 - (IBAction)showPreferences:(NSMenuItem *)sender {
@@ -364,7 +373,7 @@
 
 - (IBAction)pausedPanelContinue:(id)sender {
     [pausedPanel orderOut:window];
-    connection->paused = NO;
+    [connection pauseDidEnd];
 }
 
 - (IBAction)ShowHomepage:(id)sender {
@@ -393,6 +402,41 @@
     //   NSArray *fileURLs = [NSArray arrayWithObjects:folder,nil];
     //    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
     [[NSWorkspace sharedWorkspace] openFile:folder];
+}
+
+- (IBAction)sendScript1Action:(id)sender {
+    for (GCodeShort *code in gcodeView->script1->textArray)
+    {
+        [connection injectManualCommand:code->text];
+    }
+}
+
+- (IBAction)sendScript2Action:(id)sender {
+    for (GCodeShort *code in gcodeView->script2->textArray)
+    {
+        [connection injectManualCommand:code->text];
+    }
+}
+
+- (IBAction)sendScript3Action:(id)sender {
+    for (GCodeShort *code in gcodeView->script3->textArray)
+    {
+        [connection injectManualCommand:code->text];
+    }
+}
+
+- (IBAction)sendScript4Action:(id)sender {
+    for (GCodeShort *code in gcodeView->script4->textArray)
+    {
+        [connection injectManualCommand:code->text];
+    }
+}
+
+- (IBAction)sendScript5Action:(id)sender {
+    for (GCodeShort *code in gcodeView->script5->textArray)
+    {
+        [connection injectManualCommand:code->text];
+    }
 }
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
     NSString *ext = filename.pathExtension;

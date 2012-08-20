@@ -31,6 +31,12 @@
 @synthesize startCode;
 @synthesize endCode;
 @synthesize jobkillCode;
+@synthesize jobpauseCode;
+@synthesize script1Code;
+@synthesize script2Code;
+@synthesize script3Code;
+@synthesize script4Code;
+@synthesize script5Code;
 @synthesize filterPrg;
 
 -(id)init {
@@ -72,6 +78,12 @@
         [self setStartCode:@""];
         [self setEndCode:@""];
         [self setJobkillCode:@""];
+        [self setJobpauseCode:@""];
+        [self setScript1Code:@""];
+        [self setScript2Code:@""];
+        [self setScript3Code:@""];
+        [self setScript4Code:@""];
+        [self setScript5Code:@""];
         [self setFilterPrg:@""];
     }
     return self;
@@ -116,6 +128,12 @@
     [self setStartCode:[d stringForKey:[b stringByAppendingString:@".startCode"]]];
     [self setEndCode:[d stringForKey:[b stringByAppendingString:@".endCode"]]];
     [self setJobkillCode:[d stringForKey:[b stringByAppendingString:@".jobkillCode"]]];
+    [self setJobpauseCode:[d stringForKey:[b stringByAppendingString:@".jobpauseCode"]]];
+    [self setScript1Code:[d stringForKey:[b stringByAppendingString:@".script1Code"]]];
+    [self setScript2Code:[d stringForKey:[b stringByAppendingString:@".script2Code"]]];
+    [self setScript3Code:[d stringForKey:[b stringByAppendingString:@".script3Code"]]];
+    [self setScript4Code:[d stringForKey:[b stringByAppendingString:@".script4Code"]]];
+    [self setScript5Code:[d stringForKey:[b stringByAppendingString:@".script5Code"]]];
     [self setFilterPrg:[d stringForKey:[b stringByAppendingString:@".filterPrg"]]];
     enableFilterPrg = [d boolForKey:[b stringByAppendingString:@".enableFilterPrg"]];
     hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
@@ -158,6 +176,13 @@
     [d setObject:@"" forKey:[b stringByAppendingString:@".startCode"]];
     [d setObject:@"" forKey:[b stringByAppendingString:@".endCode"]];
     [d setObject:@"" forKey:[b stringByAppendingString:@".jobkillCode"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".jobpauseCode"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".script1Code"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".script2Code"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".script3Code"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".script4Code"]];
+    [d setObject:@"" forKey:[b stringByAppendingString:@".script5Code"]];
+
     [d setObject:@"" forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setObject:[NSNumber numberWithBool:enableFilterPrg] forKey:[b stringByAppendingString:@".enableFilterPrg"]];
     
@@ -212,6 +237,12 @@
     [d setObject:startCode forKey:[b stringByAppendingString:@".startCode"]];
     [d setObject:endCode forKey:[b stringByAppendingString:@".endCode"]];
     [d setObject:jobkillCode forKey:[b stringByAppendingString:@".jobkillCode"]];
+    [d setObject:jobpauseCode forKey:[b stringByAppendingString:@".jobpauseCode"]];
+    [d setObject:script1Code forKey:[b stringByAppendingString:@".script1Code"]];
+    [d setObject:script2Code forKey:[b stringByAppendingString:@".script2Code"]];
+    [d setObject:script3Code forKey:[b stringByAppendingString:@".script3Code"]];
+    [d setObject:script4Code forKey:[b stringByAppendingString:@".script4Code"]];
+    [d setObject:script5Code forKey:[b stringByAppendingString:@".script5Code"]];
     [d setObject:filterPrg forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setBool:enableFilterPrg forKey:[b stringByAppendingString:@".enableFilterPrg"]];
     [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
@@ -260,6 +291,12 @@
     [app->gcodeView setContent:1 text:currentPrinterConfiguration->startCode];
     [app->gcodeView setContent:2 text:currentPrinterConfiguration->endCode];
     [app->gcodeView setContent:3 text:currentPrinterConfiguration->jobkillCode];
+    [app->gcodeView setContent:4 text:currentPrinterConfiguration->jobpauseCode];
+    [app->gcodeView setContent:5 text:currentPrinterConfiguration->script1Code];
+    [app->gcodeView setContent:6 text:currentPrinterConfiguration->script2Code];
+    [app->gcodeView setContent:7 text:currentPrinterConfiguration->script3Code];
+    [app->gcodeView setContent:8 text:currentPrinterConfiguration->script4Code];
+    [app->gcodeView setContent:9 text:currentPrinterConfiguration->script5Code];
     [app->manualControl->extruderTempText setIntValue:currentPrinterConfiguration->defaultExtruderTemp];
     [app->manualControl->heatedBedTempText setIntValue:currentPrinterConfiguration->defaultHeatedBedTemp];
     [app->openGLView redraw];

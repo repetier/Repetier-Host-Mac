@@ -115,6 +115,11 @@
     IBOutlet HorizontalSplitViewDelegate *editorSplitterDelegate;
     IBOutlet LogSplitViewDelegate *logSplitterDelegate;
     IBOutlet RHSlicer *rhslicer;
+    IBOutlet NSMenuItem *sendScript1Menu;
+    IBOutlet NSMenuItem *sendScript2Menu;
+    IBOutlet NSMenuItem *sendScript3Menu;
+    IBOutlet NSMenuItem *sendScript4Menu;
+    IBOutlet NSMenuItem *sendScript5Menu;
 }
 @property (assign) IBOutlet NSWindow *window;
 -(void)replaceGCodeView:(NSNotification*)event;
@@ -148,6 +153,11 @@
 - (IBAction)ShowSlic3rHomepage:(id)sender;
 - (IBAction)ShowSkeinforgeHomepage:(id)sender;
 - (IBAction)showWorkdir:(id)sender;
+- (IBAction)sendScript1Action:(id)sender;
+- (IBAction)sendScript2Action:(id)sender;
+- (IBAction)sendScript3Action:(id)sender;
+- (IBAction)sendScript4Action:(id)sender;
+- (IBAction)sendScript5Action:(id)sender;
 
 @end
 
