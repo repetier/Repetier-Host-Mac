@@ -543,9 +543,9 @@
     [super dealloc];
 }
 -(void)reduce
-{//return; // reduce possible leaks
+{
     for(RHLinkedList *seg in segments) {
-    if (seg->count < 2) return;
+    if (seg->count < 2) continue;
     if (!liveView)
     {
         GCodePath *first = seg.peekFirst;
@@ -564,7 +564,7 @@
         {
             next = actn->next;
             if (next->next == nil) {
-                return; // Don't touch last segment we are writing to
+                break; // Don't touch last segment we are writing to
             }
             GCodePath *nextval = next->value;
             if (nextval->pointsCount < 2)
@@ -586,17 +586,16 @@
                     actn = next;
                 }
             }
-            else
-                if (((GCodePath*)(actn->value))->pointsCount < 5000 || (nextval->pointsCount >= 5000 && ((GCodePath*)(actn->value))->pointsCount < 27000))
-                {
+            else if (((GCodePath*)(actn->value))->pointsCount < 5000 || (nextval->pointsCount >= 5000 && ((GCodePath*)(actn->value))->pointsCount < 27000))
+            {
                     [actn->value join:nextval];
                     [nextval free ];
                     [seg remove:nextval];
-                }
-                else
-                {
-                    actn = next;
-                }
+            }
+            else
+            {
+                actn = next;
+            }
         }
     }
     }
@@ -1324,6 +1323,7 @@
             [sl addLast:path];
         }
         [sla addObject:sl];
+        NSLog(@"Paths count %d in extruder %d",sl->count,i);
     }
     [changeLock unlock];
     //long timeStart = DateTime.Now.Ticks;

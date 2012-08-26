@@ -658,6 +658,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 															<int key="NSvFlags">265</int>
 															<string key="NSFrame">{{483, -3}, {68, 17}}</string>
 															<reference key="NSSuperview" ref="134636342"/>
+															<reference key="NSNextKeyView" ref="816996139"/>
 															<string key="NSReuseIdentifierKey">_NS:3944</string>
 															<bool key="NSEnabled">YES</bool>
 															<object class="NSTextFieldCell" key="NSCell" id="77145302">
@@ -717,6 +718,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<reference key="NSTabView" ref="923785932"/>
 											</object>
 											<object class="NSTabViewItem" id="49239392">
+												<string key="NSIdentifier">3</string>
 												<object class="NSView" key="NSView" id="975730010">
 													<reference key="NSNextResponder" ref="923785932"/>
 													<int key="NSvFlags">256</int>
@@ -3399,6 +3401,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">LogSplitViewDelegate</string>
 					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">toggleLowerView:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">toggleLowerView:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">toggleLowerView:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
