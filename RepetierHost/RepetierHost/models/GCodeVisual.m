@@ -1323,7 +1323,6 @@
             [sl addLast:path];
         }
         [sla addObject:sl];
-        NSLog(@"Paths count %d in extruder %d",sl->count,i);
     }
     [changeLock unlock];
     //long timeStart = DateTime.Now.Ticks;
