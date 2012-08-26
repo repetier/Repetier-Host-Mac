@@ -46,4 +46,7 @@
 +(NSString*)replaceIn:(NSString*)orig all:(NSString*)all with:(NSString*)with {
     return [StringUtil implode:[StringUtil explode:orig sep:all] sep:with];
 }
++(NSString*)trim:(NSString*)orig {
+    return [orig stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
 @end

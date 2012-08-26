@@ -54,6 +54,6 @@
 -(void)updateSelections;
 - (IBAction)sliceAction:(id)sender;
 @property (assign) IBOutlet NSButtonCell *killButton;
-
+-(void)slicerConfigToVariables;
 +(NSString*)slic3rConfigDir;
 @end

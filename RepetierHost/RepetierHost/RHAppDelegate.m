@@ -377,11 +377,11 @@
 }
 
 - (IBAction)ShowHomepage:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/repetier/Repetier-Host-Mac"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.repetier.com"]];
 }
 
 - (IBAction)ShowManual:(id)sender {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/repetier/Repetier-Host-Mac/wiki"]];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.repetier.com/documentation/repetier-host-mac/"]];
 }
 
 - (IBAction)ShowForum:(id)sender {

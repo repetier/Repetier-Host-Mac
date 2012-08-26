@@ -39,6 +39,7 @@
     IBOutlet NSButton *removeSTLfileButton;
     IBOutlet NSButton *autoplaceButton;
     IBOutlet NSButton *multiplyButton;
+    IBOutlet NSButton *generateButton;
     NSOpenPanel* openPanel;
     NSSavePanel* savePanel;
     RHLinkedList *files;

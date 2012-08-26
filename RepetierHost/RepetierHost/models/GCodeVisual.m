@@ -1181,7 +1181,8 @@
     // Check if inside mark area
     int estart = 0;
     int eend = path->elementsLength;
-    GCodePoint *lastP = nil, *startP = nil, *endP = nil;
+    //GCodePoint *lastP = nil;
+    GCodePoint *startP = nil, *endP = nil;
     for (RHLinkedList *plist in path->pointsLists)
     {
         if (plist->count > 1)
@@ -1200,7 +1201,7 @@
                     break;
                 }
             }
-            lastP = point;
+            //lastP = point;
         }
         if (endP != nil) break;
     }

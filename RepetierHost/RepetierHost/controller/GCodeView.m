@@ -924,6 +924,7 @@
         [sb appendString:l];
         if(i!=rend) [sb appendString:@"\n"];
     }
+    NSLog(@"Selection:%@",sb);
     return sb;
 }
 -(void)deleteSelectionRedraw:(BOOL)redraw
@@ -1086,13 +1087,13 @@
     e->row = rstart;
     e->col = cstart;
     s = [StringUtil normalizeLineends:s];
-    NSArray *la = [s componentsSeparatedByString:@"\n"];
-    GCodeShort *l = [lines objectAtIndex:e->row];
+    NSArray *la = [s componentsSeparatedByString:@"\n"]; // Array with text to insert
+    GCodeShort *l = [lines objectAtIndex:e->row]; // Row at curosr position
     if (e->col > l.length) e->col = (int)l.length;
     //NSMutableArray *la2 = [[NSMutableArray alloc] initWithCapacity:la.count-1];
     //[la2 insertObject:[[l substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]] atIndex:0];
-    NSString *la20=[[l->text substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]];
-    int nc = (int)[[la objectAtIndex:la.count - 1] length];
+    NSString *la20=[[l->text substringToIndex:e->col] stringByAppendingString:[la objectAtIndex:0]]; // New row at cursor position
+    int nc = (int)[[la objectAtIndex:la.count - 1] length]; // cols in last row we insert
   //  [lines replaceObjectAtIndex:rstart withObject:[la objectAtIndex:0]];
     for (int i = 1; i < la.count-1; i++) {
         [lines insertObject:[GCodeShort codeWith:[la objectAtIndex:i]] atIndex:e->row+i];
@@ -1103,7 +1104,11 @@
         e->col = (int)[la20 length];    
     } else {
         [lines replaceObjectAtIndex:rstart withObject:[GCodeShort codeWith:la20]];
-        [lines replaceObjectAtIndex:rend withObject:[GCodeShort codeWith:[[la objectAtIndex:la.count-1] stringByAppendingString:[l->text substringFromIndex:e->col]]]];      
+        if(rend>=lines.count)
+            [lines addObject:[GCodeShort codeWith:[[la objectAtIndex:la.count-1] stringByAppendingString:[l->text substringFromIndex:e->col]]]];
+        else
+            [lines insertObject:[GCodeShort codeWith:[[la objectAtIndex:la.count-1] stringByAppendingString:[l->text substringFromIndex:e->col]]] atIndex:rend];
+        // [lines replaceObjectAtIndex:rend withObject:[GCodeShort codeWith:[[la objectAtIndex:la.count-1] stringByAppendingString:[l->text substringFromIndex:e->col]]]];
         e->col = nc;
     }
     //[la2 insertObject:[[la objectAtIndex:la.count - 1] stringByAppendingString:[l substringFromIndex:e->col]] atIndex:la.count - 2];
@@ -1162,6 +1167,7 @@
    //     rend = row;
    //     cend = col;
     }
+    NSLog(@"Old text:%@",oldtext);
     [self endPos:text resCol:&ce resRow:&re editor:e];
     [self deleteSelection:e colStart:cstart rowStart:rstart colEnd:ce rowEnd:re];
     [self insertString:oldtext editor:e];

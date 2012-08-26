@@ -7,6 +7,7 @@
 //
 
 #import "GCodeShort.h"
+#import "PrinterConnection.h"
 
 @implementation GCodeShort
 
@@ -15,6 +16,7 @@
         text = [cmd retain];
         flags = 1048575+(0<<24);
         x=y=z=e=f=-99999;
+        self.variables = [connection containsVariables:cmd];
         [self parse];
     }
     return self;
@@ -33,6 +35,14 @@
 }
 -(BOOL)hasLayer {
     return (flags & 1048575)!=1048575;
+}
+-(BOOL)hasVariables {
+    return (flags & (1<<30))!=0;
+}
+-(void)setVariables:(BOOL)val {
+    flags |= (1<<30);
+    if(!val)
+        flags-= (1<<30);
 }
 -(int)tool {
     return (flags >> 20) & 15;
@@ -81,6 +91,7 @@ Command values:
     switch (c)
     {
         case 'G':
+        case 'g':
             {
                 int g = (int)d;
                 if(g>0&&g<4) [self setCompressedCommand:g];
@@ -91,7 +102,8 @@ Command values:
                 return YES;
             }
             break;
-        case 'M': {
+        case 'M':
+        case 'm': {
             int m = (int)d;
             if(m==82) [self setCompressedCommand:9];
             if(m==83) [self setCompressedCommand:10];
@@ -99,22 +111,28 @@ Command values:
             }
             break;
         case 'T':
+        case 't':
             [self setTool:(int)d];
             [self setCompressedCommand:11];
             break;
         case 'X':
+        case 'x':
             x = (float)d;
             break;
         case 'Y':
+        case 'y':
             y = (float)d;
             break;
         case 'Z':
+        case 'z':
             z = (float)d;
             break;
         case 'E':
+        case 'e':
             e = (float)d;
             break;
         case 'F':
+        case 'f':
             f = (float)d;
             break;
     }
@@ -122,14 +140,17 @@ Command values:
 }
 
 -(void)parse {
-    int l = (int)[text length],i;
+    NSString *text2 = text;
+    if([self hasVariables])
+        text2 = [connection replaceVariables:text];
+    int l = (int)[text2 length],i;
     int mode = 0; // 0 = search code, 1 = search value
     char code = ';';
     int p1=0;
     NSRange range;
     for (i = 0; i < l; i++)
     {
-        char c = [text characterAtIndex:i];
+        char c = [text2 characterAtIndex:i];
         if(i==0 && c=='@') {
             [self setCompressedCommand:12]; // Host command
             return;
@@ -147,7 +168,7 @@ Command values:
             {
                 range.location = p1;
                 range.length = i-p1;
-                if([self addCode:code value:[text substringWithRange:range]]) {
+                if([self addCode:code value:[text2 substringWithRange:range]]) {
                     if(self.compressedCommand==0) return; // Not interresting
                 }
                 mode = 0;
@@ -158,7 +179,7 @@ Command values:
     if (mode == 1) {
         range.location = p1;
         range.length = l-p1;
-        [self addCode:code value:[text substringWithRange:range]];
+        [self addCode:code value:[text2 substringWithRange:range]];
     }
 }
 @end

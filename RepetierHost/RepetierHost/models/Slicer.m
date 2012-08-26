@@ -24,6 +24,7 @@
 #import "StringUtil.h"
 #import "RHLogger.h"
 #import "../controller/RHSlicer.h"
+#import "../controller/STLComposer.h"
 
 @implementation Slicer
 
@@ -128,13 +129,17 @@
     [app->rhslicer.skeinforgeActive setState:activeSlicer==3];
     if(activeSlicer==3) {
         NSString *path = [d objectForKey:@"skeinforgeProfiles"];
-        if([path rangeOfString:@"sfact"].location!=NSNotFound)
+        if([path rangeOfString:@"sfact"].location!=NSNotFound) {
             [app->rhslicer.runSlice setTitle:@"Slice with SFACT"];
-        else
+            [app->composer->generateButton setTitle:@"Slice with SFACT"];
+        } else {
             [app->rhslicer.runSlice setTitle:@"Slice with Skeinforge"];
+            [app->composer->generateButton setTitle:@"Slice with Skeinforge"];
+        }
 
     } else {
         [app->rhslicer.runSlice setTitle:@"Slice with Slic3r"];
+        [app->composer->generateButton setTitle:@"Slice with Slic3r"];
     }
     [app->rhslicer updateSelections];
 }

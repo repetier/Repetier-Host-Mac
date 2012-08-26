@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor purpleColor]] forKey:@"threedEdgesColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor yellowColor]] forKey:@"threedSelectedEdgesColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor blueColor]] forKey:@"threedFilamentColor"];
-    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithSRGBRed:0 green:0.5 blue:0.5 alpha:1]] forKey:@"threedFilamentColor2"];
-    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithSRGBRed:0.482 green:0.25 blue:0 alpha:1]] forKey:@"threedFilamentColor3"];
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0 green:0.5 blue:0.5 alpha:1]] forKey:@"threedFilamentColor2"];
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.482 green:0.25 blue:0 alpha:1]] forKey:@"threedFilamentColor3"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor redColor]] forKey:@"threedHotFilamentColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor yellowColor]] forKey:@"threedSelectedFilamentColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor blackColor]] forKey:@"threedBackgroundColor"];

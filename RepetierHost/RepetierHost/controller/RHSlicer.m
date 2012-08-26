@@ -18,6 +18,11 @@
 #import "RHSlicer.h"
 #import "../RHAppDelegate.h"
 #import "STLComposer.h"
+#import "../models/PrinterConnection.h"
+#import "../extensions/utils/IniFile.h"
+#import "../extensions/utils/SkeinConfig.h"
+#import "../extensions/utils/StringUtil.h"
+#import "GCodeEditorController.h"
 
 @implementation RHSlicer
 @synthesize killButton;
@@ -47,10 +52,60 @@
             [self updateSelections];
             [view setFrame:[self bounds]];
             [self addSubview:view];
+            [self slicerConfigToVariables];
         }
     }
     
     return self;
+}
+-(void)slicerConfigToVariables {
+    NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+    [connection.variables removeAllObjects];
+    if([d integerForKey:@"activeSlicer"]==3) { // Skeinforge
+        NSString *sdir = [d stringForKey:@"skeinforgeProfiles"];
+        NSString *prof = [d stringForKey:@"skeinforgeSelectedProfile"];
+        NSString *configDir = [NSString stringWithFormat:@"%@/extrusion/%@",sdir,prof];
+        NSArray* enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:configDir error:nil];
+        for (NSString *file in enumerator)
+        {
+            // check if it's a directory
+            BOOL isDirectory = NO;
+            [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@",configDir,file] isDirectory: &isDirectory];
+            if (!isDirectory && [file.pathExtension compare:@"csv"]==NSOrderedSame)
+            {
+                SkeinConfig *sk = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/%@",configDir,file]];
+                for(NSString *line in sk.orig) {
+                    NSRange tab = [line rangeOfString:@"\t"];
+                    if(tab.location==NSNotFound) continue;
+                    NSString *var = [connection repairKey:[StringUtil trim:[line substringToIndex:tab.location]]];
+                    NSString *val = [StringUtil trim:[line substringFromIndex:tab.location+1]];
+                    [connection.variables setObject:val forKey:var];
+                }
+                [sk release];
+            }
+        }
+
+    } else { // Slic3r
+        NSString *sFilament = [d objectForKey:@"slic3rFilament"];
+        NSString *sPrint = [d objectForKey:@"slic3rPrint"];
+        NSString *sPrinter = [d objectForKey:@"slic3rPrinter"];
+        NSString *cdir = [RHSlicer slic3rConfigDir];
+        NSString *fPrinter = [NSString stringWithFormat:@"%@/print/%@.ini",cdir,sPrint];
+        IniFile *ini = [[[IniFile alloc] init] autorelease];
+        [ini read:fPrinter];
+        IniFile *ini2 = [[[IniFile alloc] init] autorelease];
+        [ini2 read:[NSString stringWithFormat:@"%@/printer/%@.ini",cdir,sPrinter]];
+        IniFile *ini3 = [[[IniFile alloc] init] autorelease];
+        [ini3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament]];
+        [ini flatten];
+        [ini2 flatten];
+        [ini3 flatten];
+        [connection importVariablesFormDictionary:[[ini.sections objectForKey:@""] entries]];
+        [connection importVariablesFormDictionary:[[ini2.sections objectForKey:@""] entries]];
+        [connection importVariablesFormDictionary:[[ini3.sections objectForKey:@""] entries]];
+    }
+    if(app && app->gcodeView)
+        [app->gcodeView->variablesTable.tableView reloadData];
 }
 -(void)updateSelections {
     NSString *cdir = [RHSlicer slic3rConfigDir];
@@ -164,10 +219,12 @@
 
 - (IBAction)selectSlic3rAction:(id)sender {
     [app->slicer activateSlic3rInternal:nil];
+    [self slicerConfigToVariables];
 }
 
 - (IBAction)selectSkeinforgeAction:(id)sender {
     [app->slicer activateSkeinforge:nil];
+    [self slicerConfigToVariables];
 }
 
 - (IBAction)killAction:(id)sender {

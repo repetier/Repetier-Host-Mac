@@ -23,6 +23,7 @@
 #import "RHAppDelegate.h"
 #import "GCodeEditorController.h"
 #import "GCodeView.h"
+#import "../controller/RHSlicer.h"
 
 @implementation PrintTime
 
@@ -88,6 +89,7 @@
     computedPrintingTime = 0;
     mode = 1;
     maxLayer = 0;
+    [app->rhslicer slicerConfigToVariables];  // Start with fresh variable set
     [connection->analyzer startJob];
     [ThreadedNotification notifyASAP:@"RHJobChanged" object:self];
 }
@@ -196,7 +198,7 @@
     if (times->count > 1500)
         [times removeFirst];
     [timeLock unlock];*/
-    if (jobList->count == 0)
+    if (jobList->count == 0 && dataComplete)
     {
         dataComplete = false;
         mode = 2;

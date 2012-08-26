@@ -39,6 +39,7 @@
 @synthesize lastPrinterAction;
 @synthesize responseDelegate;
 @synthesize job;
+@synthesize variables;
 
 -(id)init {
     if((self=[super init])) {
@@ -70,6 +71,7 @@
         extruderOutput = -1;
         injectCommands = [RHLinkedList new];
         nackLines = [RHLinkedList new];
+        self.variables = [NSMutableDictionary new];
         read = [[NSMutableString stringWithCapacity:100] retain];
         RHPrintjob *j = [RHPrintjob new];
         [self setJob:j];
@@ -658,8 +660,8 @@
         {
             [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
             [analyzer analyze:gc];
-            [job popData];
             [historyLock unlock];
+            [job popData];
             [nextlineLock unlock];
             return;
         }
@@ -991,6 +993,66 @@
     pos.location = start;
     pos.length = end-start;
     return [source substringWithRange:pos];
+}
+-(NSString*)repairKey:(NSString*)key {
+    key = [StringUtil trim:key];
+    return [key stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+}
+-(void)importVariablesFormDictionary:(NSDictionary*)dict {
+    for(NSString *key in [dict allKeys]) {
+        NSString *val = [StringUtil trim:[dict objectForKey:key]];
+        NSRange r = [val rangeOfString:key];
+        if(r.location!=NSNotFound) {
+            NSRange re = [val rangeOfString:@"=" options:NSLiteralSearch range:NSMakeRange(r.location+r.length, val.length-r.location-r.length)];
+            if(re.location!=NSNotFound) {
+                val = [StringUtil trim:[val substringFromIndex:re.location+1]];
+            }
+        }
+        NSString *rkey = [self repairKey:key];
+        [variables setObject:val forKey:rkey];
+    }
+}
+-(BOOL)containsVariables:(NSString*)orig {
+    NSRange r = [orig rangeOfString:@"${"];
+    return r.location!=NSNotFound;
+}
+-(NSString*)replaceVariables:(NSString*)orig {
+    NSMutableString *res = [NSMutableString new];
+    NSRange r,r2;
+    NSInteger start = 0;
+    do {
+        r = [orig rangeOfString:@"${" options:NSLiteralSearch range:NSMakeRange(start, orig.length-start)];
+        if(r.location == NSNotFound) {
+            [res appendString:[orig substringFromIndex:start]];
+            break;
+        }
+        r2 = [orig rangeOfString:@"}" options:NSLiteralSearch range:NSMakeRange(r.location+2, orig.length-r.location-2)];
+        if(r2.location == NSNotFound) { // missing closing bracket
+            [res appendString:[orig substringFromIndex:start]];
+            break;
+        }
+        [res appendString:[orig substringWithRange:NSMakeRange(start,r.location-start)]];
+        NSString *varnamelist = [orig substringWithRange:NSMakeRange(r.location+2,r2.location-r.location-2)];
+        NSRange r3 = [varnamelist rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@":"]];
+        NSString *defaultval=@"";
+        if(r3.location!=NSNotFound) {
+            defaultval = [varnamelist substringFromIndex:r3.location+1];
+            varnamelist = [varnamelist substringToIndex:r3.location];
+        }
+        NSArray *varnames = [StringUtil explode:varnamelist sep:@";"];
+        BOOL found = NO;
+        for(NSString *name in varnames) {
+            NSString *val = [variables objectForKey:name];
+            if(val) {
+                [res appendString:val];
+                found = YES;
+                break;
+            }
+        }
+        if(!found) [res appendString:defaultval];
+        start = r2.location+1;
+    } while(YES);
+    return [NSString stringWithString:[res autorelease]];
 }
 @end
 

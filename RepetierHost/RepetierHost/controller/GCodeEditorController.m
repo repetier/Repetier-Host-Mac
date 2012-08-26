@@ -22,8 +22,11 @@
 #import "RHOpenGLView.h"
 #import "PrinterConfiguration.h"
 #import "StringUtil.h"
+#import "../models/PrinterConnection.h"
 
 @implementation GCodeEditorController
+
+@synthesize variableKeys;
 
 - (id)initWithFrame:(NSRect)frame
 {
@@ -202,7 +205,7 @@
     NSMutableArray *orig = [self getContentArrayAtIndex:idx];
     NSMutableArray *updateCode = [[NSMutableArray alloc] initWithCapacity:orig.count];
     [updateCode addObjectsFromArray:orig];
-    return updateCode;    
+    return [updateCode autorelease];
 }
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx
 {
@@ -295,5 +298,27 @@
     [app->codeVisual reduce];
     [app->codeVisual stats];
     [app->openGLView redraw];
+}
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
+    self.variableKeys = [connection.variables allKeys];
+    return connection.variables.count;
+}
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {
+    if(col==app->gcodeView->variablesVarCol) {
+        return [self.variableKeys objectAtIndex:rowIndex];
+    }
+    NSObject *obj = [connection.variables objectForKey:[self.variableKeys objectAtIndex:rowIndex]];
+    if(obj) return obj;
+    return @"";
+}
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    NSInteger row = [variablesTable.tableView selectedRow];
+    if(row<variableKeys.count) {
+        NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+        [pasteboard clearContents];
+        NSArray *copiedObjects = [NSArray arrayWithObject:[variableKeys objectAtIndex:row]];
+        [pasteboard writeObjects:copiedObjects];
+    }
 }
 @end

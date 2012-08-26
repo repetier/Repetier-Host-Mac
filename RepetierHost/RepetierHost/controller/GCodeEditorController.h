@@ -20,7 +20,7 @@
 @class GCodeView;
 @class GCodeContent;
 
-@interface GCodeEditorController : NSView {
+@interface GCodeEditorController : NSView<NSTableViewDataSource,NSTableViewDelegate> {
     @public
     IBOutlet NSView *view;
     IBOutlet GCodeView *editor;
@@ -51,7 +51,11 @@
     int showMode;
     BOOL triggerUpdate;
     float printingTime;
+    IBOutlet NSTableHeaderView *variablesTable;
+    IBOutlet NSTableColumn *variablesVarCol;
+    NSArray *variableKeys;
 }
+@property (retain)NSArray *variableKeys;
 -(int)fileIndex;
 -(int)showMode;
 -(void)setShowMode:(int)mode;

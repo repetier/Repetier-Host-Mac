@@ -1,7 +1,11 @@
 //
 // Prefix header for all source files of the 'RepetierHost' target in the 'RepetierHost' project
 //
-
+#import <Availability.h>
+//#define MAC_OS_X_VERSION_MAX_ALLOWED 1050
+#undef  WEAK_IMPORT_ATTRIBUTE
+#define WEAK_IMPORT_ATTRIBUTE \
+__attribute__((weak_import,deprecated("API newer than Deployment Target.")))
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
 #endif

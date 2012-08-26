@@ -101,6 +101,7 @@
     int speedMultiply;
     float pauseX,pauseY,pauseZ,pauseF,pauseE;
     BOOL pauseRelative;
+    NSMutableDictionary* variables;
 }
 @property (retain) AMSerialPort *port;
 @property (retain) PrinterConfiguration *config;
@@ -111,6 +112,8 @@
 @property (retain) NSString* protocol;
 @property (retain) NSString* lastPrinterAction;
 @property (retain) id<ResponseDelegate> responseDelegate;
+@property (retain) NSMutableDictionary* variables;
+
 -(void)open;
 -(void)close;
 -(void)writeString:(NSString*)text;
@@ -133,6 +136,10 @@
 -(void)virtualResponse:(NSString*)response;
 -(void)pause:(NSString*) text;
 - (void)pauseDidEnd;
+-(NSString*)repairKey:(NSString*)key;
+-(void)importVariablesFormDictionary:(NSDictionary*)dict;
+-(BOOL)containsVariables:(NSString*)orig;
+-(NSString*)replaceVariables:(NSString*)orig;
 @end
 
 extern PrinterConnection *connection;

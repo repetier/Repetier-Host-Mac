@@ -22,4 +22,5 @@
 +(BOOL)string:(NSString*)text startsWith:(NSString*)comp;
 +(NSString*)normalizeLineends:(NSString*)line;
 +(NSString*)replaceIn:(NSString*)orig all:(NSString*)all with:(NSString*)with;
++(NSString*)trim:(NSString*)orig;
 @end

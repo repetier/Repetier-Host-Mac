@@ -19,6 +19,7 @@
     // Bit 0-19 : Layer 
     // Bit 20-23 : Tool
     // Bit 24-29 : Compressed command
+    // Bit 30 : Contains variables
     uint32_t flags;
     NSString *text;
 }
@@ -26,6 +27,8 @@
 -(int)layer;
 -(void)setLayer:(int)val;
 -(BOOL)hasLayer;
+-(BOOL)hasVariables;
+-(void)setVariables:(BOOL)val;
 -(int)tool;
 -(void)setTool:(int)val;
 -(int)compressedCommand;

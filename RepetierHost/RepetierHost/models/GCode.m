@@ -15,6 +15,7 @@
  */
 
 #import "GCode.h"
+#import "PrinterConnection.h"
 
 @implementation GCode
 -(id)initFromString:(NSString *)cmd {
@@ -116,14 +117,17 @@
 }
 -(void)parse {
     fields = 128;
-    int l = (int)[orig length],i;
+    NSString *cmd = orig;
+    if([connection containsVariables:orig])
+        cmd = [connection replaceVariables:orig];
+    int l = (int)[cmd length],i;
     int mode = 0; // 0 = search code, 1 = search value
     char code = ';';
     int p1=0;
     NSRange range;
     for (i = 0; i < l; i++)
     {
-        char c = [orig characterAtIndex:i];
+        char c = [cmd characterAtIndex:i];
         if(i==0 && c=='@') {
             hostCommand = YES;
             return;
@@ -141,17 +145,17 @@
             {
                 range.location = p1;
                 range.length = i-p1;
-                [self addCode:code value:[orig substringWithRange:range]];
+                [self addCode:code value:[cmd substringWithRange:range]];
                 mode = 0;
                 if (self.hasM && (m == 23 || m == 28 || m == 29 || m == 30))
                 {
                     int pos = i;
-                    while (pos < l && isspace([orig characterAtIndex:pos])) pos++;
+                    while (pos < l && isspace([cmd characterAtIndex:pos])) pos++;
                     int end = pos;
-                    while (end < l && !isspace([orig characterAtIndex:end])) end++;
+                    while (end < l && !isspace([cmd characterAtIndex:end])) end++;
                     range.location = pos;
                     range.length = end-pos;
-                    text = [[orig substringWithRange:range] retain];
+                    text = [[cmd substringWithRange:range] retain];
                     fields |=32768;
                     break;
                 }
@@ -162,7 +166,7 @@
     if (mode == 1) {
         range.location = p1;
         range.length = l-p1;
-        [self addCode:code value:[orig substringWithRange:range]];
+        [self addCode:code value:[cmd substringWithRange:range]];
     }
     comment = fields == 128;
 }
@@ -295,46 +299,57 @@
     switch (c)
     {
         case 'N':
+        case 'n':
             n = (int32_t)d;
             fields|=1;
             break;
         case 'G':
+        case 'g':
             g = (uint8)d;
             fields|=4;
             break;
         case 'M':
+        case 'm':
             m = (uint8)d;
             fields|=2;
             break;
         case 'T':
+        case 't':
             t = (uint8)d;
             fields|=512;
             break;
         case 'S':
+        case 's':
             s = (int)d;
             fields|=1024;
             break;
         case 'P':
+        case 'p':
             p = (int)d;
             fields|=2048;
             break;
         case 'X':
+        case 'x':
             x = (float)d;
             fields|=8;
             break;
         case 'Y':
+        case 'y':
             y = (float)d;
             fields|=16;
             break;
         case 'Z':
+        case 'z':
             z = (float)d;
             fields|=32;
             break;
         case 'E':
+        case 'e':
             e = (float)d;
             fields|=64;
             break;
         case 'F':
+        case 'f':
             f = (float)d;
             fields|=256;
             break;
@@ -350,6 +365,7 @@
 {
     NSRange pos = [orig rangeOfString:@" "];
     if (pos.location==NSNotFound) return @"";
-    return [orig substringFromIndex:pos.location+1];
+    NSString *cmd = [connection replaceVariables:[orig substringFromIndex:pos.location+1]];
+    return cmd;
 }
 @end
