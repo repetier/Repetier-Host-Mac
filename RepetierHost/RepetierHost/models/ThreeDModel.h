@@ -40,4 +40,5 @@
 -(void)animationBefore;
 -(void)animationAfter;
 -(void)getCenter:(float*)center;
+-(void)clearGraphicContext;
 @end

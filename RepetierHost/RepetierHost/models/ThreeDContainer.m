@@ -49,6 +49,10 @@
     [models release];
     [super dealloc];
 }
+-(void)clearGraphicContext {
+    for(ThreeDModel *mod in models)
+        [mod clearGraphicContext];
+}
 -(void)resetView {
     rotX = 20;
     rotZ = 0;
@@ -130,7 +134,12 @@
             glDisable(GL_LIGHT0+i);
     }
     glEnable(GL_LIGHTING);
-    
+    //glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_BLEND);
+    glLineWidth(2.0f);
+    //glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_MULTISAMPLE);
     //Enable Backfaceculling
         
     // Draw viewpoint
@@ -353,6 +362,7 @@
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_PROJECTION);
+    glDisable(GL_MULTISAMPLE);
     glPushMatrix();
     glLoadIdentity();
     

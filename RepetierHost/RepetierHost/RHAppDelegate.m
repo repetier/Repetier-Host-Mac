@@ -449,4 +449,9 @@
     }
     return NO;
 }
+-(void)clearGraphicContext {
+    [codePreview clearGraphicContext];
+    [stlView clearGraphicContext];
+    [printPreview clearGraphicContext];
+}
 @end

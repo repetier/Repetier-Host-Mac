@@ -256,6 +256,13 @@
     //res[1] = vector4Dotf(&trans[4], v4);
     //res[2] = vector4Dotf(&trans[8], v4);
 }
+-(void)clearGraphicContext {
+    if(bufs!=nil) {
+        glDeleteBuffers(4, bufs);
+        free(bufs);
+        bufs = nil;
+    }
+}
 -(void)paint {
     /*if(points!=nil) free(points);
     if(normals!=nil) free(normals);

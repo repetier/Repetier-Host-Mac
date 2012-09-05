@@ -71,7 +71,7 @@
         extruderOutput = -1;
         injectCommands = [RHLinkedList new];
         nackLines = [RHLinkedList new];
-        self.variables = [NSMutableDictionary new];
+        self.variables = [NSMutableDictionary dictionaryWithCapacity:100];
         read = [[NSMutableString stringWithCapacity:100] retain];
         RHPrintjob *j = [RHPrintjob new];
         [self setJob:j];
@@ -996,7 +996,10 @@
 }
 -(NSString*)repairKey:(NSString*)key {
     key = [StringUtil trim:key];
-    return [key stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    key = [key stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    key = [key stringByReplacingOccurrencesOfString:@";" withString:@"_"];
+    key = [key stringByReplacingOccurrencesOfString:@"}" withString:@"_"];
+    return [key stringByReplacingOccurrencesOfString:@":" withString:@"_"];
 }
 -(void)importVariablesFormDictionary:(NSDictionary*)dict {
     for(NSString *key in [dict allKeys]) {

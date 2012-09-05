@@ -183,7 +183,7 @@
     } else if([keyPath isEqual:@"threedLight4SpecularColor"]) {
         [self setColor:@"threedLight4SpecularColor" color:lights[3].specular];
     }
-    drawMethod = (int)[d integerForKey:@"threedAccelerationMethod"];
+    //drawMethod = (int)[d integerForKey:@"threedAccelerationMethod"];
     disableFilamentVisualization = [d integerForKey:@"disableFilamentVisualization"];
     filamentVisualization = (int)[d integerForKey:@"threedFilamentVisualization"];
     showPrintbed = [d boolForKey:@"threedShowPrintbed"];

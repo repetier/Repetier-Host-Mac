@@ -41,6 +41,8 @@
     NSOpenGLPixelFormat *pixelFormat;
     NSTimer *timer;
     BOOL _needsReshape;
+    int antialiasMethod;
+    int antialiasSamples;
 }
 - (id) initWithFrame:(NSRect)frameRect;
 - (id) initWithFrame:(NSRect)frameRect shareContext:(NSOpenGLContext*)context;

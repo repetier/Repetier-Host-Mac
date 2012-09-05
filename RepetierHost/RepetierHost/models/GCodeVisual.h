@@ -55,6 +55,7 @@
 -(void)updateVBO:(BOOL)buffer;
 -(float)lastDist;
 -(void)join:(GCodePath*)path;
+-(void)clearVBO;
 @end
 
 @class GCodeAnalyzer;
@@ -107,5 +108,5 @@
 -(void)drawSegment:(GCodePath*)path;
 -(void)drawSegment:(GCodePath*)path start:(int)mstart end:(int)mend;
 -(void)paint;
-
+-(void)clearGraphicContext;
 @end

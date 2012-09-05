@@ -65,4 +65,5 @@
 -(void)extractVector:(GLfloat*)res from:(NSString*)s;
 -(STL*)copySTL;
 -(void)reload;
+-(void)clearGraphicContext;
 @end

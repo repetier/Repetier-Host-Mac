@@ -217,6 +217,12 @@
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, (elementsLength * sizeof(int)), elements,GL_STATIC_DRAW);
     hasBuf = YES;
 }
+-(void)clearVBO {
+    if (hasBuf)
+        glDeleteBuffers(3, buf);
+    hasBuf = NO;
+    drawMethod = -1; // Force redraw
+}
 -(void)updateVBO:(BOOL)buffer
 {
     if (pointsCount < 2) 
@@ -887,6 +893,14 @@
         curColor[0] = defaultColor[0] * fak + hotColor[0] * fak2;
         curColor[1] = defaultColor[1] * fak + hotColor[1] * fak2;
         curColor[2] = defaultColor[2] * fak + hotColor[2] * fak2;
+    }
+}
+-(void)clearGraphicContext {
+    for(int i=0;i<MAX_EXTRUDER;i++) {
+        for (GCodePath *path in [segments objectAtIndex:i])
+        {
+            [path clearVBO];
+        }
     }
 }
 -(void)drawSegment:(GCodePath*)path

@@ -38,4 +38,5 @@
 -(void)paintWidth:(double)width height:(double)height;
 -(void)gluPickMatrix:(float*)mat x:(float)x y:(float)y width:(float)width height:(float)height viewport:(int *)viewport;
 -(ThreeDModel*)PicktestX:(float)x Y:(float)y width:(float)width height:(float)height;
+-(void)clearGraphicContext;
 @end

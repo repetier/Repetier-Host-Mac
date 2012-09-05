@@ -5,7 +5,15 @@ RepetierHost/RepetierHost/Skeinforge.app/*
 RepetierHost/RepetierHost.xcodeproj/project.xcworkspace/xcuserdata
 xcuserdata
 *.pkg
+*.dmg
 RepetierHost/RepetierHost/images/Thumbs.db
-
+Repetier-Host Mac.app/*
 
 Repetier-Host Mac iRapid.pmdoc/*
+NeueVersionBereitstellen.txt
+
+sign_update.rb
+
+dsa_pub.pem
+
+dsa_priv.pem

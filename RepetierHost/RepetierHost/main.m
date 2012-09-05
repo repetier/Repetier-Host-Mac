@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
     // Set default values
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"antialiasMethod"];
+    [d setObject:[NSNumber numberWithInt:4] forKey:@"antialiasSamples"];
+
     [d setObject:[NSNumber numberWithInt:1] forKey:@"threedFilamentVisualization"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor redColor]] forKey:@"threedFacesColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor magentaColor]] forKey:@"threedSelectedFacesColor"];

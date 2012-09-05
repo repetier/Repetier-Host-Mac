@@ -40,8 +40,10 @@
 
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewGlobalFrameDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [glThread release];
-    [glContext release];
+    //[glContext release];
+    [self destroyOpenGL];
     [super dealloc];
 }
 /*- (void) reshape
@@ -67,29 +69,11 @@
 {
 	if (self = [super initWithFrame:frameRect]) 
 	{
-    NSOpenGLPixelFormatAttribute attribs[] =
-    {
-		NSOpenGLPFAWindow,
-		NSOpenGLPFADoubleBuffer,
-		NSOpenGLPFAColorSize, 24,
-		NSOpenGLPFAAlphaSize, 8,
-		NSOpenGLPFADepthSize, 32,
-		//NSOpenGLPFANoRecovery,
-		NSOpenGLPFAAccelerated,
-        NSOpenGLPFAClosestPolicy,
-		0
-    };
-	
-    pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
-	
-    if (!pixelFormat)
-		NSLog(@"No OpenGL pixel format");
-        _needsReshape = YES;
-	// NSOpenGLView does not handle context sharing, so we draw to a custom NSView instead
-	glContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:context];
-   // [glContext setView:self];
-		[glContext makeCurrentContext];
-		
+		//glContext = context;
+        NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+        antialiasMethod = (int)[d integerForKey:@"antialiasMethod"];
+        antialiasSamples = (int)[d integerForKey:@"antialiasSamples"];
+        [self createOpenGL];
 		// Synchronize buffer swaps with vertical refresh rate
 	//	GLint swapInt = 1;
 	//	[glContext setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
@@ -100,6 +84,8 @@
 		// Note, -reshape will not be called automatically on size changes because NSView does not export it to override 
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reshape) 
                 name:NSViewGlobalFrameDidChangeNotification object:self];
+        [d addObserver:self forKeyPath:@"antialiasMethod" options:NSKeyValueObservingOptionNew context:NULL];
+        [d addObserver:self forKeyPath:@"antialiasSamples" options:NSKeyValueObservingOptionNew context:NULL];
         mode = 0;
         glLock = [NSCondition new];
         updateGLView = NO;
@@ -107,6 +93,77 @@
 	
 	
 	return self;
+}
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+    //NSLog(@"Key changed:%@",keyPath);
+    NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+    antialiasMethod = (int)[d integerForKey:@"antialiasMethod"];
+    antialiasSamples = (int)[d integerForKey:@"antialiasSamples"];
+    [self destroyOpenGL];
+    [self createOpenGL];
+    [self setNeedsDisplay:YES];
+}
+-(void)destroyOpenGL {
+    [app clearGraphicContext];
+    [NSOpenGLContext clearCurrentContext];
+    [glContext release];
+    [pixelFormat release];
+}
+-(void)createOpenGL {
+    if(antialiasMethod==0) {
+        NSOpenGLPixelFormatAttribute attribs[] =
+        {
+            NSOpenGLPFAWindow,
+            NSOpenGLPFADoubleBuffer,
+            NSOpenGLPFAColorSize, 24,
+            NSOpenGLPFAAlphaSize, 8,
+            NSOpenGLPFADepthSize, 24,
+            NSOpenGLPFANoRecovery, // Dont back up with software renderer
+            NSOpenGLPFAAccelerated,
+            NSOpenGLPFAClosestPolicy,
+            0
+        };
+        
+        pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+        
+    } else {
+        int m = NSOpenGLPFAMultisample;
+        if(antialiasMethod==2)
+            m = NSOpenGLPFAMultisample;
+        else if(antialiasMethod==3)
+            m = NSOpenGLPFASampleAlpha;
+        NSOpenGLPixelFormatAttribute attribs[] =
+        {
+		NSOpenGLPFAWindow,
+		NSOpenGLPFADoubleBuffer,
+		NSOpenGLPFAColorSize, 24,
+		NSOpenGLPFAAlphaSize, 8,
+		NSOpenGLPFADepthSize, 24,
+		NSOpenGLPFANoRecovery, // Dont back up with software renderer
+		NSOpenGLPFAAccelerated,
+        NSOpenGLPFAClosestPolicy,
+        NSOpenGLPFASampleBuffers,1,
+        NSOpenGLPFASamples,antialiasSamples,
+        m,
+        //NSOpenGLPFAMultisample,
+        //NSOpenGLPFASupersample,
+		0
+        };
+	
+        pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+	}
+    if (!pixelFormat)
+		NSLog(@"No OpenGL pixel format");
+    _needsReshape = YES;
+	// NSOpenGLView does not handle context sharing, so we draw to a custom NSView instead
+	glContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
+    // [glContext setView:self];
+    [glContext makeCurrentContext];
+    
 }
 -(void)awakeFromNib {
     //glContext = self.openGLContext;

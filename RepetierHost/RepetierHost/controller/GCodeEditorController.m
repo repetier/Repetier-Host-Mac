@@ -301,7 +301,7 @@
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    self.variableKeys = [connection.variables allKeys];
+    self.variableKeys = [[connection.variables allKeys] sortedArrayUsingSelector: @selector(compare:)];
     return connection.variables.count;
 }
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {

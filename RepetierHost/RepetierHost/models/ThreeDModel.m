@@ -37,6 +37,7 @@
 {
     [animations addLast:anim];
 }
+-(void)clearGraphicContext {}
 -(void) removeAnimationWithName:(NSString*)aname
 {
     BOOL found = YES;
