@@ -36,6 +36,10 @@ int main(int argc, char *argv[])
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor magentaColor]] forKey:@"threedSelectedFacesColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor purpleColor]] forKey:@"threedEdgesColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor yellowColor]] forKey:@"threedSelectedEdgesColor"];
+
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.5 green:1 blue:0.83 alpha:1]] forKey:@"threedOutsidePrintbedColor"];
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.117 green:0.564 blue:1 alpha:1]] forKey:@"threedSelectionBoxColor"];
+
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor blueColor]] forKey:@"threedFilamentColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0 green:0.5 blue:0.5 alpha:1]] forKey:@"threedFilamentColor2"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithCalibratedRed:0.482 green:0.25 blue:0 alpha:1]] forKey:@"threedFilamentColor3"];

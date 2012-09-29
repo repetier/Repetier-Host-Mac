@@ -26,12 +26,15 @@
     NSPopUpButton *slic3rPrinterSettings;
     NSPopUpButton *skeinforgeProfile;
     NSMutableArray *slic3rFilamentList;
+    IBOutlet NSPopUpButton *slic3rFilamentSettings2;
     NSMutableArray *slic3rPrintList;
     NSMutableArray *slic3rPrinterList;
     NSMutableArray *skeinforgeProfileList;
     NSButton *runSlice;
     NSButtonCell *killButton;
+    NSPopUpButton *slic3rFilamentSettings3;
 }
+@property (assign) IBOutlet NSPopUpButton *slic3rFilamentSettings3;
 
 @property (assign) IBOutlet NSView *view;
 @property (assign) IBOutlet NSButton *slic3rActive;

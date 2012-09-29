@@ -45,7 +45,7 @@
                 @"threedLight2AmbientColor",@"threedLight2DiffuseColor",@"threedLight2SpecularColor",        
                 @"threedLight3AmbientColor",@"threedLight3DiffuseColor",@"threedLight3SpecularColor",        
                 @"threedLight4AmbientColor",@"threedLight4DiffuseColor",@"threedLight4SpecularColor",
-                @"threedFilamentColor2",@"threedFilamentColor3",@"threedSelectedFilamentColor",
+                @"threedFilamentColor2",@"threedFilamentColor3",@"threedSelectedFilamentColor",@"threedOutsidePrintbedColor",@"threedSelectionBoxColor",
                         nil];
         bindingsArray = arr.retain;
         for(NSString *key in arr)
@@ -105,6 +105,8 @@
         [self setColor:@"threedLight4AmbientColor" color:lights[3].ambient];
         [self setColor:@"threedLight4DiffuseColor" color:lights[3].diffuse];
         [self setColor:@"threedLight4SpecularColor" color:lights[3].specular];
+        [self setColor:@"threedOutsidePrintbedColor" color:outsidePrintbedColor];
+        [self setColor:@"threedSelectionBoxColor" color:selectionBoxColor];
         printerBottomColor[3] = 0.01*printerBottomAlpha;
 
     }
@@ -183,6 +185,9 @@
     } else if([keyPath isEqual:@"threedLight4SpecularColor"]) {
         [self setColor:@"threedLight4SpecularColor" color:lights[3].specular];
     }
+    [self setColor:@"threedOutsidePrintbedColor" color:outsidePrintbedColor];
+    [self setColor:@"threedSelectionBoxColor" color:selectionBoxColor];
+
     //drawMethod = (int)[d integerForKey:@"threedAccelerationMethod"];
     disableFilamentVisualization = [d integerForKey:@"disableFilamentVisualization"];
     filamentVisualization = (int)[d integerForKey:@"threedFilamentVisualization"];

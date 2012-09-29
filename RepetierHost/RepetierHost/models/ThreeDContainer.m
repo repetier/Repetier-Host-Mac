@@ -23,8 +23,13 @@
 #include "ThreeDConfig.h"
 #include "STL.h"
 #include "RHMatrix.h"
+#include "Geom3D.h"
 
 @implementation ThreeDContainer
+
+@synthesize pickLine;
+@synthesize pickPoint;
+@synthesize viewLine;
 
 -(id)init {
     if((self=[super init])) {
@@ -36,6 +41,7 @@
         models = [RHLinkedList new];
         
         testPoints[0] = testPoints[1] = 0;
+        self.pickPoint = [Geom3DVector vectorWithX:0 y:0 z:0];
        /*
         STL *stl = [STL new];
         if([stl load:@"/Users/littwin/Documents/openscad/gears/Repetier-pulley.stl"]) {
@@ -62,7 +68,7 @@
     viewCenter[1] = 0;// conf->depth * 0.25;
     viewCenter[2] = 0;//0.0f * conf->height;
     userPosition[0] = 0;
-    userPosition[1] = -1.7*sqrt(conf->depth*conf->depth+conf->width*conf->width);
+    userPosition[1] = -1.6*sqrt(conf->depth*conf->depth+conf->width*conf->width+conf->height*conf->height);
     userPosition[2] = 0;
 //    gl.Invalidate();
 }
@@ -75,7 +81,7 @@
     viewCenter[1] = 0;// conf->depth * 0.25;
     viewCenter[2] = 0;//0.0f * conf->height;
     userPosition[0] = 0;
-    userPosition[1] = -1.7*sqrt(conf->depth*conf->depth+conf->width*conf->width);
+    userPosition[1] = -1.6*sqrt(conf->depth*conf->depth+conf->width*conf->width+conf->height*conf->height);
     userPosition[2] = 0;
     //    gl.Invalidate();
 }
@@ -89,8 +95,11 @@
     float dz = viewCenter[2] - userPosition[2];
     dist = (float)sqrt(dx * dx + dy * dy + dz * dz);
     PrinterConfiguration *conf = connection->config;
-    
-    gluPerspective((zoom*30), width/height,  MAX(10,dist-2*conf->depth), dist+ 2*conf->depth);      
+    aspectRatio = width/height;
+    nearDist = MAX(10, dist - 2.0f * conf->depth);
+    farDist = dist + 2 * conf->depth;
+    nearHeight = 2.0f*(float)tan(zoom * 15.0f * M_PI / 180.0f)*nearDist;
+    gluPerspective((zoom*30), width/height,nearDist, farDist);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -146,13 +155,15 @@
                
     glRotated(rotX, 1, 0, 0);
     glRotated(rotZ, 0, 0, 1);
-    glTranslated(-conf->width*0.5,-conf->depth*0.5,-0.5*conf->height);
+    glTranslated(-conf->bedLeft-conf->width*0.5,-conf->bedFront-conf->depth*0.5,-0.5*conf->height);
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
         
     double dx1 = conf->dumpAreaLeft;
     double dx2 = dx1 + conf->dumpAreaWidth;
     double dy1 = conf->dumpAreaFront;
     double dy2 = dy1 + conf->dumpAreaDepth;
+    float l = conf->bedLeft;
+    float f = conf->bedFront;
     if (conf3d->showPrintbed)
     {
         glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,conf3d->blackColor);
@@ -185,39 +196,52 @@
         glDisableClientState(GL_VERTEX_ARRAY);
        // glDisableVertexAttribArray(0);
         glFlush();*/
+        // Draw origin
+        glDisable(GL_CULL_FACE);
+        glBegin(GL_TRIANGLES);
+        glNormal3d(0, 0, 1);
+        double delta = M_PI / 8;
+        double rad = 2.5;
+        for (i = 0; i < 16; i++)
+        {
+            glVertex3d(0, 0, 0);
+            glVertex3d(rad * sin(i * delta), rad * cos(i * delta), 0);
+            glVertex3d(rad * sin((i + 1) * delta), rad * cos((i + 1) * delta), 0);
+        }
+        glEnd();
         
         glBegin(GL_LINES);
         int i;
         // Print cube
-        glVertex3d(0, 0, 0);
-        glVertex3d(0, 0, conf->height);
-        glVertex3d(conf->width, 0, 0);
-        glVertex3d(conf->width, 0, conf->height);
-        glVertex3d(0, conf->depth, 0);
-        glVertex3d(0, conf->depth, conf->height);
-        glVertex3d(conf->width, conf->depth, 0);
-        glVertex3d(conf->width, conf->depth, conf->height);
-        glVertex3d(0, 0, conf->height);
-        glVertex3d(conf->width, 0, conf->height);
-        glVertex3d(conf->width, 0, conf->height);
-        glVertex3d(conf->width, conf->depth, conf->height);
-        glVertex3d(conf->width, conf->depth, conf->height);
-        glVertex3d(0, conf->depth, conf->height);
-        glVertex3d(0, conf->depth, conf->height);
-        glVertex3d(0, 0, conf->height);
+        glVertex3d(l, f, 0);
+        glVertex3d(l, f, conf->height);
+        glVertex3d(l+conf->width, f, 0);
+        glVertex3d(l+conf->width, f, conf->height);
+        glVertex3d(l, f+conf->depth, 0);
+        glVertex3d(l, f+conf->depth, conf->height);
+        glVertex3d(l+conf->width, f+conf->depth, 0);
+        glVertex3d(l+conf->width, f+conf->depth, conf->height);
+        glVertex3d(l, f, conf->height);
+        glVertex3d(l+conf->width, f, conf->height);
+        glVertex3d(l+conf->width, f, conf->height);
+        glVertex3d(l+conf->width, f+conf->depth, conf->height);
+        glVertex3d(l+conf->width, f+conf->depth, conf->height);
+        glVertex3d(l, f+conf->depth, conf->height);
+        glVertex3d(l, f+conf->depth, conf->height);
+        glVertex3d(l, f, conf->height);
         if (conf->hasDumpArea)
         {
             if (dy1 != 0)
             {
-                glVertex3d(dx1, dy1, 0);
-                glVertex3d(dx2, dy1, 0);
+                glVertex3d(l+dx1, f+dy1, 0);
+                glVertex3d(l+dx2, f+dy1, 0);
             }
-            glVertex3d(dx2, dy1, 0);
-            glVertex3d(dx2, dy2, 0);
-            glVertex3d(dx2, dy2, 0);
-            glVertex3d(dx1, dy2, 0);
-            glVertex3d(dx1, dy2, 0);
-            glVertex3d(dx1, dy1, 0);
+            glVertex3d(l+dx2, f+dy1, 0);
+            glVertex3d(l+dx2, f+dy2, 0);
+            glVertex3d(l+dx2, f+dy2, 0);
+            glVertex3d(l+dx1, f+dy2, 0);
+            glVertex3d(l+dx1, f+dy2, 0);
+            glVertex3d(l+dx1, f+dy1, 0);
         }
         double dx = 10; //conf->width / 20;
         double dy = 10; //conf->depth / 20;
@@ -228,15 +252,15 @@
             if(x>conf->width) x = conf->width;
             if (conf->hasDumpArea && x >= dx1 && x <= dx2)
             {
-                glVertex3d(x, 0, 0);
-                glVertex3d(x, dy1, 0);
-                glVertex3d(x, dy2, 0);
-                glVertex3d(x, conf->depth, 0);
+                glVertex3d(l+x, f, 0);
+                glVertex3d(l+x, f+dy1, 0);
+                glVertex3d(l+x, f+dy2, 0);
+                glVertex3d(l+x, f+conf->depth, 0);
             }
             else
             {
-                glVertex3d(x, 0, 0);
-                glVertex3d(x, conf->depth, 0);
+                glVertex3d(l+x, f, 0);
+                glVertex3d(l+x, f+conf->depth, 0);
             }
             if(x >=conf->width) break;
         }
@@ -246,15 +270,15 @@
             if(y>conf->depth) y = conf->depth;
             if (conf->hasDumpArea && y >= dy1 && y <= dy2)
             {
-                glVertex3d(0, y, 0);
-                glVertex3d(dx1, y, 0);
-                glVertex3d(dx2, y, 0);
-                glVertex3d(conf->width, y, 0);
+                glVertex3d(l, f+y, 0);
+                glVertex3d(l+dx1, f+y, 0);
+                glVertex3d(l+dx2, f+y, 0);
+                glVertex3d(l+conf->width, f+y, 0);
             }
             else
             {
-                glVertex3d(0, y, 0);
-                glVertex3d(conf->width, y, 0);
+                glVertex3d(l, f+y, 0);
+                glVertex3d(l+conf->width, f+y, 0);
             }
             if(y>=conf->depth) break;
         }
@@ -273,6 +297,54 @@
         [model paint];
         [model animationAfter];
         glPopMatrix();
+        if (model->selected)
+        {
+            glPushMatrix();
+            [model animationBefore];
+            glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,conf3d->blackColor);
+            glMaterialfv(GL_FRONT,GL_EMISSION,conf3d->selectionBoxColor);
+            glBegin(GL_LINES);
+            glVertex3f(model->xMin, model->yMin, model->zMin);
+            glVertex3f(model->xMax, model->yMin, model->zMin);
+            
+            glVertex3f(model->xMin, model->yMin, model->zMin);
+            glVertex3f(model->xMin, model->yMax, model->zMin);
+            
+            glVertex3f(model->xMin, model->yMin, model->zMin);
+            glVertex3f(model->xMin, model->yMin, model->zMax);
+            
+            glVertex3f(model->xMax, model->yMax, model->zMax);
+            glVertex3f(model->xMin, model->yMax, model->zMax);
+            
+            glVertex3f(model->xMax, model->yMax, model->zMax);
+            glVertex3f(model->xMax, model->yMin, model->zMax);
+            
+            glVertex3f(model->xMax, model->yMax, model->zMax);
+            glVertex3f(model->xMax, model->yMax, model->zMin);
+            
+            glVertex3f(model->xMin, model->yMax, model->zMax);
+            glVertex3f(model->xMin, model->yMax, model->zMin);
+            
+            glVertex3f(model->xMin, model->yMax, model->zMax);
+            glVertex3f(model->xMin, model->yMin, model->zMax);
+            
+            glVertex3f(model->xMax, model->yMax, model->zMin);
+            glVertex3f(model->xMax, model->yMin, model->zMin);
+            
+            glVertex3f(model->xMax, model->yMax, model->zMin);
+            glVertex3f(model->xMin, model->yMax, model->zMin);
+            
+            glVertex3f(model->xMax, model->yMin, model->zMax);
+            glVertex3f(model->xMin, model->yMin, model->zMax);
+            
+            glVertex3f(model->xMax, model->yMin, model->zMax);
+            glVertex3f(model->xMax, model->yMin, model->zMin);
+            
+            glEnd();
+            [model animationAfter];
+            glPopMatrix();
+
+        }
      }
 
     if (conf3d->showPrintbed)
@@ -294,34 +366,34 @@
 
         if (conf->hasDumpArea) {
             if(dy1>0) {
-                glVertex3d(0,0,0);
-                glVertex3d(conf->width, 0,0);
-                glVertex3d(conf->width,dy1,0);
-                glVertex3d(0,dy1,0);                
+                glVertex3d(l,f,0);
+                glVertex3d(l+conf->width, f,0);
+                glVertex3d(l+conf->width,f+dy1,0);
+                glVertex3d(l,f+dy1,0);
             }
            if(dy2<conf->depth) {
-                glVertex3d(0,dy2,0);
-                glVertex3d(conf->width, dy2,0);
-                glVertex3d(conf->width,conf->depth,0);
-                glVertex3d(0,conf->depth,0);
+                glVertex3d(l,f+dy2,0);
+                glVertex3d(l+conf->width, f+dy2,0);
+                glVertex3d(l+conf->width,f+conf->depth,0);
+                glVertex3d(l,f+conf->depth,0);
             }
             if(dx1>0) {
-                glVertex3d(0,dy1,0);
-                glVertex3d(dx1, dy1,0);
-                glVertex3d(dx1,dy2,0);
-                glVertex3d(0,dy2,0);                
+                glVertex3d(l,f+dy1,0);
+                glVertex3d(l+dx1, f+dy1,0);
+                glVertex3d(l+dx1,f+dy2,0);
+                glVertex3d(l,f+dy2,0);
             }
             if(dx2<conf->width) {
-                glVertex3d(dx2,dy1,0);
-                glVertex3d(conf->width, dy1,0);
-                glVertex3d(conf->width,dy2,0);
-                glVertex3d(dx2,dy2,0);
+                glVertex3d(l+dx2,f+dy1,0);
+                glVertex3d(l+conf->width, f+dy1,0);
+                glVertex3d(l+conf->width, f+dy2,0);
+                glVertex3d(l+dx2,f+dy2,0);
             }
         } else {
-            glVertex3d(0,0,0);
-            glVertex3d(conf->width, 0,0);
-            glVertex3d(conf->width,conf->depth,0);
-            glVertex3d(0,conf->depth,0);
+            glVertex3d(l,f,0);
+            glVertex3d(l+conf->width, f,0);
+            glVertex3d(l+conf->width,f+conf->depth,0);
+            glVertex3d(l,f+conf->depth,0);
         }
 
         glEnd();
@@ -337,6 +409,57 @@
 
 //        gl.SwapBuffers();
 }
+
+-(void)UpdatePickLineX:(int) x y:(int)y width:(float)width height:(float)height
+{
+    //if (view == null) return;
+    // Intersection on bottom plane
+    PrinterConfiguration *conf = connection->config;
+    int window_y = y - height / 2;
+    double norm_y = (double)window_y / (double)(height / 2);
+    int window_x = x - width / 2;
+    double norm_x = (double)window_x / (double)(width / 2);
+    float fpy = (float)(nearHeight * 0.5 * norm_y);
+    float fpx = (float)(nearHeight * 0.5 * aspectRatio * norm_x);
+    
+    
+    float dirN[4] = {fpx, fpy, -nearDist, 0};
+    Matrix4f rotx;
+    matrix4RotateXf(rotx,(float)(rotX * M_PI / 180.0));
+    Matrix4f rotz;
+    matrix4RotateZf(rotz, (float)(rotZ * M_PI / 180.0));
+    Matrix4f trans;
+    matrix4Translatef(trans,-conf->bedLeft-conf->width * 0.5f,-conf->bedFront -conf->depth * 0.5f, -0.5f * conf->height);
+    Matrix4f ntrans,ntrans2;
+    matrix4LookAt(ntrans,userPosition,viewCenter,0, 0, 1);
+    matrix4MulMatf(ntrans2,rotx,ntrans);
+    matrix4MulMatf(ntrans,rotz,ntrans2);
+    matrix4MulMatf(ntrans2,trans,ntrans);
+    matrix4Invert(ntrans,ntrans2);
+    float frontPoint[4] = {ntrans[3],ntrans[7],ntrans[11],ntrans[15]}; //.Row3;
+    //float frontPoint[4] = {ntrans[12],ntrans[13],ntrans[14],ntrans[15]}; //.Row3;
+    float dirVec[4];
+    matrix4MulVecf(ntrans, dirN, dirVec); // = Vector4.Transform(dirN, ntrans);
+    self.pickLine = [Geom3DLine lineFromPoint:[Geom3DVector vectorWithX:frontPoint[0]/frontPoint[3]
+                                                                      y:frontPoint[1]/frontPoint[3]
+                                                                      z:frontPoint[2]/frontPoint[3]]
+                                    direction:[Geom3DVector vectorWithX:dirVec[0] y:dirVec[1] z:dirVec[2]] isDir:YES];
+    [pickLine.dir normalize];
+    dirN[0] = dirN[1] = dirN[3] = 0;
+    dirN[2] = -nearDist;
+    matrix4MulVecf(ntrans, dirN, dirVec); // = Vector4.Transform(dirN, ntrans);
+    self.viewLine = [Geom3DLine lineFromPoint:[Geom3DVector vectorWithX:frontPoint[0]/frontPoint[3]
+                                                                      y:frontPoint[1]/frontPoint[3]
+                                                                      z:frontPoint[2]/frontPoint[3]]
+                                    direction:[Geom3DVector vectorWithX:dirVec[0] y:dirVec[1] z:dirVec[2]] isDir:YES];
+    [viewLine.dir normalize];
+    /*Geom3DPlane plane = new Geom3DPlane(new Geom3DVector(0, 0, 0), new Geom3DVector(0, 0, 1));
+     Geom3DVector cross = new Geom3DVector(0, 0, 0);
+     plane.intersectLine(pickLine, cross);
+     */
+}
+
+
 -(void)gluPickMatrix:(float*)result x:(float)x y:(float)y width:(float)width height:(float)height viewport:(int *)viewport
 {
     matrix4Identity(result);
@@ -377,7 +500,7 @@
               viewCenter[0],viewCenter[1],viewCenter[2],0,0,1);
     glRotated(rotX, 1, 0, 0);
     glRotated(rotZ, 0, 0, 1);
-    glTranslated(-currentPrinterConfiguration->width*0.5,-currentPrinterConfiguration->depth*0.5,-0.5*currentPrinterConfiguration->height);
+    glTranslated(-currentPrinterConfiguration->bedLeft-currentPrinterConfiguration->width*0.5,-currentPrinterConfiguration->bedFront-currentPrinterConfiguration->depth*0.5,-0.5*currentPrinterConfiguration->height);
     
     glInitNames();
     GLuint pos = 0;
@@ -415,6 +538,11 @@
                 selected = [models objectAtIndex:selectBuffer[i * 4 + 3]];
             }
         }
+        double dfac = (double)depth/UINT_MAX;
+        dfac = -(farDist * nearDist) / (dfac * (farDist - nearDist) - farDist);
+        Geom3DVector *crossPlanePoint = [[[Geom3DVector vectorFromVector:viewLine.dir] scale:((float)dfac)] add:viewLine.point];
+        Geom3DPlane *objplane = [Geom3DPlane planeFromPoint:crossPlanePoint normal:viewLine.dir ];
+        [objplane intersectLine:pickLine result:pickPoint];
     }
     //PrinterConnection.logInfo("Hits: " + hits);
     return selected;

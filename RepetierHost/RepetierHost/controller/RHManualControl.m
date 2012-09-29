@@ -33,12 +33,16 @@
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(printerStateChanged:) name:@"RHPrinterStateChanged" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(fanspeedChanged:) name:@"Fanspeed" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(speedMultiplyChanged2:) name:@"SpeedMultiply" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(flowMultiplyChanged2:) name:@"FlowMultiply" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(targetBedChanged:) name:@"TargetBed" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(targetExtrChanged:) name:@"TargetExtr0" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(jobChanged:) name:@"RHJobChanged" object:nil];
             [self updateConnectionStatus:NO];
             [self scrollPoint:NSMakePoint(0,0)];
             lastx = lasty = lastz = -1000;
             dontsend = FALSE;
+            status=disconnected;
+            statusSet=CFAbsoluteTimeGetCurrent();
             timer = [NSTimer scheduledTimerWithTimeInterval:0.1
                                                      target:self selector:@selector(timerTick:)
                                                 userInfo:nil repeats:YES];
@@ -52,6 +56,7 @@
     return YES;
 }
 - (void)timerTick:(NSTimer*)theTimer {
+    [self updateStatus];
     if(connection->connected==NO) return;
     if (connection->analyzer->x != lastx || lastx==0)
     {
@@ -117,6 +122,96 @@
     [retractExtruderButton setEnabled:c];
     [setHomeButton setEnabled:c];
     [speedMultiplySlider setEnabled:c];
+    [flowMultiplySlider setEnabled:c];
+}
+-(void)changeStatus:(PrinterStatus)value
+{
+    double timestamp = CFAbsoluteTimeGetCurrent();
+    statusSet = timestamp;
+    BOOL changed = value!=status;
+    status = value;
+    switch (value)
+    {
+        case disconnected:
+            if(changed)
+                [statusLabel setStringValue:@"Disconnected"];
+            break;
+        case heatingBed:
+            if(changed)
+                [statusLabel setStringValue:@"Heating bed"];
+            break;
+        case heatingExtruder:
+            if(changed)
+                [statusLabel setStringValue:@"Heating extruder"];
+            break;
+        case jobKilled:
+            if(changed)
+                [statusLabel setStringValue:@"Print job killed"];
+            break;
+        case jobPaused:
+            if(changed)
+                [statusLabel setStringValue:@"Print job paused"];
+            break;
+        case jobFinsihed:
+            if(changed)
+                [statusLabel setStringValue:@"Print job finished"];
+            break;
+        case idle:
+        default:
+            if (connection->job->mode==1)
+            {
+                if (connection->analyzer->uploading)
+                    [statusLabel setStringValue:@"Uploading ..."];
+                else
+                    [statusLabel setStringValue:[NSString stringWithFormat:@"Printing job ETA %@",connection->job.ETA]];
+            }
+            else
+            {
+                if (connection->injectCommands->count == 0)
+                    [statusLabel setStringValue:@"Idle"];
+                else
+                    [statusLabel setStringValue:[NSString stringWithFormat:@"%i commands waiting",connection->injectCommands->count]];
+            }
+            break;
+    }
+}
+
+-(void)updateStatus
+{
+    double timestamp = CFAbsoluteTimeGetCurrent();
+    double diff = timestamp - statusSet;
+    if (connection->connected == NO)
+    {
+        if (status != disconnected)
+            [self changeStatus:disconnected];
+    }
+    else if (connection->analyzer->extruderTemp > 15 && connection->analyzer->extruderTemp - connection->extruderTemp > 5)
+        [self changeStatus:heatingExtruder];
+    else if (connection->analyzer->bedTemp > 15 && connection->analyzer->bedTemp - connection->bedTemp > 5 && connection->bedTemp > 15) // only if has bed
+        [self changeStatus:heatingBed];
+    else if (status == heatingBed || status == heatingExtruder)
+        [self changeStatus:idle];
+    else if (connection->paused && status != jobPaused)
+        [self changeStatus:jobPaused];
+    else if (status == jobPaused && !connection->paused)
+        [self changeStatus:idle];
+    else if (status == idle && diff > 0)
+        [self changeStatus:idle];
+    else if (status == motorStopped || status == jobKilled || status == jobFinsihed)
+    {
+        if (diff > 30) // remove message after 30 seconds
+            [self changeStatus:idle];
+    }
+    else if (status == disconnected && connection->connected)
+        [self changeStatus:idle];
+}
+-(void)jobChanged:(NSNotification*)notification {
+    if(connection->job->mode==2) {
+        [self changeStatus:jobFinsihed];
+    }
+    if(connection->job->mode==3) {
+        [self changeStatus:jobKilled];
+    }
 }
 - (void)connectionOpened:(NSNotification *)notification {
     [self updateConnectionStatus:YES];
@@ -139,6 +234,17 @@
         connection->speedMultiply = tval;
         [speedMultiplySlider setIntValue:tval];
         [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",tval]];
+        dontsend = FALSE;
+    }
+}
+- (void)flowMultiplyChanged2:(NSNotification *)notification {
+    int tval = [notification.object intValue];
+    int nv = [flowMultiplySlider intValue];
+    if(nv!=tval) {
+        dontsend = TRUE;
+        connection->flowMultiply = tval;
+        [flowMultiplySlider setIntValue:tval];
+        [flowMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",tval]];
         dontsend = FALSE;
     }
 }
@@ -202,6 +308,16 @@
         connection->speedMultiply = nv;
         [connection injectManualCommand:[NSString stringWithFormat:@"M220 S%d",nv]];
         [speedMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",nv]];
+    }
+}
+
+- (IBAction)flowMultiplyChanged:(id)sender {
+    if(dontsend) return;
+    int nv = [flowMultiplySlider intValue];
+    if(nv!=connection->flowMultiply) {
+        connection->flowMultiply = nv;
+        [connection injectManualCommand:[NSString stringWithFormat:@"M221 S%d",nv]];
+        [flowMultiplyLabel setStringValue:[NSString stringWithFormat:@"%d%%",nv]];
     }
 }
 

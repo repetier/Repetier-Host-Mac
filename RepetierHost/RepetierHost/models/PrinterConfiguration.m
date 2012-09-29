@@ -50,6 +50,9 @@
         width = 200;
         height = 100;
         depth = 200;
+        bedLeft = bedFront = xMin = yMin = 0;
+        xMax = width;
+        yMax = depth;
         afterJobGoDispose = YES;
         afterJobDisableExtruder = YES;
         afterJobDisableHeatedBed = YES;
@@ -75,6 +78,7 @@
         dumpAreaWidth = 40;
         dumpAreaDepth = 22;
         enableFilterPrg = NO;
+        homeXMax = homeYMax = homeZMax = NO;
         [self setStartCode:@""];
         [self setEndCode:@""];
         [self setJobkillCode:@""];
@@ -92,6 +96,18 @@
     [name release];
     [port release];
     [super dealloc];
+}
+-(void)sanityCheck {
+    if(xMax<xMin+width)
+        xMax = xMin+width;
+    if(yMax<yMin+depth)
+        yMax = yMin+depth;
+    if(bedLeft>xMax-width)
+        bedLeft = xMax-width;
+    if(bedLeft<xMin) bedLeft = xMin;
+    if(bedFront>yMax-depth)
+        bedFront = yMax-depth;
+    if(bedFront<yMin) bedFront = yMin;
 }
 -(PrinterConfiguration*)initLoadFromRepository:(NSString*)confname {
     NSString *b = [@"printer." stringByAppendingString:confname];
@@ -120,6 +136,15 @@
     width = [d doubleForKey:[b stringByAppendingString:@".width"]];
     height = [d doubleForKey:[b stringByAppendingString:@".height"]];
     depth = [d doubleForKey:[b stringByAppendingString:@".depth"]];
+    xMin = [d doubleForKey:[b stringByAppendingString:@".xMin"]];
+    xMax = [d doubleForKey:[b stringByAppendingString:@".xMax"]];
+    yMin = [d doubleForKey:[b stringByAppendingString:@".yMin"]];
+    yMax = [d doubleForKey:[b stringByAppendingString:@".yMax"]];
+    bedLeft = [d doubleForKey:[b stringByAppendingString:@".bedLeft"]];
+    bedFront = [d doubleForKey:[b stringByAppendingString:@".bedFront"]];
+    homeXMax = [d boolForKey:[b stringByAppendingString:@".homeXMax"]];
+    homeYMax = [d boolForKey:[b stringByAppendingString:@".homeYMax"]];
+    homeZMax = [d boolForKey:[b stringByAppendingString:@".homeZMax"]];
     travelFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelFeedrate"]];
     travelZFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelZFeedrate"]];
     disposeX = [d doubleForKey:[b stringByAppendingString:@".disposeX"]];
@@ -142,6 +167,7 @@
     dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     addPrintingTime = [d doubleForKey:[b stringByAppendingString:@".addPrintingTime"]];
+    [self sanityCheck];
     return self;
 }
 -(void)initDefaultsRepository:(NSString*)confname {
@@ -168,6 +194,15 @@
     [d setObject:[NSNumber numberWithDouble:width] forKey:[b stringByAppendingString:@".width"]];
     [d setObject:[NSNumber numberWithDouble:height] forKey:[b stringByAppendingString:@".height"]];
     [d setObject:[NSNumber numberWithDouble:depth] forKey:[b stringByAppendingString:@".depth"]];
+    [d setObject:[NSNumber numberWithDouble:xMin] forKey:[b stringByAppendingString:@".xMin"]];
+    [d setObject:[NSNumber numberWithDouble:xMax] forKey:[b stringByAppendingString:@".xMax"]];
+    [d setObject:[NSNumber numberWithDouble:yMin] forKey:[b stringByAppendingString:@".yMin"]];
+    [d setObject:[NSNumber numberWithDouble:yMax] forKey:[b stringByAppendingString:@".yMax"]];
+    [d setObject:[NSNumber numberWithDouble:bedLeft] forKey:[b stringByAppendingString:@".bedLeft"]];
+    [d setObject:[NSNumber numberWithDouble:bedFront] forKey:[b stringByAppendingString:@".bedFront"]];
+    [d setObject:[NSNumber numberWithBool:homeXMax] forKey:[b stringByAppendingString:@".homeXMax"]];
+    [d setObject:[NSNumber numberWithBool:homeYMax] forKey:[b stringByAppendingString:@".homeYMax"]];
+    [d setObject:[NSNumber numberWithBool:homeZMax] forKey:[b stringByAppendingString:@".homeZMax"]];
     [d setObject:[NSNumber numberWithDouble:travelFeedrate] forKey:[b stringByAppendingString:@".travelFeedrate"]];
     [d setObject:[NSNumber numberWithDouble:travelZFeedrate] forKey:[b stringByAppendingString:@".travelZFeedrate"]];
     [d setObject:[NSNumber numberWithDouble:disposeX] forKey:[b stringByAppendingString:@".disposeX"]];
@@ -206,6 +241,7 @@
     //[d release];
 }
 -(void)saveToRepository{
+    [self sanityCheck];
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     NSString *b = [@"printer." stringByAppendingString:name];
     [d setObject:port forKey:[b stringByAppendingString:@".port"]];
@@ -229,6 +265,15 @@
     [d setDouble:width forKey:[b stringByAppendingString:@".width"]];
     [d setDouble:height forKey:[b stringByAppendingString:@".height"]];
     [d setDouble:depth forKey:[b stringByAppendingString:@".depth"]];
+    [d setDouble:xMin forKey:[b stringByAppendingString:@".xMin"]];
+    [d setDouble:xMax forKey:[b stringByAppendingString:@".xMax"]];
+    [d setDouble:yMin forKey:[b stringByAppendingString:@".yMin"]];
+    [d setDouble:yMax forKey:[b stringByAppendingString:@".yMax"]];
+    [d setDouble:bedLeft forKey:[b stringByAppendingString:@".bedLeft"]];
+    [d setDouble:bedFront forKey:[b stringByAppendingString:@".bedFront"]];
+    [d setBool:homeXMax forKey:[b stringByAppendingString:@".homeXMax"]];
+    [d setBool:homeYMax forKey:[b stringByAppendingString:@".homeYMax"]];
+    [d setBool:homeZMax forKey:[b stringByAppendingString:@".homeZMax"]];
     [d setDouble:travelFeedrate forKey:[b stringByAppendingString:@".travelFeedrate"]];
     [d setDouble:travelZFeedrate forKey:[b stringByAppendingString:@".travelZFeedrate"]];
     [d setDouble:disposeX forKey:[b stringByAppendingString:@".disposeX"]];

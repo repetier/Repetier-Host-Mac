@@ -99,6 +99,7 @@
     BOOL isMarlin; // Printer is running Marlin firmware
     BOOL isSprinter;
     int speedMultiply;
+    int flowMultiply;
     float pauseX,pauseY,pauseZ,pauseF,pauseE;
     BOOL pauseRelative;
     NSMutableDictionary* variables;

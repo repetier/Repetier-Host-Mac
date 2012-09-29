@@ -218,10 +218,10 @@
         }
         if (min > 0)
         {
-            [s appendFormat:@"%d",min];
+            [s appendFormat:@"%02d",min];
             [s appendString:@"m:"];
         }
-        [s appendFormat:@"%d",sec];
+        [s appendFormat:@"%02d",sec];
         [s appendString:@"s"];
         [rhlog addInfo:[NSString stringWithFormat:@"Printing time: %@",s]];
         [rhlog addInfo:[NSString stringWithFormat:@"lines send: %d",linesSend]];
@@ -252,7 +252,7 @@
     long min = ticks / 60;
     ticks -= 60 * min;
     long sec = ticks;
-    NSString *s = [NSString stringWithFormat:@"%ldh:%ldm:%lds",hours,min,sec];
+    NSString *s = [NSString stringWithFormat:@"%ldh:%02ldm:%02lds",hours,min,sec];
     return s;
 }
 @end

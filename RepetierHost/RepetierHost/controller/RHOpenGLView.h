@@ -17,6 +17,7 @@
 
 #import <AppKit/AppKit.h>
 #import "ThreeDView.h"
+#import "Geom3D.h"
 
 @interface RHPoint : NSObject {
 @public
@@ -43,7 +44,14 @@
     BOOL _needsReshape;
     int antialiasMethod;
     int antialiasSamples;
+    Geom3DPlane *movePlane; // Plane where object movement occurs
+    Geom3DVector *moveStart,*moveLast,*movePos;
 }
+@property (retain)Geom3DPlane *movePlane;
+@property (retain)Geom3DVector *moveStart;
+@property (retain)Geom3DVector *moveLast;
+@property (retain)Geom3DVector *movePos;
+
 - (id) initWithFrame:(NSRect)frameRect;
 - (id) initWithFrame:(NSRect)frameRect shareContext:(NSOpenGLContext*)context;
 - (void) reshape;

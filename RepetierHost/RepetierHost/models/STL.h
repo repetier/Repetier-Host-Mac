@@ -36,7 +36,7 @@
     NSString *name;
     NSString *filename;
     NSTimeInterval lastModified;
-    float xMin, yMin, zMin, xMax, yMax, zMax;
+    BOOL outside;
     float trans[16];
     GLfloat *points;
     GLfloat *normals;

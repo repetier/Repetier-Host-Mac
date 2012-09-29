@@ -30,9 +30,9 @@
 @public
     id <GCodeAnalyzerDelegate> delegate;
     int activeExtruder;
-    int extruderTemp;
+    float extruderTemp;
     BOOL uploading;
-    int bedTemp;
+    float bedTemp;
     float x, y, z, e,emax,f;
     float lastX,lastY,lastZ,lastE;
     float xOffset, yOffset, zOffset, eOffset;

@@ -129,6 +129,8 @@ Command values:
             break;
         case 'E':
         case 'e':
+        case 'A':
+        case 'a':
             e = (float)d;
             break;
         case 'F':

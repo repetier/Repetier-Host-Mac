@@ -26,6 +26,7 @@
 
 @implementation RHSlicer
 @synthesize killButton;
+@synthesize slic3rFilamentSettings3;
 @synthesize view;
 @synthesize slic3rActive;
 @synthesize skeinforgeActive;
@@ -111,6 +112,8 @@
     NSString *cdir = [RHSlicer slic3rConfigDir];
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *oldFilament = [d objectForKey:@"slic3rFilament"];
+    NSString *oldFilament2 = [d objectForKey:@"slic3rFilament2"];
+    NSString *oldFilament3 = [d objectForKey:@"slic3rFilament3"];
     NSString *oldPrint = [d objectForKey:@"slic3rPrint"];
     NSString *oldPrinter = [d objectForKey:@"slic3rPrinter"];
     NSString *oldProfile = [d objectForKey:@"skeinforgeSelectedProfile"];
@@ -129,6 +132,10 @@
     }
     [slic3rFilamentSettings removeAllItems];
     [slic3rFilamentSettings addItemsWithTitles:slic3rFilamentList];
+    [slic3rFilamentSettings2 removeAllItems];
+    [slic3rFilamentSettings2 addItemsWithTitles:slic3rFilamentList];
+    [slic3rFilamentSettings3 removeAllItems];
+    [slic3rFilamentSettings3 addItemsWithTitles:slic3rFilamentList];
     // Print list
     enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/print",cdir] error:nil];
     [slic3rPrintList removeAllObjects];
@@ -180,6 +187,18 @@
     if(oldFilament) {
         [d setObject:oldFilament forKey:@"slic3rFilament"];
         [slic3rFilamentSettings selectItemWithTitle:oldFilament];
+    }
+    if(oldFilament2==nil && slic3rFilamentList.count>0)
+        oldFilament2 = [slic3rFilamentList objectAtIndex:0];
+    if(oldFilament2) {
+        [d setObject:oldFilament2 forKey:@"slic3rFilament2"];
+        [slic3rFilamentSettings2 selectItemWithTitle:oldFilament2];
+    }
+    if(oldFilament3==nil && slic3rFilamentList.count>0)
+        oldFilament3 = [slic3rFilamentList objectAtIndex:0];
+    if(oldFilament3) {
+        [d setObject:oldFilament3 forKey:@"slic3rFilament3"];
+        [slic3rFilamentSettings3 selectItemWithTitle:oldFilament3];
     }
     if(oldPrint==nil && slic3rPrintList.count>0)
         oldPrint = [slic3rPrintList objectAtIndex:0];

@@ -207,7 +207,7 @@ STLComposer *stlComposer=nil;
     if(actSTL==nil) return;
     for(STL *act in files) {
         if(act->selected) {
-            [act centerX:currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->depth/2];
+            [act centerX:currentPrinterConfiguration->bedLeft+currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->bedFront+currentPrinterConfiguration->depth/2];
             [self updateSTLState:act];
         }
     }
@@ -281,18 +281,20 @@ STLComposer *stlComposer=nil;
 -(void)updateSTLState:(STL*)stl
 {
     [stl updateBoundingBox];
-    if (stl->xMin < 0 || stl->yMin < 0 || stl->zMin < -0.001 || stl->xMax > currentPrinterConfiguration->width ||
-        stl->yMax > currentPrinterConfiguration->depth || stl->zMax > currentPrinterConfiguration->height)
+    if (stl->xMin < currentPrinterConfiguration->bedLeft || stl->yMin < currentPrinterConfiguration->bedFront || stl->zMin < -0.001 || stl->xMax > currentPrinterConfiguration->bedLeft+currentPrinterConfiguration->width ||
+        stl->yMax > currentPrinterConfiguration->bedFront+currentPrinterConfiguration->depth || stl->zMax > currentPrinterConfiguration->height)
     {
         if(![stl hasAnimationWithName:@"pulse"]) {
-            PulseAnimation *panim = [[PulseAnimation alloc] initPulseAnimation:@"pulse" scaleX:0.05 scaleY:0.05 scaleZ:0.05 frequency:0.5];
-            [stl addAnimation:panim];
-            [panim release];
+            stl->outside = YES;
+            //PulseAnimation *panim = [[PulseAnimation alloc] initPulseAnimation:@"pulse" scaleX:0.05 scaleY:0.05 scaleZ:0.05 frequency:0.5];
+            //[stl addAnimation:panim];
+            //[panim release];
         }
     }
     else
     {
-        [stl removeAnimationWithName:@"pulse"];
+        stl->outside = NO;
+        //[stl removeAnimationWithName:@"pulse"];
     }
 }
 -(void)saveSTLToFile:(NSString*)file {
@@ -360,7 +362,7 @@ STLComposer *stlComposer=nil;
     if([stl load:fname]) {
         [app->rightTabView selectTabViewItem:app->composerTab];
         [app->leftTabView selectTabViewItem:app->threedViewTabItem];
-        [stl centerX:currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->depth/2];
+        [stl centerX:currentPrinterConfiguration->bedLeft+currentPrinterConfiguration->width/2 y:currentPrinterConfiguration->bedFront+currentPrinterConfiguration->depth/2];
         [app->stlView->models addLast:stl];     
         DropAnimation *panim = [[DropAnimation alloc] initDropAnimation:@"drop"];
         [stl addAnimation:panim];
@@ -474,7 +476,7 @@ STLComposer *stlComposer=nil;
     int border = 3;
     float maxW = currentPrinterConfiguration->width;
     float maxH = currentPrinterConfiguration->depth;
-    float xOff=0,yOff = 0;
+    float xOff=currentPrinterConfiguration->bedLeft,yOff = currentPrinterConfiguration->bedFront;
     if(currentPrinterConfiguration->hasDumpArea) {
         if(currentPrinterConfiguration->dumpAreaFront<=0) {
             yOff = currentPrinterConfiguration->dumpAreaDepth-currentPrinterConfiguration->dumpAreaFront;

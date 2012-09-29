@@ -28,6 +28,9 @@
     int databits;
     int protocol; // 0 = autodetect, 1 = ASCII, 2 = repetier
     double width,height,depth;
+    double xMin,xMax,yMin,yMax;
+    double bedLeft,bedFront;
+    BOOL homeXMax,homeYMax,homeZMax;
     double travelFeedrate;
     double travelZFeedrate;
     double disposeX,disposeY,disposeZ;

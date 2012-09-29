@@ -51,6 +51,7 @@
 		FD28664514DE8CFB0081750D /* TemperatureView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28664414DE8CFA0081750D /* TemperatureView.m */; };
 		FD46CB4D15E00116003087FD /* pypy.app in Resources */ = {isa = PBXBuildFile; fileRef = FD46CB4B15E00116003087FD /* pypy.app */; };
 		FD46CB4E15E00116003087FD /* Skeinforge.app in Resources */ = {isa = PBXBuildFile; fileRef = FD46CB4C15E00116003087FD /* Skeinforge.app */; };
+		FD57C17516174B24000C4A45 /* printer.png in Resources */ = {isa = PBXBuildFile; fileRef = FD57C17416174B24000C4A45 /* printer.png */; };
 		FD67BF4D149A6C95001B124B /* STL.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF4C149A6C95001B124B /* STL.m */; };
 		FD67BF51149A715C001B124B /* ThreeDModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF50149A715C001B124B /* ThreeDModel.m */; };
 		FD67BF54149AA9CA001B124B /* RHMatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = FD67BF53149AA9CA001B124B /* RHMatrix.c */; };
@@ -72,6 +73,7 @@
 		FD74DBC414D06AE300422BFE /* EEPROMParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBC314D06AE300422BFE /* EEPROMParameter.m */; };
 		FD74DBC814D1C83F00422BFE /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = FD74DBC714D1C83F00422BFE /* Preferences.xib */; };
 		FD74DBCB14D1CD7400422BFE /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD74DBCA14D1CD7300422BFE /* Preferences.m */; };
+		FD8155E11613541C0093B7A8 /* Geom3D.m in Sources */ = {isa = PBXBuildFile; fileRef = FD8155E01613541C0093B7A8 /* Geom3D.m */; };
 		FD92675214D42F37005B31FF /* DefaultsExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675114D42F37005B31FF /* DefaultsExtension.m */; };
 		FD92675614D5A30E005B31FF /* ThreadedNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675514D5A30E005B31FF /* ThreadedNotification.m */; };
 		FD92675914D71E3E005B31FF /* RHTask.m in Sources */ = {isa = PBXBuildFile; fileRef = FD92675814D71E3E005B31FF /* RHTask.m */; };
@@ -215,6 +217,7 @@
 		FD28664414DE8CFA0081750D /* TemperatureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemperatureView.m; sourceTree = "<group>"; };
 		FD46CB4B15E00116003087FD /* pypy.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = pypy.app; sourceTree = "<group>"; };
 		FD46CB4C15E00116003087FD /* Skeinforge.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = Skeinforge.app; sourceTree = "<group>"; };
+		FD57C17416174B24000C4A45 /* printer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = printer.png; sourceTree = "<group>"; };
 		FD67BF4B149A6C95001B124B /* STL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STL.h; sourceTree = "<group>"; };
 		FD67BF4C149A6C95001B124B /* STL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STL.m; sourceTree = "<group>"; };
 		FD67BF4F149A715C001B124B /* ThreeDModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreeDModel.h; sourceTree = "<group>"; };
@@ -247,6 +250,8 @@
 		FD74DBC714D1C83F00422BFE /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		FD74DBC914D1CD7300422BFE /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
 		FD74DBCA14D1CD7300422BFE /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = "<group>"; };
+		FD8155DF1613541C0093B7A8 /* Geom3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geom3D.h; sourceTree = "<group>"; };
+		FD8155E01613541C0093B7A8 /* Geom3D.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geom3D.m; sourceTree = "<group>"; };
 		FD92675014D42F37005B31FF /* DefaultsExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultsExtension.h; sourceTree = "<group>"; };
 		FD92675114D42F37005B31FF /* DefaultsExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DefaultsExtension.m; sourceTree = "<group>"; };
 		FD92675414D5A30E005B31FF /* ThreadedNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadedNotification.h; sourceTree = "<group>"; };
@@ -605,6 +610,7 @@
 		FDEDF7D2148A16EB00E6CFF1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FD57C17416174B24000C4A45 /* printer.png */,
 				FD01F4AF15BBDE8600754A5F /* mount.png */,
 				FD01F4B015BBDE8600754A5F /* unmount.png */,
 				FD01F4AD15BB0BA800754A5F /* generate.png */,
@@ -698,6 +704,8 @@
 				FD9447BE15D831A100AFE7F1 /* IniFile.m */,
 				FDDC2FB015D9A8700036B965 /* SkeinConfig.h */,
 				FDDC2FB115D9A8700036B965 /* SkeinConfig.m */,
+				FD8155DF1613541C0093B7A8 /* Geom3D.h */,
+				FD8155E01613541C0093B7A8 /* Geom3D.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -821,6 +829,7 @@
 				FD46CB4D15E00116003087FD /* pypy.app in Resources */,
 				FD46CB4E15E00116003087FD /* Skeinforge.app in Resources */,
 				FDF035B715E8CDE400B5C5A3 /* dsa_pub.pem in Resources */,
+				FD57C17516174B24000C4A45 /* printer.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +896,7 @@
 				FD9447BC15D82C6100AFE7F1 /* RHSlicer.m in Sources */,
 				FD9447BF15D831A100AFE7F1 /* IniFile.m in Sources */,
 				FDDC2FB215D9A8700036B965 /* SkeinConfig.m in Sources */,
+				FD8155E11613541C0093B7A8 /* Geom3D.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

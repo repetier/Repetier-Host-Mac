@@ -613,6 +613,8 @@
     NSArray *arr;
     
     NSString *sFilament = [d objectForKey:@"slic3rFilament"];
+    NSString *sFilament2 = [d objectForKey:@"slic3rFilament2"];
+    NSString *sFilament3 = [d objectForKey:@"slic3rFilament3"];
     NSString *sPrint = [d objectForKey:@"slic3rPrint"];
     NSString *sPrinter = [d objectForKey:@"slic3rPrinter"];
 
@@ -627,6 +629,12 @@
     [ini2 read:[NSString stringWithFormat:@"%@/printer/%@.ini",cdir,sPrinter]];
     IniFile *ini3 = [[[IniFile alloc] init] autorelease];
     [ini3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament]];
+    IniFile *ini3_2 = [[[IniFile alloc] init] autorelease];
+    [ini3_2 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament2]];
+    IniFile *ini3_3 = [[[IniFile alloc] init] autorelease];
+    [ini3_3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament3]];
+    [ini3 merge:ini3_2];
+    [ini3 merge:ini3_3];
     [ini add:ini2];
     [ini add:ini3 ];
     [ini flatten];

@@ -160,8 +160,15 @@
     [dontLogM105Checkbox setState:c->dontLogM105];
     [addPrintingTime setDoubleValue:c->addPrintingTime];
     [disableMotorAfterJob setState:c->afterJobDisableMotors];
-    
-    
+    [homeXMax setState:c->homeXMax];
+    [homeYMax setState:c->homeYMax];
+    [homeZMax setState:c->homeZMax];
+    [xMax setDoubleValue:c->xMax];
+    [xMin setDoubleValue:c->xMin];
+    [yMax setDoubleValue:c->yMax];
+    [yMin setDoubleValue:c->yMin];
+    [bedFront setDoubleValue:c->bedFront];
+    [bedLeft setDoubleValue:c->bedLeft];
 }
 -(void)saveToConfig {
     PrinterConfiguration *c = currentPrinterConfiguration;
@@ -198,6 +205,15 @@
     c->dontLogM105 = [dontLogM105Checkbox state];
     c->addPrintingTime = [addPrintingTime doubleValue];
     c->afterJobDisableMotors = [disableMotorAfterJob state];
+    c->homeXMax = [homeXMax state];
+    c->homeYMax = [homeYMax state];
+    c->homeZMax = [homeZMax state];
+    c->xMax = [xMax doubleValue];
+    c->xMin = [xMin doubleValue];
+    c->yMax = [yMax doubleValue];
+    c->yMin = [yMin doubleValue];
+    c->bedFront = [bedFront doubleValue];
+    c->bedLeft = [bedLeft doubleValue];
     [c saveToRepository];
 }
 

@@ -70,6 +70,7 @@
         triangles = edges = nil;
         list = nil;
         bufs = nil;
+        outside = NO;
     }
     return self;
 }
@@ -213,22 +214,22 @@
     matrix4RotateXf(rotx, rotation[0]*(float)M_PI/180.0);
     matrix4RotateYf(roty, rotation[1]*(float)M_PI/180.0);
     matrix4RotateZf(rotz, rotation[2]*(float)M_PI/180.0);
-    /*
+    
     matrix4MulMatf(trans,scalem,rotx);
     matrix4MulMatf(scalem,trans,roty);
     matrix4MulMatf(rotx,scalem,rotz);
     matrix4MulMatf(trans,rotx,transl);
-     */
-    matrix4MulMatf(trans,transl,rotz);
+    
+    /*matrix4MulMatf(trans,transl,rotz);
     matrix4MulMatf(rotz,trans,roty);
     matrix4MulMatf(roty,rotz,rotx);
     matrix4MulMatf(trans,roty,scalem);
-    
+    */
 }
 -(void)updateBoundingBox {
     [self updateMatrix ];
     xMin = yMin = zMin =FLT_MAX;
-    xMax = yMax = zMax = FLT_MIN;
+    xMax = yMax = zMax = -FLT_MAX;
             
     for(STLTriangle *tri in list) {
         [self includePoint:tri->p1];
@@ -324,10 +325,13 @@
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, edgesLength, edges, GL_STATIC_DRAW);
     }
     float *col;
-    if (selected)
+    if(outside)
+        col = conf3d->outsidePrintbedColor;
+    else if (selected)
         col = conf3d->selectedObjectColor;
     else
         col = conf3d->objectColor;
+    
     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,col);
     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,col);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);

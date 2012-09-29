@@ -64,6 +64,7 @@
         lastCommandSend = 0;
         lastProgress = -1000;
         speedMultiply = 100;
+        flowMultiply = 100;
         isVirtualActive = NO;
         virtualPrinter = [VirtualPrinter new];
         x = y = z = e = 0;
@@ -124,6 +125,7 @@
 }
 -(void)open {
     if(connected) return;
+    job->mode = 0;
     isMarlin = NO;
     isRepetier = NO;
     isSprinter = NO;
@@ -263,11 +265,11 @@
     if (paused) return;
     paused = YES;
     
-    pauseX = analyzer->x;
-    pauseY = analyzer->y;
-    pauseZ = analyzer->z;
+    pauseX = analyzer->x-analyzer->xOffset;
+    pauseY = analyzer->y-analyzer->yOffset;
+    pauseZ = analyzer->z-analyzer->zOffset;
     pauseF = analyzer->f;
-    pauseE = analyzer->e;
+    pauseE = analyzer->e-analyzer->eOffset;
     pauseRelative = analyzer->relative;
 
     for (GCodeShort *code in app->gcodeView->pausejob->textArray)
@@ -550,7 +552,7 @@
     // first resolve old communication problems
     if (resendNode != nil) {
         gc = resendNode->value;
-        if (binaryVersion == 0)  {
+        if (binaryVersion == 0 || gc->forceASCII)  {
            NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && 
                 self.receivedCount + cmd.length + 2 > config->receiveCacheSize) {
@@ -600,13 +602,14 @@
             [nextlineLock unlock];
             return;
         }
-        [gc setN:++lastline];
+        if(gc->m!=117)
+            [gc setN:++lastline];
         if (isVirtualActive) {
             [virtualPrinter receiveLine:gc];
             bytesSend += gc.getOriginal.length;
         }
         else
-        if (binaryVersion == 0)  {
+        if (binaryVersion == 0 || gc->forceASCII)  {
             NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && self.receivedCount + cmd.length + 2 > config->receiveCacheSize) { 
                 --lastline;
@@ -665,13 +668,14 @@
             [nextlineLock unlock];
             return;
         }
-        [gc setN:++lastline];
+        if(gc->m!=117)
+            [gc setN:++lastline];
         if (isVirtualActive) {
             [virtualPrinter receiveLine:gc];
             bytesSend += gc.getOriginal.length;
         }
         else
-        if (binaryVersion == 0) {
+        if (binaryVersion == 0 || gc->forceASCII) {
             NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && self.receivedCount + cmd.length + 2 > config->receiveCacheSize) { 
                 --lastline;
@@ -851,6 +855,11 @@
         speedMultiply = h.intValue;
         level = RHLogResponse;
         [ThreadedNotification notifyNow:@"SpeedMultiply" object:h];
+    }
+    if ((h = [self extract:res identifier:@"FlowMultiply:"])!=nil)  {
+        flowMultiply = h.intValue;
+        level = RHLogResponse;
+        [ThreadedNotification notifyNow:@"FlowMultiply" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetExtr0:"])!=nil)  {
         if(analyzer->activeExtruder==0)

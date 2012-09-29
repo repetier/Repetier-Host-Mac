@@ -38,6 +38,29 @@
         [self.entries setValue:line forKey:key];
     }
 }
+-(void)merge:(IniSection*)s
+{
+    for(NSString *key in s.entries.allKeys)
+    {
+        if ([key isEqualToString:@"extrusion_multiplier"] || [key isEqualToString:@"filament_diameter"] || [key isEqualToString:@"first_layer_temperature"]
+            || [key isEqualToString:@"temperature"])
+        {
+            NSString *value = [entries objectForKey:key];
+            if (value)
+            {
+                NSString *full = [s.entries objectForKey:key];
+                NSRange p = [full rangeOfString:@"="];
+                if (p.location!=NSNotFound)
+                    full = [[full substringFromIndex:1+p.location] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                [self.entries setValue:[NSString stringWithFormat:@"%@,%@",value,full] forKey:key];
+            }
+            else
+            {
+                [self.entries setValue:[s.entries objectForKey:key] forKey:key];
+            }
+        }
+    }
+}
 @end
 
 @implementation IniFile
@@ -91,6 +114,18 @@
         IniSection *ms = [sections objectForKey:s.name];
         for (NSString *ent in s.entries.allValues)
             [ms addLine:ent];
+    }
+}
+-(void)merge:(IniFile*)f
+{
+    for (IniSection *s in f.sections.allValues)
+    {
+        if (![sections objectForKey:s.name])
+        {
+            [sections setValue:[[[IniSection alloc] initWithName:s.name] autorelease] forKey:s.name];
+        } else {
+            [((IniSection*)[sections objectForKey:s.name]) merge:s];
+        }
     }
 }
 -(void)flatten

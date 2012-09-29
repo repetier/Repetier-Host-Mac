@@ -26,6 +26,7 @@
         rotation[0] = rotation[1] = rotation[2] = 0;
         position[0] = position[1] = position[2] = 0;
         animations = [RHLinkedList new];
+        xMin = xMax =yMin=yMax=zMin=zMax=0;
     }
     return self;
 }

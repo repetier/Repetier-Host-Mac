@@ -60,6 +60,15 @@
     IBOutlet NSButton *disableMotorAfterJob;
     IBOutlet NSTextField *addPrintingTime;
     IBOutlet NSButton *dontLogM105Checkbox;
+    IBOutlet NSButton *homeXMax;
+    IBOutlet NSButton *homeYMax;
+    IBOutlet NSButton *homeZMax;
+    IBOutlet NSTextField *xMin;
+    IBOutlet NSTextField *xMax;
+    IBOutlet NSTextField *yMin;
+    IBOutlet NSTextField *yMax;
+    IBOutlet NSTextField *bedLeft;
+    IBOutlet NSTextField *bedFront;
 }
 @property (retain)NSArray* baudRates;
 @property (retain)NSArray* protocolNames;

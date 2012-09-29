@@ -207,16 +207,16 @@
 }
 -(void)temperatureRead:(NSNotification*)notification {
     NSMutableString *tr = [NSMutableString stringWithCapacity:50];
-    [tr appendFormat:@"Extruder: %1.0f°C",connection->extruderTemp];
+    [tr appendFormat:@"Extruder: %1.2f°C",connection->extruderTemp];
     if (connection->analyzer->extruderTemp>0)
-        [tr appendFormat:@"/%d°C",connection->analyzer->extruderTemp];
+        [tr appendFormat:@"/%1.0f°C",connection->analyzer->extruderTemp];
     else 
         [tr appendString:@"/Off"];
     if (connection->bedTemp > 0)
     {
-        [tr appendFormat:@" Bed: %1.0f",connection->bedTemp];
+        [tr appendFormat:@" Bed: %1.2f",connection->bedTemp];
         if (connection->analyzer->bedTemp > 0) 
-            [tr appendFormat:@"/%d°C",connection->analyzer->bedTemp];
+            [tr appendFormat:@"/%1.0f°C",connection->analyzer->bedTemp];
         else 
             [tr appendString:@"°C/Off"];
     }
@@ -454,4 +454,7 @@
     [stlView clearGraphicContext];
     [printPreview clearGraphicContext];
 }
+
+- (IBAction)donateAction:(id)sender {
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.repetier.com/donate-or-support/"]];}
 @end

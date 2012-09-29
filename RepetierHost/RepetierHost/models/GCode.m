@@ -147,7 +147,7 @@
                 range.length = i-p1;
                 [self addCode:code value:[cmd substringWithRange:range]];
                 mode = 0;
-                if (self.hasM && (m == 23 || m == 28 || m == 29 || m == 30))
+                if (self.hasM && (m == 23 || m == 28 || m == 29 || m == 30 || m == 117))
                 {
                     int pos = i;
                     while (pos < l && isspace([cmd characterAtIndex:pos])) pos++;
@@ -216,6 +216,7 @@
 -(NSString*) getAsciiWithLine:(BOOL)inclLine withChecksum:(BOOL)inclChecksum
 {
     NSMutableString *st = [NSMutableString stringWithCapacity:60];
+    if(self.hasM && m==117) inclChecksum = NO; // For marlin :-)
     if (inclLine && self.hasN)
     {
         [st appendString:@"N"];
@@ -306,11 +307,13 @@
         case 'G':
         case 'g':
             g = (uint8)d;
+            if(d>255) forceASCII = YES;
             fields|=4;
             break;
         case 'M':
         case 'm':
             m = (uint8)d;
+            if(d>255) forceASCII = YES;
             fields|=2;
             break;
         case 'T':
@@ -347,6 +350,12 @@
         case 'e':
             e = (float)d;
             fields|=64;
+            break;
+        case 'A':
+        case 'a':
+            e = (float)d;
+            fields|=64;
+            forceASCII = YES;
             break;
         case 'F':
         case 'f':

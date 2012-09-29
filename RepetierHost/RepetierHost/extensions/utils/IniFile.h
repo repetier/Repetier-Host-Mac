@@ -37,6 +37,7 @@
 -(id)init;
 -(void)read:(NSString*)_path;
 -(void)add:(IniFile*)f;
+-(void)merge:(IniFile*)f;
 -(void)flatten;
 -(void)write:(NSString*)_path;
 

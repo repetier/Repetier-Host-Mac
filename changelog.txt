@@ -1,3 +1,16 @@
+Version 0.40 2012-09-29
+  Now with Slic3r 0.9.3
+  Exact positioning in object placement.
+  Support for Mach3 flavored output.
+  Added flow multiplier in manual controls.
+  M117 on Marlin shows no more garbage.
+  Homing to X, Y and Z max possible.
+  Temperatures are now floating point values.
+  More flexible coordinate system for e.g. Rostock delta printer.
+  Mark origin with a dot.
+  Some minor bug fixes.
+
+
 Version 0.32 2012-09-05
   Added sparkle for automatic updates.
   Use variables from slicer in g-code.

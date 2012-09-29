@@ -18,8 +18,13 @@
 #import <Cocoa/Cocoa.h>
 #import "HistoryTextField.h"
 
+typedef enum printerStatus {disconnected,idle,heatingExtruder,heatingBed,motorStopped,jobPaused,jobKilled,jobFinsihed
+} PrinterStatus;
+
 @interface RHManualControl : NSView {
     @public
+    PrinterStatus status;
+    double statusSet;
     IBOutlet NSView *view;
     IBOutlet NSButton *debugEchoButton;
     IBOutlet NSButton *debugInfoButton;
@@ -63,10 +68,15 @@
     NSTimer *timer;
     float lastx,lasty,lastz;
     IBOutlet NSSlider *speedMultiplySlider;
+    IBOutlet NSSlider *flowMultiplySlider;
     IBOutlet NSTextField *speedMultiplyLabel;
     BOOL dontsend;
+    IBOutlet NSTextField *flowMultiplyLabel;
+    IBOutlet NSTextField *statusLabel;
 }
 -(void)updateConnectionStatus:(BOOL)c;
+-(void)updateStatus;
+-(void)changeStatus:(PrinterStatus)value;
 
 -(void)updatePrinterState;
 - (void)timerTick:(NSTimer*)theTimer;
@@ -75,6 +85,7 @@
 - (IBAction)debugErrorsAction:(NSButton *)sender;
 - (IBAction)debugDryRunAction:(NSButton *)sender;
 - (IBAction)speedMultiplyChanged:(id)sender;
+- (IBAction)flowMultiplyChanged:(id)sender;
 - (IBAction)powerAction:(NSButton *)sender;
 - (IBAction)sendAction:(NSButton *)sender;
 - (IBAction)xHomeAction:(NSButton *)sender;

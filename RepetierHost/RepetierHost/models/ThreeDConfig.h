@@ -46,6 +46,8 @@ typedef struct {
     GLfloat filament3Color[4];
     GLfloat hotFilamentColor[4];
     GLfloat selectedFilamentColor[4];
+    GLfloat outsidePrintbedColor[4];
+    GLfloat selectionBoxColor[4];
     RHLight lights[4];
     BOOL showEdges;
     BOOL useVBOs;

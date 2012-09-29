@@ -27,6 +27,7 @@
     float scale[3];
     BOOL selected;
     RHLinkedList *animations;
+    float xMin, yMin, zMin, xMax, yMax, zMax;
 }
 
 -(BOOL)changed;

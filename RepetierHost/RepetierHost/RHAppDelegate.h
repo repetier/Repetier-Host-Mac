@@ -159,6 +159,7 @@
 - (IBAction)sendScript4Action:(id)sender;
 - (IBAction)sendScript5Action:(id)sender;
 -(void)clearGraphicContext;
+- (IBAction)donateAction:(id)sender;
 @end
 
 RHAppDelegate *app;

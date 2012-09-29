@@ -10,7 +10,7 @@ The easy way to manage your 3d printer with a mac.
 
 ## Status
 
-Alpha - most things work but expect some wrong behaviour. If you find some bugs, let me know.
+Stable with ongoing development of new features.
 
 ## Installation
 

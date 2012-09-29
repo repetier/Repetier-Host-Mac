@@ -38,6 +38,11 @@
 @end
 @implementation RHOpenGLView
 
+@synthesize moveLast;
+@synthesize movePlane;
+@synthesize movePos;
+@synthesize moveStart;
+
 -(void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewGlobalFrameDidChangeNotification object:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -74,6 +79,10 @@
         antialiasMethod = (int)[d integerForKey:@"antialiasMethod"];
         antialiasSamples = (int)[d integerForKey:@"antialiasSamples"];
         [self createOpenGL];
+        self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorWithX:0 y:0 z:0] normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+        self.moveStart = [Geom3DVector vectorWithX:0 y:0 z:0];
+        self.moveLast = [Geom3DVector vectorWithX:0 y:0 z:0];
+        self.movePos = [Geom3DVector vectorWithX:0 y:0 z:0];
 		// Synchronize buffer swaps with vertical refresh rate
 	//	GLint swapInt = 1;
 	//	[glContext setValues:&swapInt forParameter:NSOpenGLCPSwapInterval]; 
@@ -351,6 +360,21 @@
     startUserPosition[0] = c->userPosition[0];
     startUserPosition[1] = c->userPosition[1];
     startUserPosition[2] = c->userPosition[2];
+    NSSize sz = [self bounds].size;
+    self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorWithX:0 y:0 z:0] normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+    self.moveStart = self.moveLast = [Geom3DVector vectorWithX:0 y:0 z:0];
+    [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
+    [movePlane intersectLine:c.pickLine result:moveStart];
+    ThreeDModel *selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
+    if(selmod!=nil) {
+        self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorFromVector:c->pickPoint]  normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+        self.moveStart = self.moveLast = [Geom3DVector vectorFromVector:c->pickPoint];        
+    } else {
+        self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorWithX:0 y:0 z:0] normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+        [movePlane intersectLine:c.pickLine result:c->pickPoint];
+                
+        self.moveStart = self.moveLast = [Geom3DVector vectorFromVector:c->pickPoint];
+    }    
 }
 -(void)rightMouseDown:(NSEvent *)theEvent {
     ThreeDContainer *c = topView->act;
@@ -358,25 +382,36 @@
     NSPoint p = theEvent.locationInWindow;
     p = [self convertPoint:p fromView:nil];
     NSSize sz = [self bounds].size;
+    self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorWithX:0 y:0 z:0] normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+    self.moveStart = self.moveLast = [Geom3DVector vectorWithX:0 y:0 z:0];
+    [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
+    [movePlane intersectLine:c.pickLine result:moveStart];
     ThreeDModel *selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
     last = p;
     if(selmod!=nil) {
+        self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorFromVector:c->pickPoint]  normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
+        self.moveStart = self.moveLast = [Geom3DVector vectorFromVector:c->pickPoint];
+        
         [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectSelected" object:selmod] postingStyle:NSPostASAP];
-
     }
    // [glContext flushBuffer];
     [NSOpenGLContext clearCurrentContext];
 }
 -(void)rightMouseDragged:(NSEvent *)theEvent {
     ThreeDContainer *c = topView->act;
-    NSSize bounds = [self bounds].size;
+    //NSSize bounds = [self bounds].size;
     NSPoint p = theEvent.locationInWindow;
     p = [self convertPoint:p fromView:nil];
-    double speedX; // = MAX(-1,MIN(1,(p.x - down.x) / d));
+    NSSize sz = [self bounds].size;
+    [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
+    [movePlane intersectLine:c.pickLine result:movePos];
+    /*double speedX; // = MAX(-1,MIN(1,(p.x - down.x) / d));
     double speedY; // = -MAX(-1, MIN(1, (p.y - down.y) / d));
     speedX = (p.x - last.x)*200*c->zoom / bounds.width;
-    speedY = (p.y - last.y)*200*c->zoom / bounds.height;
-    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectMoved" object:[RHPoint withX:speedX Y:speedY]] postingStyle:NSPostASAP];
+    speedY = (p.y - last.y)*200*c->zoom / bounds.height;*/
+    Geom3DVector *diff = [movePos sub:moveLast];
+    self.moveLast = [Geom3DVector vectorFromVector:movePos];
+    [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectMoved" object:[RHPoint withX:diff->x Y:diff->y]] postingStyle:NSPostASAP];
     //  if (eventObjectMoved != null)
     //      eventObjectMoved(speedX,-speedY);
     last = p;
@@ -390,6 +425,10 @@
     double d = MIN(bounds.width, bounds.height) / 3;
     double speedX; // = MAX(-1,MIN(1,(p.x - down.x) / d));
     double speedY; // = -MAX(-1, MIN(1, (p.y - down.y) / d));
+    [c UpdatePickLineX: p.x y:p.y width:bounds.width height:bounds.height];
+    [movePlane intersectLine:c.pickLine result:movePos];
+    Geom3DVector *diff = [movePos sub:moveLast];
+    self.moveLast = [Geom3DVector vectorFromVector:movePos];
 
     NSInteger k = [NSEvent modifierFlags];
     int emode = mode;
@@ -432,9 +471,9 @@
     }
     else if (emode == 4)
     {
-        speedX = (p.x - last.x)*200*c->zoom / bounds.width;
-        speedY = (p.y - last.y)*200*c->zoom / bounds.height;
-        [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectMoved" object:[RHPoint withX:speedX Y:speedY]] postingStyle:NSPostASAP];
+        //speedX = (p.x - last.x)*200*c->zoom / bounds.width;
+        //speedY = (p.y - last.y)*200*c->zoom / bounds.height;
+        [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectMoved" object:[RHPoint withX:diff->x Y:diff->y]] postingStyle:NSPostASAP];
         last = p;
     }
     [self setNeedsDisplay:YES];
