@@ -145,6 +145,7 @@
     //[logScrollView setScrollerStyle:NSScrollerStyleLegacy];
     [logSplitterDelegate setAutosaveName:@"logSplitterHeight"];
     [editorSplitterDelegate setAutosaveName:@"editorSplitterWidth"];
+    [self updateViewTravel];
     [RHSound createSounds];
 }
 -(void)replaceGCodeView:(NSNotification*)event {
@@ -241,14 +242,15 @@
     if(connection->connected) {
         [runJobButton setTag:YES];
         [killJobButton setTag:[connection->job hasData]];
-        if(![connection->job hasData]) {
-            [runJobButton setLabel:@"Run"];
-            [runJobButton setImage:runJobIcon];
-        }
-        
+        [sdcardButton setTag:YES];
     } else {
         [runJobButton setTag:NO];
         [killJobButton setTag:NO];
+        [sdcardButton setTag:NO];
+    }
+    if(connection->job->mode!=1) {
+        [runJobButton setLabel:@"Run"];
+        [runJobButton setImage:runJobIcon];
     }
     [toolbar validateVisibleItems];
 }
@@ -324,9 +326,23 @@
     }
     [openGLView redraw];
 }
+-(void)updateViewTravel {
+    if(!conf3d->showTravel) {
+        [showTravelButton setLabel:@"Hide travel"];
+        [showTravelButton setImage:hideFilamentIcon];
+    } else {
+        [showTravelButton setLabel:@"Show travel"];
+        [showTravelButton setImage:viewFilamentIcon];
+    }
+}
 - (IBAction)showFilamentAction:(NSToolbarItem *)sender {
     conf3d->disableFilamentVisualization = !conf3d->disableFilamentVisualization;
     [self updateViewFilament];
+}
+
+- (IBAction)showTravelAction:(id)sender {
+    NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
+    [d setObject:[NSNumber numberWithInt:!conf3d->showTravel] forKey:@"threedShowTravel"];
 }
 - (void)connectionClosed:(NSNotification *)notification {
     [connectButton setLabel:@"  Connect  "];
@@ -339,6 +355,7 @@
     [sendScript3Menu setEnabled:NO];
     [sendScript4Menu setEnabled:NO];
     [sendScript5Menu setEnabled:NO];
+    [self updateJobButtons];
 }
 
 - (IBAction)showPreferences:(NSMenuItem *)sender {

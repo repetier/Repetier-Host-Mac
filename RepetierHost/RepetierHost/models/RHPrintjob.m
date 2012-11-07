@@ -152,7 +152,7 @@
         GCode *gcode = [[GCode alloc] initFromString:line];
         if (!gcode->comment)
         {
-            [jobList addLast:gcode];
+            [jobList addLast:code];
             totalLines++;
         }
         [gcode release];
@@ -167,7 +167,7 @@
         GCode *gcode = [[GCode alloc] initFromString:line];
         if (!gcode->comment)
         {
-            [jobList addLast:gcode];
+            [jobList addLast:code->text];
             totalLines++;
         }
         [gcode release];
@@ -186,13 +186,13 @@
 }
 -(GCode*) peekData
 {
-    return jobList.peekFirst;
+    return [[[GCode alloc] initFromString:jobList.peekFirst] autorelease];
 }
 -(GCode*)popData
 {
     if (jobList->count == 0) return nil;
     linesSend++;
-    GCode *gc = [jobList removeFirst];
+    GCode *gc = [[[GCode alloc] initFromString:[jobList removeFirst]] autorelease];
     /*[timeLock lock];
     [times addLast:[[[PrintTime alloc] initWithLine:linesSend] autorelease]];
     if (times->count > 1500)

@@ -269,7 +269,7 @@
     return NO;
 }
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {
-    Slic3rSettings *set = [configs objectAtIndex:rowIndex];
+    Slic3rSettings *set = [configs objectAtIndex:(int)rowIndex];
     [set->name release];
     set->name = [anObject retain];
     [self updateConfig];

@@ -99,7 +99,11 @@
     nearDist = MAX(10, dist - 2.0f * conf->depth);
     farDist = dist + 2 * conf->depth;
     nearHeight = 2.0f*(float)tan(zoom * 15.0f * M_PI / 180.0f)*nearDist;
-    gluPerspective((zoom*30), width/height,nearDist, farDist);
+    if(conf3d->showPerspective)
+        gluPerspective((zoom*30), width/height,nearDist, farDist);
+    else {
+        glOrtho(-2*nearHeight*aspectRatio, 2*nearHeight*aspectRatio, -2*nearHeight, 2*nearHeight, nearDist, farDist);
+    }
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -493,7 +497,12 @@
     glGetIntegerv(GL_VIEWPORT, viewport);
     
     gluPickMatrix(x, y, 1, 1, viewport);
-    gluPerspective((zoom*30), width/height,  MAX(10,dist-2*currentPrinterConfiguration->depth), dist+ 2*currentPrinterConfiguration->depth);
+    if(conf3d->showPerspective)
+        gluPerspective((zoom*30), width/height,nearDist, farDist);
+    else {
+        glOrtho(-2*nearHeight*aspectRatio, 2*nearHeight*aspectRatio, -2*nearHeight, 2*nearHeight, nearDist, farDist);
+    }
+    //gluPerspective((zoom*30), width/height,  MAX(10,dist-2*currentPrinterConfiguration->depth), dist+ 2*currentPrinterConfiguration->depth);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(userPosition[0],userPosition[1],userPosition[2],

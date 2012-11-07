@@ -49,6 +49,12 @@
 		FD28663F14DDAD2A0081750D /* introduction.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FD28663E14DDAD2A0081750D /* introduction.rtf */; };
 		FD28664214DE7A130081750D /* TemperatureHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28664114DE7A130081750D /* TemperatureHistory.m */; };
 		FD28664514DE8CFB0081750D /* TemperatureView.m in Sources */ = {isa = PBXBuildFile; fileRef = FD28664414DE8CFA0081750D /* TemperatureView.m */; };
+		FD2B1DD2162C683500E6E335 /* folder.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2B1DD0162C683500E6E335 /* folder.png */; };
+		FD2B1DD3162C683500E6E335 /* newfolder.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2B1DD1162C683500E6E335 /* newfolder.png */; };
+		FD2B1DD7162C6D5700E6E335 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FD2B1DD6162C6D5700E6E335 /* ImageAndTextCell.m */; };
+		FD2B1DDA162C749F00E6E335 /* file16.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2B1DD8162C749F00E6E335 /* file16.png */; };
+		FD2B1DDB162C749F00E6E335 /* folder16.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2B1DD9162C749F00E6E335 /* folder16.png */; };
+		FD2DD06E164ACFB9005B398E /* parallelmode.png in Resources */ = {isa = PBXBuildFile; fileRef = FD2DD06D164ACFB9005B398E /* parallelmode.png */; };
 		FD46CB4D15E00116003087FD /* pypy.app in Resources */ = {isa = PBXBuildFile; fileRef = FD46CB4B15E00116003087FD /* pypy.app */; };
 		FD46CB4E15E00116003087FD /* Skeinforge.app in Resources */ = {isa = PBXBuildFile; fileRef = FD46CB4C15E00116003087FD /* Skeinforge.app */; };
 		FD57C17516174B24000C4A45 /* printer.png in Resources */ = {isa = PBXBuildFile; fileRef = FD57C17416174B24000C4A45 /* printer.png */; };
@@ -215,6 +221,13 @@
 		FD28664114DE7A130081750D /* TemperatureHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemperatureHistory.m; sourceTree = "<group>"; };
 		FD28664314DE8CFA0081750D /* TemperatureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemperatureView.h; sourceTree = "<group>"; };
 		FD28664414DE8CFA0081750D /* TemperatureView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TemperatureView.m; sourceTree = "<group>"; };
+		FD2B1DD0162C683500E6E335 /* folder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folder.png; sourceTree = "<group>"; };
+		FD2B1DD1162C683500E6E335 /* newfolder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newfolder.png; sourceTree = "<group>"; };
+		FD2B1DD5162C6D5700E6E335 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = "<group>"; };
+		FD2B1DD6162C6D5700E6E335 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = "<group>"; };
+		FD2B1DD8162C749F00E6E335 /* file16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = file16.png; sourceTree = "<group>"; };
+		FD2B1DD9162C749F00E6E335 /* folder16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = folder16.png; sourceTree = "<group>"; };
+		FD2DD06D164ACFB9005B398E /* parallelmode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = parallelmode.png; sourceTree = "<group>"; };
 		FD46CB4B15E00116003087FD /* pypy.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = pypy.app; sourceTree = "<group>"; };
 		FD46CB4C15E00116003087FD /* Skeinforge.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = Skeinforge.app; sourceTree = "<group>"; };
 		FD57C17416174B24000C4A45 /* printer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = printer.png; sourceTree = "<group>"; };
@@ -610,6 +623,11 @@
 		FDEDF7D2148A16EB00E6CFF1 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				FD2DD06D164ACFB9005B398E /* parallelmode.png */,
+				FD2B1DD8162C749F00E6E335 /* file16.png */,
+				FD2B1DD9162C749F00E6E335 /* folder16.png */,
+				FD2B1DD0162C683500E6E335 /* folder.png */,
+				FD2B1DD1162C683500E6E335 /* newfolder.png */,
 				FD57C17416174B24000C4A45 /* printer.png */,
 				FD01F4AF15BBDE8600754A5F /* mount.png */,
 				FD01F4B015BBDE8600754A5F /* unmount.png */,
@@ -706,6 +724,8 @@
 				FDDC2FB115D9A8700036B965 /* SkeinConfig.m */,
 				FD8155DF1613541C0093B7A8 /* Geom3D.h */,
 				FD8155E01613541C0093B7A8 /* Geom3D.m */,
+				FD2B1DD5162C6D5700E6E335 /* ImageAndTextCell.h */,
+				FD2B1DD6162C6D5700E6E335 /* ImageAndTextCell.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -830,6 +850,11 @@
 				FD46CB4E15E00116003087FD /* Skeinforge.app in Resources */,
 				FDF035B715E8CDE400B5C5A3 /* dsa_pub.pem in Resources */,
 				FD57C17516174B24000C4A45 /* printer.png in Resources */,
+				FD2B1DD2162C683500E6E335 /* folder.png in Resources */,
+				FD2B1DD3162C683500E6E335 /* newfolder.png in Resources */,
+				FD2B1DDA162C749F00E6E335 /* file16.png in Resources */,
+				FD2B1DDB162C749F00E6E335 /* folder16.png in Resources */,
+				FD2DD06E164ACFB9005B398E /* parallelmode.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +922,7 @@
 				FD9447BF15D831A100AFE7F1 /* IniFile.m in Sources */,
 				FDDC2FB215D9A8700036B965 /* SkeinConfig.m in Sources */,
 				FD8155E11613541C0093B7A8 /* Geom3D.m in Sources */,
+				FD2B1DD7162C6D5700E6E335 /* ImageAndTextCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -999,7 +1025,7 @@
 				INSTALL_OWNER = "$(USER)";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1008,19 +1034,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
-				"DEBUG_INFORMATION_FORMAT[arch=*]" = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				"DEBUG_INFORMATION_FORMAT[arch=*]" = dwarf;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RepetierHost/RepetierHost-Prefix.pch";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = "RepetierHost/RepetierHost-Info.plist";
 				INSTALL_OWNER = "$(USER)";
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 				SKIP_INSTALL = NO;
 				WRAPPER_EXTENSION = app;
 			};

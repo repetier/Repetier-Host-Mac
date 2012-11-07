@@ -269,8 +269,8 @@
 }
 -(void)cursorEnd
 {
-    row = lines.count - 1;
-    topRow = MAX(0, lines.count - rowsVisible - 1);
+    row = (int)(lines.count - 1);
+    topRow = (int)(MAX(0, (int)lines.count - rowsVisible - 1));
     [self positionShowCursor];
 }
 -(void)cursorPageDown
@@ -283,7 +283,7 @@
     }
     else
     {
-        row = lines.count - 1;
+        row = (int)(lines.count - 1);
         [self positionShowCursor ];
     }
 }
@@ -408,7 +408,7 @@
             if (mod==NSCommandKeyMask)
             {
                 selRow = 0;
-                row = MAX(0, lines.count - 1);
+                row =(int) MAX(0, lines.count - 1);
                 forceSel = true;
                 [self positionShowCursor:YES moved:YES];
                 forceSel = NO;
@@ -449,7 +449,7 @@
     if(dragLocation.y<0)
         row = 0;
     else
-        row = MAX(0, MIN(lines.count - 1, (int)(dragLocation.y / fontHeight)));
+        row = (int)(MAX(0, MIN(lines.count - 1, (int)(dragLocation.y / fontHeight))));
     hasSel = YES;
     [self setNeedsDisplay:YES];
     forceSel = YES;
@@ -466,11 +466,11 @@
     NSPoint e=[self convertPoint:[theEvent locationInWindow] fromView:nil];
     if ([NSEvent modifierFlags] & NSShiftKeyMask)
     {
-        row = (NSUInteger)MAX(0,MIN(lines.count-1, (e.y / fontHeight)));
+        row = (int)MAX(0,MIN(lines.count-1, (e.y / fontHeight)));
     }
     else
     {
-        row = selRow = MAX(0, MIN(lines.count - 1,  (int)(e.y / fontHeight)));
+        row = selRow = (int)MAX(0, MIN(lines.count - 1,  (int)(e.y / fontHeight)));
     }
     [self positionShowCursor];    
     
@@ -484,7 +484,7 @@
 }
 - (void)selectAll:(id)sender {
     selRow = 0;
-    row = MAX(0, lines.count - 1);
+    row = (int)MAX(0, (int)lines.count - 1);
     forceSel = YES;
     [self positionShowCursor:YES moved:YES];
     forceSel = NO;

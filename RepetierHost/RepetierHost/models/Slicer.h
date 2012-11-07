@@ -40,6 +40,7 @@
     SkeinConfig *exportConfig;
     SkeinConfig *extrusionConfig;
     SkeinConfig *multiplyConfig;
+    BOOL skipError;
 }
 -(void)checkConfig;
 -(void)slice:(NSString*)file;

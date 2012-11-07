@@ -100,7 +100,7 @@
     [d setInteger:sender.tag forKey:@"tempZoomLevel"];
 }
 - (IBAction)selectPeriod:(NSMenuItem *)sender {
-    int p = sender.tag;
+    int p = (int)(sender.tag);
     tempertureView->hist->currentHistory = [tempertureView->hist->lists objectAtIndex:p];
     [tempertureView setNeedsDisplay:YES];
 }

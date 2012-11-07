@@ -1,3 +1,15 @@
+Version 0.50 2012-11-07
+  Slic3r 0.9.4
+  Support for folders in sd manager.
+  Reduced memory usage for print.
+  Ready for repetier protocol v2 used in Repetier-Firmware 0.80.
+  Show travel moves.
+  Switch buttons now in blue/light blue for all with color vision defect.  
+  Jump to layer start/end in editor.
+  Show filament usage since start in editor.
+  Switch between perspective and parallel projection.
+  Bug fixes.
+
 Version 0.40 2012-09-29
   Now with Slic3r 0.9.3
   Exact positioning in object placement.

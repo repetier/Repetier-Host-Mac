@@ -51,6 +51,7 @@
     BOOL drawing;
     int layer;
     BOOL isG1Move;
+    BOOL eChanged;
     float printingTime;
     GCode *actCode;
 }

@@ -165,8 +165,22 @@
 	
         pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
 	}
-    if (!pixelFormat)
+    if (!pixelFormat) { // Fallback to no antialiasing
 		NSLog(@"No OpenGL pixel format");
+        NSOpenGLPixelFormatAttribute attribs[] =
+        {
+            NSOpenGLPFAWindow,
+            NSOpenGLPFADoubleBuffer,
+            NSOpenGLPFAColorSize, 24,
+            NSOpenGLPFAAlphaSize, 8,
+            NSOpenGLPFADepthSize, 24,
+            NSOpenGLPFANoRecovery, // Dont back up with software renderer
+            NSOpenGLPFAAccelerated,
+            NSOpenGLPFAClosestPolicy,
+            0
+        };
+        pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];        
+    }
     _needsReshape = YES;
 	// NSOpenGLView does not handle context sharing, so we draw to a custom NSView instead
 	glContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
@@ -178,11 +192,15 @@
     //glContext = self.openGLContext;
             
     [glContext makeCurrentContext];
+    [NSOpenGLContext clearCurrentContext];
     const char *glversions = (const char*)glGetString(GL_VERSION);
+    if(glversions) {
     [rhlog addInfo:[NSString stringWithCString:(const char*)glGetString(GL_VERSION) encoding:NSISOLatin1StringEncoding]];
     conf3d->useVBOs = atof(glversions) >= 1.5;
+    } else {
+      conf3d->useVBOs = true;
+    }
    // conf3d->useVBOs = false;
-    [NSOpenGLContext clearCurrentContext];
     timer = [NSTimer scheduledTimerWithTimeInterval:1.0/25.0
                                              target:self selector:@selector(timerAction:)
                                            userInfo:nil repeats:YES];    
@@ -365,7 +383,9 @@
     self.moveStart = self.moveLast = [Geom3DVector vectorWithX:0 y:0 z:0];
     [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
     [movePlane intersectLine:c.pickLine result:moveStart];
-    ThreeDModel *selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
+    ThreeDModel *selmod = nil;
+    if(app->stlView == topView->act)
+        selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
     if(selmod!=nil) {
         self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorFromVector:c->pickPoint]  normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
         self.moveStart = self.moveLast = [Geom3DVector vectorFromVector:c->pickPoint];        

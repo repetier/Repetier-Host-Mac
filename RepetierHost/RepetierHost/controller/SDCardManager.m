@@ -21,22 +21,53 @@
 #import "GCodeEditorController.h"
 #import "GCodeView.h"
 #import "ThreadedNotification.h"
+#import "ImageAndTextCell.h"
 
 @implementation SDCardFile
 
--(id)initFile:(NSString*)fname size:(int)sz {
+-(id)initFile:(NSString*)fname size:(NSString*)sz {
     if((self=[super init])) {
-        filename = [fname retain];
-        filesize = sz;
+        unichar lastChar = [fname characterAtIndex:fname.length-1];
+        unichar firstChar = [fname characterAtIndex:0];
+        if(firstChar=='/') fname = [fname substringFromIndex:1];
+        fullname = [fname retain];
+        isDirectory = lastChar=='/';
+        NSArray *parts = [StringUtil explode:fname sep:@"/"];
+        filename = [[parts objectAtIndex:parts.count-1] retain];
+        filesize = [sz retain];
+        if(isDirectory) {
+            NSRange last = [[fullname substringToIndex:fullname.length-1] rangeOfString:@"/" options:NSBackwardsSearch];
+            if(last.location!=NSNotFound) {
+                /*if([filename compare:@".."]==NSOrderedSame) {
+                    last = [[fullname substringToIndex:last.location-1] rangeOfString:@"/" options:NSBackwardsSearch];
+                }*/
+                if(last.location==NSNotFound)
+                    dirname = @"";
+                else
+                    dirname = [[fullname substringToIndex:last.location+1] retain];
+            } else
+                dirname = [[NSString stringWithFormat:@""] retain];
+        } else {
+            NSRange last = [fullname rangeOfString:@"/" options:NSBackwardsSearch];
+            if(last.location!=NSNotFound)
+                dirname = [[fullname substringToIndex:last.location+1] retain];
+            else
+                dirname = [[NSString stringWithFormat:@""] retain];
+        }
     }
     return self;
 }
 -(void)dealloc {
+    [dirname release];
+    [fullname release];
     [filename release];
+    [filesize release];
     [super dealloc];
 }
 @end
 @implementation SDCardManager
+
+@synthesize folder;
 
 - (id) init {
     if(self = [super initWithWindowNibName:@"SDCard" owner:self]) {
@@ -61,6 +92,10 @@
     [super windowDidLoad];
     mainWindow = self.window;
     files = [RHLinkedList new];
+    allFiles = [RHLinkedList new];
+    folderImage = [[NSImage imageNamed:@"folder16"] retain];
+    fileImage = [[NSImage imageNamed:@"file16"] retain];
+    folder = @"";
     mounted = YES;
     printing = NO;
     printPaused = NO;
@@ -80,12 +115,17 @@
     openPanel = [[NSOpenPanel openPanel] retain];
     [openPanel setCanChooseDirectories:YES];
     [openPanel setAllowsMultipleSelection:NO];
+    [table setTarget:self];
+    [table setDoubleAction:@selector(doubleClick:)];
     [self refreshFilenames];
     [self updateButtons];
 }
 -(void)dealloc {
+    [folderImage release];
+    [fileImage release];
     [timer invalidate];
     [files release];
+    [allFiles release];
     [super dealloc];
 }
 - (void)windowDidBecomeMain:(NSNotification *)notification {
@@ -100,21 +140,61 @@
     [self refreshFilenames];
     [self updateButtons];
 }
+-(void)fillFiles {
+    [files clear];
+    for(SDCardFile *f in allFiles) {
+        if([f->dirname compare:folder]==NSOrderedSame)
+            [files addLast:f];
+    }
+    [table reloadData];
+}
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     return files->count;
 }
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {
+    if(col==filenameColumn) {
+        SDCardFile *f = [files objectAtIndex:(int)rowIndex];
+        [cell setImage: (f->isDirectory ? folderImage : fileImage)];
+        return;
+    }
+}
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)col row:(NSInteger)rowIndex {
-    if(col==filenameColumn)
+    if(col==filenameColumn) {
+       /*ImageAndTextCell *cell = [[ImageAndTextCell alloc] init];
+        SDCardFile *f = [files objectAtIndex:(int)rowIndex];
+        cell.image = (f->isDirectory ? folderImage : fileImage);
+        cell.title = f->filename;
+        return [cell autorelease];*/
         return ((SDCardFile*)[files objectAtIndex:(int)rowIndex])->filename;
-    return [NSString stringWithFormat:@"%d",((SDCardFile*)[files objectAtIndex:(int)rowIndex])->filesize];
+    }
+    return [NSString stringWithFormat:@"%@",((SDCardFile*)[files objectAtIndex:(int)rowIndex])->filesize];
 }
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     return NO;
 }
+- (void)doubleClick:(id)object {
+    NSInteger rowNumber = [table clickedRow];
+    if(rowNumber<0 || rowNumber>=files->count) return;
+    SDCardFile *file = [files objectAtIndex:rowNumber];
+    if(file->isDirectory) {
+        if([file->filename compare:@".."]==NSOrderedSame) {
+            NSRange last = [[file->dirname substringToIndex:file->dirname.length-1] rangeOfString:@"/" options:NSBackwardsSearch];
+            if(last.location!=NSNotFound)
+                self.folder = [file->dirname substringToIndex:last.location+1];
+            else
+                self.folder = @"";
+        } else {
+            self.folder = file->fullname;
+        }
+        [self fillFiles];
+    }
+}
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo {
     
+    
 }
+
 -(void)showInfo:(NSString*)warn headline:(NSString*)head {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
     [alert addButtonWithTitle:@"OK"];
@@ -150,17 +230,24 @@
         [mountButton setTag:NO];
         [startPrintButton setTag:NO];
         [stopPrintButton setTag:NO];
+        [newFolderButton setTag:NO];
         [table setEnabled:NO];
         [toolbar validateVisibleItems];
         return;
     }
     [table setEnabled:mounted];
+    if(printing) {
+        [stopPrintButton setLabel:@"Pause SD Print"];
+    } else {
+        [stopPrintButton setLabel:@"Stop SD Print"];
+    }
     if (uploading || printing || [connection->job hasData])
     {
         [uploadButton setTag:NO];
         [removeButton setTag:NO];
         [unmountButton setTag:NO];
         [mountButton setTag:NO];
+        [newFolderButton setTag:NO];
         [startPrintButton setTag:NO];
         [stopPrintButton setTag:mounted];
     }
@@ -168,11 +255,17 @@
     {
         canRemove = connection->isRepetier;
         BOOL fc = [table selectedRow]>=0;
+        BOOL isfolder = NO;
+        if(fc) {
+            SDCardFile *f = [files objectAtIndex:table.selectedRow];
+            isfolder = (f!=nil && f->isDirectory);
+        }
         [uploadButton setTag:mounted];
         [removeButton setTag:fc && mounted && canRemove];
         [unmountButton setTag:YES];
         [mountButton setTag:YES];
-        [startPrintButton setTag:(fc || printPaused) && mounted];
+        [newFolderButton setTag:mounted];
+        [startPrintButton setTag:((!isfolder && fc) || printPaused) && mounted];
         [stopPrintButton setTag:printPaused && mounted];
     }
     [toolbar validateVisibleItems];
@@ -201,28 +294,56 @@
     }
     return b;
 }
+-(void)createUpFor:(SDCardFile *)file {
+    BOOL hasUp = NO;
+    BOOL hasDir = NO; // For Marlin, which doesn't send single dirs
+                      //if(file->dirname.length==0) return;
+    for(SDCardFile *f in allFiles) {
+        if(file->isDirectory) {
+            if(f->isDirectory && [f->dirname compare:file->fullname]==NSOrderedSame && [f->filename compare:@".."]==NSOrderedSame)
+                hasUp = YES;            
+        } else {
+            if(f->isDirectory && [f->dirname compare:file->dirname]==NSOrderedSame && [f->filename compare:@".."]==NSOrderedSame)
+                hasUp = YES;
+            
+        }
+        if([f->fullname compare:file->dirname]==NSOrderedSame)
+            hasDir = YES;
+    }
+    if(!hasDir && file->dirname.length>0) {
+        [allFiles addLast:[[[SDCardFile alloc] initFile:file->dirname size:@""] autorelease]];
+    }
+    if(!hasUp) {
+        if(file->isDirectory)
+            [allFiles addLast:[[[SDCardFile alloc] initFile:[NSString stringWithFormat:@"%@../",file->fullname] size:@""] autorelease]];
+        else if(file->dirname.length>0)
+            [allFiles addLast:[[[SDCardFile alloc] initFile:[NSString stringWithFormat:@"%@../",file->dirname] size:@""] autorelease]];
+    }
+}
 -(void)analyze:(NSString*)res
 {
     if (readFilenames)
     {
         if([res rangeOfString:@"End file list"].location==0) {
             readFilenames = NO;
+            [self fillFiles];
             return;
         }
         NSString *s = [res stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         s = [[self reduceSpace:s] lowercaseString];
         NSArray *parts = [StringUtil explode:s sep:@" "];
-        int len = 0;
-        if(parts.count>1) len = [[parts objectAtIndex:1] intValue];
+        NSString *len = @"";
+        if(parts.count>1) len = [parts objectAtIndex:1];
         SDCardFile *sdf = [[SDCardFile alloc] initFile:[parts objectAtIndex:0] size:len];
-        [files addLast:sdf];
+        [self createUpFor:sdf];
+        [allFiles addLast:sdf];
         [sdf release];
-        [table reloadData];
         return;
     }
     if([res rangeOfString:@"Begin file list"].location==0) {
         readFilenames = YES;
         [files clear];
+        [allFiles clear];
         return;
     }
     // Printing done?
@@ -230,6 +351,7 @@
     {
         printing = NO;
         progress = 100;
+        [startPrintButton setLabel:@"Start SD Print"];
         [ThreadedNotification notifyASAP:@"RHSDCardStatus" object:@"Print finished"];
     }
     else if ([res rangeOfString:@"SD printing byte "].location != NSNotFound) // Print status update
@@ -342,7 +464,7 @@
     if(returnCode==NSAlertFirstButtonReturn) {
         NSString *fname = ((SDCardFile*)[files objectAtIndex:(int)table.selectedRow])->filename;
         waitDelete = 6;
-        [connection injectManualCommand:[NSString stringWithFormat:@"M30 %@",fname]];
+        [connection injectManualCommand:[NSString stringWithFormat:@"M30 %@%@%@",(folder.length>0?@"/":@""),folder,fname]];
     }
 }
 - (IBAction)removeAction:(id)sender {
@@ -370,7 +492,7 @@
     int idx = (int)table.selectedRow;
     if(idx<0 || idx>=files->count) return;
     SDCardFile *v = [files objectAtIndex:idx];
-    [connection injectManualCommand:[NSString stringWithFormat:@"M23 %@",v->filename]];
+    [connection injectManualCommand:[NSString stringWithFormat:@"M23 %@%@%@",(folder.length>0?@"/":@""),folder,v->filename]];
     [self updateButtons];
 }
 
@@ -379,18 +501,21 @@
     {
         printPaused = NO;
         [printStatus setStringValue:@"Print aborted"];
+        [startPrintButton setLabel:@"Start SD Print"];
         return;
     }
     [connection injectManualCommand:@"M25"];
     printPaused = YES;
     printing = NO;
     [printStatus setStringValue:@"Print paused"];
+    [startPrintButton setLabel:@"Continue SD Print"];
     [self updateButtons];
 }
 
 - (IBAction)mountAction:(id)sender {
     [connection injectManualCommand:@"M21"];
     mounted = YES;
+    self.folder = @"";
     [self refreshFilenames];
     [self updateButtons];
 }
@@ -419,7 +544,7 @@
         BOOL cok = NO;
         if (c >= '0' && c <= '9') cok = YES;
         else if (c >= 'a' && c <= 'z') cok = YES;
-        else if (c == '_') cok = YES;
+        else if (c == '_' || c=='(' || c==')' || c=='-') cok = YES;
         if (!cok)
         {
             ok = NO;
@@ -450,7 +575,7 @@
     [progressBar setDoubleValue:0];
     [job beginJob];
     job->exclusive = YES;
-    [job pushData:[@"M28 " stringByAppendingString:[uplFilenameText stringValue]]];
+    [job pushData:[NSString stringWithFormat:@"M28 %@%@%@",(folder.length>0?@"/":@""),folder,[uplFilenameText stringValue]]];
     if([uplIncludeStartEndCheckbox state])
         [job pushData:[app->gcodeView getContent:1]];
     if (source==0)
@@ -516,4 +641,31 @@
     [NSApp endSheet:uploadPanel];
     [uploadPanel orderOut:self];
 }
+
+- (IBAction)createNewFolder:(id)sender {
+    NSString *cname = [[newFolderName stringValue] lowercaseString];
+    cname = [StringUtil replaceIn:cname all:@";" with:@"_"];
+    cname = [StringUtil replaceIn:cname all:@"." with:@"_"];
+    [NSApp endSheet:createFolderPanel];
+    [createFolderPanel orderOut:self];
+    if(cname.length==0)
+        [self showError:@"No folder name entered." headline:@"New folder failed"];
+    else if(![self validFilename:cname])
+        [self showError:@"Folder name is not in 8.3 format." headline:@"New folder failed"];
+    else {
+        [connection injectManualCommand:[NSString stringWithFormat:@"M32 %@%@%@",(folder.length>0?@"/":@""),folder,cname]];
+        [self refreshFilenames];
+    }
+}
+
+- (IBAction)cancelNewFolder:(id)sender {
+    [NSApp endSheet:createFolderPanel];
+    [createFolderPanel orderOut:self];
+}
+- (IBAction)newFolderAction:(id)sender {
+    [NSApp beginSheet: createFolderPanel
+       modalForWindow: mainWindow
+        modalDelegate: self
+       didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:)
+          contextInfo: nil];}
 @end

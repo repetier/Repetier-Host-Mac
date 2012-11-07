@@ -77,4 +77,6 @@
 - (IBAction)clear:(id)sender;
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx;
 -(NSMutableArray*)getClonedContentArrayAtIndex:(int)idx;
+- (IBAction)goFirstLayer:(id)sender;
+- (IBAction)goLastLayer:(id)sender;
 @end

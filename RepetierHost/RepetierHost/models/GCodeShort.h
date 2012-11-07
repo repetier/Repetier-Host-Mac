@@ -15,7 +15,7 @@
 */
 @interface GCodeShort : NSObject {
     @public
-    float x,y,z,e,f;
+    float x,y,z,e,f,emax;
     // Bit 0-19 : Layer 
     // Bit 20-23 : Tool
     // Bit 24-29 : Compressed command

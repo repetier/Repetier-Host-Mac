@@ -18,10 +18,11 @@
 
 @interface GCode : NSObject {
     @public
-    uint16_t fields;
+    uint16_t fields,fields2;
     int32_t n;
-    uint8 g, m, t;
-    float x, y, z, e, f;
+    uint8 t;
+    uint16 g, m;
+    float x, y, z, e, f,ii,j,r;
     int32_t s;
     int32_t p;
     NSString *text;
@@ -45,8 +46,12 @@
 -(BOOL)hasF;
 -(BOOL)hasS;
 -(BOOL)hasP;
+-(BOOL)hasI;
+-(BOOL)hasJ;
+-(BOOL)hasR;
 -(BOOL)hasText;
 -(BOOL)hasComment;
+-(BOOL)isV2;
 
 -(NSString*)getText;
 -(uint8)getG;

@@ -123,7 +123,7 @@
 -(void)deleteChar;
 -(void)updateHelp;
 -(void)registerScrollView:(NSScrollView*)v;
-
+-(void)goLayer:(int)lay;
 @end
 
 @interface GCodeUndo : NSObject {

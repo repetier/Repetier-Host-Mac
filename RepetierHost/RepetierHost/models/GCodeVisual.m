@@ -38,6 +38,19 @@
 }
 @end
 
+@implementation GCodeTravel
+
+-(id)init {
+    if((self=[super init])) {
+        fline = 0;
+    }
+    return self;
+}
++(int)toFile:(int) file line:(int)line {
+    if (file < 0) return 0; return (file << 29) + line;
+}
+@end
+
 @implementation GCodePath
 
 -(id)init {
@@ -471,10 +484,13 @@
 -(id)init {
     if((self=[super init])) {
         segments = [[NSMutableArray alloc] initWithCapacity:MAX_EXTRUDER];
+        travelMoves = [[NSMutableArray alloc] init];
         for(int i=0;i<MAX_EXTRUDER;i++)
             [segments addObject:[[RHLinkedList new] autorelease]];
         ana = [[GCodeAnalyzer alloc] init];
         ana->privateAnalyzer = YES;
+        hasTravelBuf = NO;
+        travelMovesBuffered = 0;
         //act = nil;
         lastFilHeight = 999;
         lastFilWidth = 999;
@@ -503,10 +519,13 @@
 -(id)initWithAnalyzer:(GCodeAnalyzer*)a {
     if((self=[super init])) {
         segments = [[NSMutableArray alloc] initWithCapacity:MAX_EXTRUDER];
+        travelMoves = [[NSMutableArray alloc] init];
         for(int i=0;i<MAX_EXTRUDER;i++)
             [segments addObject:[[RHLinkedList new] autorelease]];
         ana = [a retain];
         //act = nil;
+        hasTravelBuf = NO;
+        travelMovesBuffered = 0;
         lastFilHeight = 999;
         lastFilWidth = 999;
         lastFilDiameter = 999;
@@ -540,6 +559,7 @@
     }
     [segments removeAllObjects];
     [segments release];
+    [travelMoves release];
     if (colbufSize > 0)
         glDeleteBuffers(1,&colbuf);
     colbufSize = 0;
@@ -642,11 +662,15 @@
             [p free];
             [seg clear];
     }
+    [travelMoves removeAllObjects];
     lastx = 1e20f; // Don't ignore first point if it was the last!
     totalDist = 0;
     if (colbufSize > 0)
         glDeleteBuffers(1, &colbuf);
     colbufSize = 0;
+    if(hasTravelBuf)
+        glDeleteBuffers(2,travelBuf);
+    hasTravelBuf = NO;
     if (startOnClear)
         [ana start];
     else
@@ -671,6 +695,18 @@
     BOOL isLastPos = locDist < 0.00001;
     float mypos[3] = {xp,yp,zp};
     [changeLock lock];
+    if(ana->eChanged == NO) {
+        GCodeTravel *travel = [GCodeTravel new];
+        travel->fline = [GCodeTravel toFile:fileid line:actLine];
+        travel->p1[0] = lastx;
+        travel->p1[1] = lasty;
+        travel->p1[2] = lastz;
+        travel->p2[0] = xp;
+        travel->p2[1] = yp;
+        travel->p2[2] = zp;
+        [travelMoves addObject:travel];
+        [travel release];
+    }
     int segpos = analyzer->activeExtruder;
     if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
     RHLinkedList *seg = [segments objectAtIndex:segpos];
@@ -733,6 +769,18 @@
         [p release];
         
     }
+    if(ana->eChanged == NO) {
+        GCodeTravel *travel = [GCodeTravel new];
+        travel->fline = [GCodeTravel toFile:fileid line:actLine];
+        travel->p1[0] = lastx;
+        travel->p1[1] = lasty;
+        travel->p1[2] = lastz;
+        travel->p2[0] = xp;
+        travel->p2[1] = yp;
+        travel->p2[2] = zp;
+        [travelMoves addObject:travel];
+        [travel release];
+    }
     if (seg->count == 0 || laste >= e) // start new segment
     {
         if (!isLastPos) // no move, no action
@@ -789,7 +837,7 @@
         res = [text rangeOfCharacterFromSet:cset options:NSLiteralSearch range:NSMakeRange(lastpos, len-lastpos)];
         if(res.location == NSNotFound) break;
         NSString *code = [text substringWithRange:NSMakeRange(lastpos,res.location-lastpos)];
-        lastpos = res.location+res.length;
+        lastpos = (int)(res.location+res.length);
         if(code.length>0) {
             GCode *gc = [[GCode alloc] initFromString:code];
             [self addGCode:gc];
@@ -901,6 +949,10 @@
         {
             [path clearVBO];
         }
+    }
+    if(hasTravelBuf) {
+        glDeleteBuffers(2, travelBuf);
+        hasTravelBuf = NO;
     }
 }
 -(void)drawSegment:(GCodePath*)path
@@ -1313,7 +1365,116 @@
     }
     [path->pointsLock unlock];
 }
+/** Draw stored travel moves */
+-(void)drawMoves {
+    int l = travelMoves.count;
+    if(!hasTravelBuf || travelMovesBuffered+100<l) {
+        // Revill vbo
+        if(hasTravelBuf)
+            glDeleteBuffers(2,travelBuf);
+        int len = sizeof(float)*6*l;
+        float *pts = malloc(len);
+        GLint *idx = malloc(sizeof(GLint)*2*l);
+        GLint *idxp = idx;
+        float *p = pts;
+        int n=0,ic=0;
+        for(GCodeTravel *t in travelMoves) {
+            *idxp++ = ic++;
+            *idxp++ = ic++;
+            *p++ = t->p1[0];
+            *p++ = t->p1[1];
+            *p++ = t->p1[2];
+            *p++ = t->p2[0];
+            *p++ = t->p2[1];
+            *p++ = t->p2[2];
+            n++;
+        }
+        // NSLog(@"Count %d n %d",l,n);
+        glGenBuffers(2, travelBuf);
+        glBindBuffer(GL_ARRAY_BUFFER, travelBuf[0]);
+        glBufferData(GL_ARRAY_BUFFER, len, pts, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, travelBuf[1]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, (l*2 * sizeof(GLuint)), idx, GL_STATIC_DRAW);
+        hasTravelBuf = YES;
+        travelMovesBuffered = l;
+        free(pts);
+        free(idx);
+    }
+    // Set move color
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->travelColor);
+    // Draw buffer
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER,travelBuf[0]);
+    glVertexPointer(3, GL_FLOAT, 0, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, travelBuf[1]);
+    glDrawElements(GL_LINES, travelMovesBuffered*2, GL_UNSIGNED_INT, 0);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    // Draw new lines one by one
+    glBegin(GL_LINES);
+    for (int i = travelMovesBuffered; i < l; i++)
+    {
+        GCodeTravel *t = [travelMoves objectAtIndex:i];
+        glVertex3fv(t->p1);
+        glVertex3fv(t->p2);
+    }
+    glEnd();
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);
+}
+-(void)drawMovesFrom:(int)mstart to:(int)mend {
+    int l = travelMoves.count;
+    // Check if inside mark area
+    int estart = 0;
+    int eend = l;
+    //GCodePoint *lastP = nil;
+    int startP = -1, endP = -1,p=0;
+    for (GCodeTravel *t in travelMoves)
+    {
+                if (startP <0)
+                {
+                    if (t->fline >= mstart && t->fline <= mend)
+                        startP = p;
+                }
+                else
+                {
+                    if (t->fline > mend)
+                    {
+                        endP = p;
+                        break;
+                    }
+                }
+                //lastP = point;
+        if (endP >= 0) break;
+        p++;
+    }
+    if (startP == -1) {
+        return;
+    }
+    estart = startP;
+    if (endP >=0) eend = endP;
+    if (estart == eend)  {
+        return;
+    }
 
+    // Set move color
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,conf3d->blackColor);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->selectedFilamentColor);
+    // Draw buffer
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER,travelBuf[0]);
+    glVertexPointer(3, GL_FLOAT, 0, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, travelBuf[1]);
+    glDrawElements(GL_LINES, 2*(eend-estart), GL_UNSIGNED_INT, (void *)(sizeof(int)*estart*2));
+    //glDrawElements(GL_LINES, travelMovesBuffered*2, GL_UNSIGNED_INT, 0);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);
+}
 -(void)paint
 {
     changed = NO;
@@ -1384,6 +1545,11 @@
             [self drawSegment:path];
         }
     }
+    if(conf3d->showTravel) {
+        [changeLock lock];
+        [self drawMoves];
+        [changeLock unlock];
+    }
     GCodeEditorController *ed = app->gcodeView;
     int findex = ed.fileIndex;
     if(showSelection && findex<3) {
@@ -1391,22 +1557,27 @@
         int selectionStart = 0,selectionEnd = 0;
         if (!cv.hasSelection)
         {
-            selectionStart = selectionEnd = [GCodePoint toFile:findex line:cv->row];
+            selectionStart = selectionEnd = (int)([GCodePoint toFile:findex line:(int)cv->row]);
         }
         else
         {
             if (cv->row < cv->selRow)
             {
-                selectionStart = [GCodePoint toFile:findex line:cv->row];
-                selectionEnd = [GCodePoint toFile:findex line:cv->selRow];
+                selectionStart = (int)([GCodePoint toFile:findex line:(int)cv->row]);
+                selectionEnd = (int)([GCodePoint toFile:findex line:(int)cv->selRow]);
             }
             else
             {
-                selectionEnd = [GCodePoint toFile:findex line:cv->row];
-                selectionStart = [GCodePoint toFile:findex line:cv->selRow];
+                selectionEnd = (int)([GCodePoint toFile:findex line:(int)cv->row]);
+                selectionStart = (int)([GCodePoint toFile:findex line:(int)cv->selRow]);
             }
         }
         glDepthFunc(GL_LEQUAL);
+        if(conf3d->showTravel) {
+            [changeLock lock];
+            [self drawMovesFrom:selectionStart to:selectionEnd];
+            [changeLock unlock];
+        }
         col = conf3d->selectedFilamentColor;
         defaultColor[0] = (float)col[0];
         defaultColor[1] = (float)col[1];

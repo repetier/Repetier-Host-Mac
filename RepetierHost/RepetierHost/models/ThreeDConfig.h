@@ -48,6 +48,7 @@ typedef struct {
     GLfloat selectedFilamentColor[4];
     GLfloat outsidePrintbedColor[4];
     GLfloat selectionBoxColor[4];
+    GLfloat travelColor[4];
     RHLight lights[4];
     BOOL showEdges;
     BOOL useVBOs;
@@ -55,6 +56,8 @@ typedef struct {
     BOOL useLayerHeight;
     BOOL disableFilamentVisualization;
     BOOL showPrintbed;
+    BOOL showTravel;
+    BOOL showPerspective;
     float layerHeight;
     float filamentDiameter;
     float widthOverHeight;

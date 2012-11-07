@@ -34,6 +34,14 @@
 }
 +(int)toFile:(int) file line:(int)line;
 @end
+@interface GCodeTravel : NSObject {
+@public
+    float p1[3];
+    float p2[3];
+    int fline;
+}
++(int)toFile:(int) file line:(int)line;
+@end
 
 @interface GCodePath : NSObject {
 @public
@@ -63,6 +71,10 @@
 @interface GCodeVisual : ThreeDModel<GCodeAnalyzerDelegate> {
 @public
     NSMutableArray *segments;
+    NSMutableArray *travelMoves;
+    GLuint travelBuf[2];
+    int travelMovesBuffered;
+    BOOL hasTravelBuf;
     GCodeAnalyzer *ana;
     //GCode *act;
     BOOL showSelection;

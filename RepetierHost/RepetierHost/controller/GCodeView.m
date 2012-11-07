@@ -726,7 +726,7 @@
     GCodeShort *acode = [lines objectAtIndex:row];
     NSString *txt;
     if(acode.hasLayer)
-        txt = [NSString stringWithFormat:@"Layer: %d Tool: %d",(int)acode.layer,(int)acode.tool];
+        txt = [NSString stringWithFormat:@"Layer: %d Tool: %d Fil:%.1f",(int)acode.layer,(int)acode.tool,acode->emax];
     else
         txt = @"Layer: - Tool: -";
     if(controller->printingTime>0) {
@@ -791,12 +791,28 @@
     }
     blink = YES;
     [self updateHelp];
-    [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
-    [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
+    [colText setStringValue:[NSString stringWithFormat:@"C%d",(int)(col+1)]];
+    [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",(int)(row+1),(int)(lines.count)]];
     [self setNeedsDisplay:YES];
     [self updateLayer];
     if(app && app->openGLView)
         [app->openGLView redraw];
+}
+-(void)goLayer:(int)lay {
+    int line = 0;
+    for(GCodeShort *gc in lines) {
+        if(gc.layer>=lay) break;
+        line++;
+    }
+    if(line<lines.count) {
+        row = line;
+        [self cursorStart];
+    } else {
+        row = lines.count-1;
+        [self cursorEnd];
+    }
+    [self.window makeFirstResponder:self];
+    //[self becomeFirstResponder];
 }
 -(void)cursorUp
 {
@@ -1017,6 +1033,9 @@
     NSString *l = [((GCodeShort*)[lines objectAtIndex:row])->text stringByTrimmingCharactersInSet:
                                               [NSCharacterSet whitespaceAndNewlineCharacterSet]];   
     NSRange p = [l rangeOfString:@" "];
+    NSRange p2 = [l rangeOfString:@";"];
+    if(p.location!=NSNotFound && p2.location!=NSNotFound && p2.location<p.location)
+        p = p2;
     if (p.location == NSNotFound)
     {
         p.location = l.length;
@@ -1037,8 +1056,8 @@
 -(void)positionCursor
 {
     [self updateHelp];
-    [colText setStringValue:[NSString stringWithFormat:@"C%d",col+1]];
-    [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",row+1,lines.count]];
+    [colText setStringValue:[NSString stringWithFormat:@"C%d",(int)(col+1)]];
+    [rowText setStringValue:[NSString stringWithFormat:@"R%d/%d",(int)(row+1),(int)lines.count]];
     [self updateLayer];
     //if (!hasFocus) return;
     blink=YES;

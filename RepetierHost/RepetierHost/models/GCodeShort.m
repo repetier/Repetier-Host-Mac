@@ -16,6 +16,7 @@
         text = [cmd retain];
         flags = 1048575+(0<<24);
         x=y=z=e=f=-99999;
+        emax=-1;
         self.variables = [connection containsVariables:cmd];
         [self parse];
     }

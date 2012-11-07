@@ -127,13 +127,17 @@
             case 0:
             case 1:
                 isG1Move = YES;
+                eChanged = NO;
                 if(code.hasF) f = code.getF;
                 if (relative)
                 {
                     if(code.hasX) x += code.getX;
                     if(code.hasY) y += code.getY;
                     if(code.hasZ) z += code.getZ;
-                    if(code.hasE) e += code.getE;
+                    if(code.hasE) {
+                        eChanged = code->e!=0;
+                        e += code.getE;
+                    }
                 }
                 else
                 {
@@ -144,10 +148,13 @@
                     }
                     if (code.hasE)
                     {
-                        if (eRelative)
-                            e += code.getE;
-                        else
-                            e = eOffset + code.getE;
+                        if (eRelative) {
+                            eChanged = code->e!=0;
+                            e += code->e;
+                        } else {
+                            eChanged = (eOffset+code->e)!=e;
+                            e = eOffset + code->e;
+                        }
                     }
                 }
                 if (x < currentPrinterConfiguration->xMin) { x = currentPrinterConfiguration->xMin; hasXHome = NO; }
@@ -286,6 +293,7 @@
     {
         case 1:
             isG1Move = YES;
+            eChanged = NO;
             if(code.hasF) f = code->f;
             if (relative) {
                 if(code.hasX) {
@@ -304,6 +312,7 @@
                     //if (z > printerHeight) { hasZHome = NO; }
                 }
                 if(code.hasE) {
+                    eChanged = code->e!=0;
                     e += code->e;
                     if (e > emax) {
                         emax = e;
@@ -330,13 +339,16 @@
                     //if (z > printerHeight) { hasZHome = NO; }
                 }
                 if (code->e!=-99999) {
-                    if (eRelative)
+                    if (eRelative) {
+                        eChanged = code->e!=0;
                         e += code->e;
-                    else
+                    } else {
+                        eChanged = (eOffset+code->e)!=e;
                         e = eOffset + code->e;
+                    }
                     if (e > emax) {
                         emax = e;
-                        if(z>lastZPrint) {
+                        if(z!=lastZPrint) {
                             lastZPrint = z;
                             layer++;
                         }
@@ -418,6 +430,7 @@
             activeExtruder = code.tool;
             break;
     }
+    code->emax = emax;
     [code setLayer:layer];
     [code setTool:activeExtruder];
 }

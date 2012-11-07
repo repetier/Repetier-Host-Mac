@@ -79,7 +79,9 @@
     IBOutlet NSTabViewItem *slicerTab;
     IBOutlet GCodeEditorController *gcodeView;
     IBOutlet NSToolbarItem *showFilamentButton;
+    IBOutlet NSToolbarItem *showTravelButton;
     IBOutlet NSToolbarItem *killJobButton;
+    IBOutlet NSToolbarItem *sdcardButton;
     IBOutlet LogSplitViewDelegate *logSplitDelegate;
     IBOutlet NSToolbar *toolbar;
     NSOpenPanel* openPanel;
@@ -133,12 +135,14 @@
 //@property (assign) IBOutlet NSScrollView *sendGCodeAction;
 - (IBAction)toggleLog:(id)sender;
 -(void)updateViewFilament;
+-(void)updateViewTravel;
 - (IBAction)showEEPROM:(NSMenuItem *)sender;
 - (IBAction)runJobAction:(id)sender;
 - (IBAction)killJobAction:(id)sender;
 - (IBAction)loadGCodeAction:(id)sender;
 - (IBAction)sdCardAction:(id)sender;
 - (IBAction)showFilamentAction:(NSToolbarItem *)sender;
+- (IBAction)showTravelAction:(id)sender;
 - (void)connectionClosed:(NSNotification *)notification;
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)emergencyAction:(id)sender;

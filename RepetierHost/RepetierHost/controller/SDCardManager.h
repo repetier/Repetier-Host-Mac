@@ -19,10 +19,13 @@
 
 @interface SDCardFile : NSObject {
     @public
+    NSString *fullname;
     NSString *filename;
-    int filesize;
+    NSString *filesize;
+    NSString *dirname;
+    BOOL isDirectory;
 }
--(id)initFile:(NSString*)fname size:(int)sz;
+-(id)initFile:(NSString*)fname size:(NSString*)sz;
 @end
 @interface SDCardManager : NSWindowController<NSWindowDelegate,NSTableViewDataSource,NSTableViewDelegate> {
     NSWindow *mainWindow;
@@ -36,9 +39,11 @@
     IBOutlet NSTableColumn *filenameColumn;
     IBOutlet NSTableColumn *filesizeColumn;
     IBOutlet NSTextField *printStatus;
+    IBOutlet NSToolbarItem *newFolderButton;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSToolbar *toolbar;
     RHLinkedList *files;
+    RHLinkedList *allFiles;
     BOOL mounted;
     BOOL printing;
     BOOL printPaused;
@@ -57,7 +62,13 @@
     IBOutlet NSPanel *uploadPanel;
     NSOpenPanel* openPanel;
     double progress;
+    NSImage *folderImage;
+    NSImage *fileImage;
+    NSString *folder;
+    IBOutlet NSPanel *createFolderPanel;
+    IBOutlet NSTextField *newFolderName;
 }
+@property (retain)NSString *folder;
 - (IBAction)uploadAction:(id)sender;
 - (IBAction)removeAction:(id)sender;
 - (IBAction)startPrintAction:(id)sender;
@@ -68,6 +79,10 @@
 - (IBAction)uplUploadGCodeAction:(id)sender;
 - (IBAction)uplUploadExternalFileAction:(id)sender;
 - (IBAction)uplCancelAction:(id)sender;
+- (IBAction)newFolderAction:(id)sender;
+- (IBAction)cancelNewFolder:(id)sender;
+- (IBAction)uplCancelAction:(id)sender;
+- (IBAction)createNewFolder:(id)sender;
 -(void)timerTick:(NSTimer*)timer;
 -(void)refreshFilenames;
 -(void)updateButtons;

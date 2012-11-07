@@ -38,6 +38,7 @@
         extrusionConfig = nil;
         multiplyConfig = nil;
         postprocess = nil;
+        skipError = NO;
         slic3rInternalPath = [[[[NSBundle mainBundle] pathForResource:@"Slic3r" ofType:@"app"] stringByAppendingString:@"/Contents/MacOS/slic3r"] retain];
         emptyPath = [[[NSBundle mainBundle] pathForResource:@"empty" ofType:@"txt"] retain];
         //NSLog(@"Slic3r path:%@",slic3rInternalPath);
@@ -196,7 +197,9 @@
         if(slic3rExtSlice.finishedSuccessfull) {
             [self executePostprocess:slic3rExtOut];
         } else {
-            [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];
+            if(!skipError)
+                [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];
+            skipError = NO;
         }
         [slic3rExtOut release];
         [slic3rExtSlice release];
@@ -206,7 +209,9 @@
         if(slic3rIntSlice.finishedSuccessfull) {
             [self executePostprocess:slic3rIntOut];
         } else {
-            [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];
+            if(!skipError)
+                [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];
+            skipError = NO;
         }
         [slic3rIntOut release];
         [slic3rIntSlice release];
@@ -219,7 +224,9 @@
             } else
                 [app showWarning:[NSString stringWithFormat:@"Couldn't find sliced file\n%@\nCheck if the Skeinforge naming scheme matches your Skeinforge configuration!",skeinforgeOut] headline:@"File not found"];            
         } else {
-            [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];            
+            if(!skipError)
+                [app showWarning:@"Slicing exited with error!" headline:@"Slicing failed"];
+            skipError = NO;
         }
         [skeinforgeOut release];
         [skeinforgeSlice release];
@@ -236,6 +243,7 @@
     [app->rhslicer updateSelections];
 }
 -(void)killSlicing {
+    skipError = YES;
     if(skeinforgeSlice!=nil)
         [skeinforgeSlice kill];
     if(slic3rExtSlice!=nil)

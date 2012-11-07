@@ -754,6 +754,8 @@
 /// <param name="res"></param>
 -(void)analyzeResponse:(NSString*) res
 {
+    while(res.length>0 && [res characterAtIndex:0]<32)
+        res = [res substringFromIndex:1];
     RHLogType level=RHLogResponse;
     if (responseDelegate != nil)
     {

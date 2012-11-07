@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithInt:0] forKey:@"threedLight3Enabled"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"threedLight4Enabled"];
     [d setObject:[NSNumber numberWithInt:1] forKey:@"threedShowPrintbed"];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"threedShowTravel"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"threedAccelerationMethod"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"threedDrawEdges"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"threedHeightMethod"];
@@ -86,6 +87,7 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithDouble:1.6] forKey:@"threedWidthOverHeight"];
     [d setObject:[NSNumber numberWithDouble:2.87] forKey:@"threedFilamentDiameter"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"disableFilamentVisualization"];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"threedShowPerspective"];
     // Skeinforge defaults
     NSString *skeinforge = [[NSBundle mainBundle] pathForResource:@"Skeinforge" ofType:@"app"];
     NSString *skApp = nil,*skCraft = nil;
@@ -139,6 +141,7 @@ int main(int argc, char *argv[])
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.6 green:0.4 blue:0.8 alpha:1]] forKey:@"tempTargetBedColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0 green:0.5 blue:1 alpha:1]] forKey:@"tempAvgOutputColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.05 green:0.5 blue:0.06 alpha:0.7]] forKey:@"tempOutputColor"];
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.79 green:1.0 blue:0.9 alpha:1]] forKey:@"threedTravelColor"];
     [d setObject:[NSNumber numberWithInt:3] forKey:@"tempAverageSeconds"];
     [d setObject:[NSNumber numberWithInt:3] forKey:@"tempZoomLevel"];
     [d setObject:[NSNumber numberWithBool:YES] forKey:@"tempShowExtruder"];

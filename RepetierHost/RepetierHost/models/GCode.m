@@ -67,8 +67,20 @@
 -(BOOL)hasP {
     return (fields & 2048)!=0;
 }
+-(BOOL)hasI {
+    return (fields2 & 1)!=0;
+}
+-(BOOL)hasJ {
+    return (fields2 & 2)!=0;
+}
+-(BOOL)hasR {
+    return (fields2 & 4)!=0;
+}
 -(BOOL)hasText {
     return (fields & 32768)!=0;
+}
+-(BOOL)isV2 {
+    return (fields & 4096)!=0;
 }
 -(BOOL)hasComment {return comment;}
 
@@ -117,6 +129,7 @@
 }
 -(void)parse {
     fields = 128;
+    fields2 = 0;
     NSString *cmd = orig;
     if([connection containsVariables:orig])
         cmd = [connection replaceVariables:orig];
@@ -147,7 +160,7 @@
                 range.length = i-p1;
                 [self addCode:code value:[cmd substringWithRange:range]];
                 mode = 0;
-                if (self.hasM && (m == 23 || m == 28 || m == 29 || m == 30 || m == 117))
+                if (self.hasM && (m == 23 || m == 28 || m == 29 || m == 32 || m == 30 || m == 117))
                 {
                     int pos = i;
                     while (pos < l && isspace([cmd characterAtIndex:pos])) pos++;
@@ -174,10 +187,23 @@
 {
     NSMutableData *data = [NSMutableData dataWithCapacity:40];
     uint16 ns = (n & 65535);
+    BOOL v2 = self.isV2;
     [data appendBytes:&fields length:2];
+    if(v2) {
+        [data appendBytes:&fields2 length:2];
+        if(self.hasText) {
+            Byte len = (Byte)text.length;
+            [data appendBytes:&len length:1];
+        }
+    }
     if (self.hasN) [data appendBytes:&ns length:2];
-    if (self.hasM) [data appendBytes:&m length:1];
-    if (self.hasG) [data appendBytes:&g length:1];
+    if(v2) {
+        if (self.hasM) [data appendBytes:&m length:2];
+        if (self.hasG) [data appendBytes:&g length:2];
+    } else {
+        if (self.hasM) [data appendBytes:&m length:1]; // little endian, no problem
+        if (self.hasG) [data appendBytes:&g length:1];
+    }
     if (self.hasX) [data appendBytes:&x length:4];
     if (self.hasY) [data appendBytes:&y length:4];
     if (self.hasZ) [data appendBytes:&z length:4];
@@ -186,17 +212,23 @@
     if (self.hasT) [data appendBytes:&t length:1];
     if (self.hasS) [data appendBytes:&s length:4];
     if (self.hasP) [data appendBytes:&p length:4];
+    if(v2) {
+        if (self.hasI) [data appendBytes:&ii length:4];
+        if (self.hasJ) [data appendBytes:&j length:4];
+        if (self.hasR) [data appendBytes:&r length:4];
+    }
     if (self.hasText)
     {
         int i, len = (int)text.length;
-        if (len > 16) len = 16;
+        if (len > 16 && !v2) len = 16;
         for (i = 0; i < len; i++)
         {
             uint8 ch = [text characterAtIndex:i];
             [data appendBytes:&ch length:1];
         }
         uint8 nl = 0;
-        for(;i<16;i++) [data appendBytes:&nl length:1];
+        if(!v2)
+            for(;i<16;i++) [data appendBytes:&nl length:1];
     }
     // compute fletcher-16 checksum
     uint sum1 = 0, sum2 = 0;
@@ -266,6 +298,21 @@
             [st appendString:@" F"];
             [st appendFormat:@"%.2f",f];
         }
+        if (self.hasI)
+        {
+            [st appendString:@" I"];
+            [st appendFormat:@"%.2f",ii];
+        }
+        if (self.hasJ)
+        {
+            [st appendString:@" J"];
+            [st appendFormat:@"%.2f",j];
+        }
+        if (self.hasR)
+        {
+            [st appendString:@" R"];
+            [st appendFormat:@"%.2f",r];
+        }
         if (self.hasS)
         {
             [st appendString:@" S"];
@@ -285,15 +332,24 @@
     if (inclChecksum)
     {
         int check = 0;
-        int l = (int)st.length,ii;
-        for (ii=0;ii<l;ii++) {
-            check ^= ([st characterAtIndex:ii] & 0xff);
+        int l = (int)st.length,iii;
+        for (iii=0;iii<l;iii++) {
+            check ^= ([st characterAtIndex:iii] & 0xff);
         }
         check ^= 32;
         [st appendString:@" *"];
         [st appendFormat:@"%d",(int)check];
     }
     return st;
+}
+-(void)ActivateV2OrForceAscii
+{
+    if (connection->binaryVersion < 2)
+    {
+        forceASCII = YES;
+        return;
+    }
+    fields |= 4096;
 }
 -(void) addCode:(char) c value:(NSString*)val {
     double d = [val doubleValue];
@@ -306,14 +362,14 @@
             break;
         case 'G':
         case 'g':
-            g = (uint8)d;
-            if(d>255) forceASCII = YES;
+            g = (uint16)d;
+            if(d>255) [self ActivateV2OrForceAscii];
             fields|=4;
             break;
         case 'M':
         case 'm':
-            m = (uint8)d;
-            if(d>255) forceASCII = YES;
+            m = (uint16)d;
+            if(d>255) [self ActivateV2OrForceAscii];
             fields|=2;
             break;
         case 'T':
@@ -361,6 +417,27 @@
         case 'f':
             f = (float)d;
             fields|=256;
+            break;
+        case 'i':
+        case 'I':
+            ii = (float)d;
+            fields2|=1;
+            [self ActivateV2OrForceAscii];
+            break;
+        case 'j':
+        case 'J':
+            j = (float)d;
+            fields2|=2;
+            [self ActivateV2OrForceAscii];
+            break;
+        case 'r':
+        case 'R':
+            r = (float)d;
+            fields2|=4;
+            [self ActivateV2OrForceAscii];
+            break;
+        default: // Unsupported, so send line instead
+            forceASCII = YES;
             break;
     }
 }

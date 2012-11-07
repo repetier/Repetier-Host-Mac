@@ -207,6 +207,14 @@
     [updateCode addObjectsFromArray:orig];
     return [updateCode autorelease];
 }
+
+- (IBAction)goFirstLayer:(id)sender {
+    [editor goLayer:showMinLayer];
+}
+
+- (IBAction)goLastLayer:(id)sender {
+    [editor goLayer:showMaxLayer+1];
+}
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx
 {
     return ((GCodeContent*)[documents objectAtIndex:idx])->textArray;
