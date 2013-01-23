@@ -27,10 +27,11 @@
 @end
 
 @interface GCodeAnalyzer : NSObject {
+    NSMutableDictionary *extruderTemp;
 @public
     id <GCodeAnalyzerDelegate> delegate;
     int activeExtruder;
-    float extruderTemp;
+    //float extruderTemp;
     BOOL uploading;
     float bedTemp;
     float x, y, z, e,emax,f;
@@ -55,6 +56,8 @@
     float printingTime;
     GCode *actCode;
 }
+-(float)getExtruderTemperature:(int)extruder;
+-(void)setExtruder:(int)extruder temperature:(float)temp;
 -(void)fireChanged;
 -(void)analyze:(GCode*) code;
 -(void)analyzeShort:(GCodeShort*)code;

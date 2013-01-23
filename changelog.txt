@@ -1,3 +1,16 @@
+Version 0.52 under development
+  Slic3r 0.9.8
+  Remove comments for M/G Codes > 255.
+  Emergency kill now sends reset signal and M112.
+  More baud rates.
+  Select extruder from manual control.
+  Show multiple temperatures for Repetier-Firmware 0.80 or higher.
+  Switch ETA between time left and end time.
+  Fixed possible dead lock.
+
+Version 0.51 2012-11-08
+  Slic3r 0.9.5
+
 Version 0.50 2012-11-07
   Slic3r 0.9.4
   Support for folders in sd manager.

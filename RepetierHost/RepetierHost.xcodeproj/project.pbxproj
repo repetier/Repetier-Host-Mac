@@ -91,6 +91,7 @@
 		FD97347F14DC5DCB007D2E42 /* Slic3rConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = FD97347E14DC5DCA007D2E42 /* Slic3rConfig.m */; };
 		FD98D9E314BB5AA00079AB43 /* GCodeVisual.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */; };
 		FD98D9E814BCEF710079AB43 /* RHActionTabDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */; };
+		FDAC195616B04CFC00479AA4 /* ClickableTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = FDAC195516B04CFC00479AA4 /* ClickableTextField.m */; };
 		FDB2C67314914C7E00276479 /* TemperatureView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FDB2C67214914C7E00276479 /* TemperatureView.xib */; };
 		FDB2C67614926E6500276479 /* RHTempertuareController.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C67514926E6500276479 /* RHTempertuareController.m */; };
 		FDB2C67914927CA900276479 /* RHLogView.m in Sources */ = {isa = PBXBuildFile; fileRef = FDB2C67814927CA900276479 /* RHLogView.m */; };
@@ -285,6 +286,8 @@
 		FD98D9E214BB5A9F0079AB43 /* GCodeVisual.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCodeVisual.m; sourceTree = "<group>"; };
 		FD98D9E614BCEF710079AB43 /* RHActionTabDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHActionTabDelegate.h; sourceTree = "<group>"; };
 		FD98D9E714BCEF710079AB43 /* RHActionTabDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHActionTabDelegate.m; sourceTree = "<group>"; };
+		FDAC195416B04CFC00479AA4 /* ClickableTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClickableTextField.h; sourceTree = "<group>"; };
+		FDAC195516B04CFC00479AA4 /* ClickableTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClickableTextField.m; sourceTree = "<group>"; };
 		FDB2C67214914C7E00276479 /* TemperatureView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TemperatureView.xib; sourceTree = "<group>"; };
 		FDB2C67414926E6500276479 /* RHTempertuareController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RHTempertuareController.h; sourceTree = "<group>"; };
 		FDB2C67514926E6500276479 /* RHTempertuareController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RHTempertuareController.m; sourceTree = "<group>"; };
@@ -726,6 +729,8 @@
 				FD8155E01613541C0093B7A8 /* Geom3D.m */,
 				FD2B1DD5162C6D5700E6E335 /* ImageAndTextCell.h */,
 				FD2B1DD6162C6D5700E6E335 /* ImageAndTextCell.m */,
+				FDAC195416B04CFC00479AA4 /* ClickableTextField.h */,
+				FDAC195516B04CFC00479AA4 /* ClickableTextField.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -757,7 +762,7 @@
 		FDEDF79B148961D800E6CFF1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = Repetier;
 			};
 			buildConfigurationList = FDEDF79E148961D800E6CFF1 /* Build configuration list for PBXProject "RepetierHost" */;
@@ -923,6 +928,7 @@
 				FDDC2FB215D9A8700036B965 /* SkeinConfig.m in Sources */,
 				FD8155E11613541C0093B7A8 /* Geom3D.m in Sources */,
 				FD2B1DD7162C6D5700E6E335 /* ImageAndTextCell.m in Sources */,
+				FDAC195616B04CFC00479AA4 /* ClickableTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1015,6 +1021,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
@@ -1034,6 +1041,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				"DEBUG_INFORMATION_FORMAT[arch=*]" = dwarf;
 				FRAMEWORK_SEARCH_PATHS = (

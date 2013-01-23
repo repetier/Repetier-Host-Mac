@@ -38,6 +38,7 @@
     Geom3DLine *pickLine;// Last pick up line ray
     Geom3DLine *viewLine;// Direction of view
     Geom3DVector *pickPoint;
+    BOOL topView;
 }
 @property (retain)Geom3DLine *pickLine;
 @property (retain)Geom3DLine *viewLine;

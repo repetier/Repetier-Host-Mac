@@ -43,6 +43,8 @@
 
 @synthesize window;
 
+#pragma mark Initalization related
+
 -(id)init {
     if((self=[super init])) {
         //[rhlog setView:logView];
@@ -148,24 +150,27 @@
     [self updateViewTravel];
     [RHSound createSounds];
 }
--(void)replaceGCodeView:(NSNotification*)event {
-    [codePreview->models remove:codeVisual];
-    codeVisual = event.object;
-    [codePreview->models addLast:codeVisual];
-    [openGLView redraw];
-    gcodeView->editor->nextView = nil;
+
+#pragma mark -
+#pragma mark Helper Functions
+
+- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
+    NSString *ext = filename.pathExtension;
+    if([ext compare:@"gcode" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
+        [gcodeView loadGCodeGCode:filename];
+        return YES;
+    } else if([ext compare:@"stl" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
+        [stlComposer loadSTLFile:filename];
+        return YES;
+    }
+    return NO;
 }
--(void)firmwareDetected:(NSNotification*)event {
-    [firmwareLabel setStringValue:[event object]];
+-(void)clearGraphicContext {
+    [codePreview clearGraphicContext];
+    [stlView clearGraphicContext];
+    [printPreview clearGraphicContext];
 }
--(void)openRecentSTL:(NSMenuItem*)item {
-    NSString *file = item.title;
-    [composer loadSTLFile:file];    
-}
--(void)openRecentGCode:(NSMenuItem*)item {
-    NSString *file = item.title;
-    [gcodeView loadGCodeGCode:file];
-}
+
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
     if(connection->job->mode==1) {
         [self showWarning:@"Stop your printing process before quitting the program!" headline:@"Termination aborted"];
@@ -199,45 +204,6 @@
   //  [printerSettingsController showWindow:self];
     [printerSettingsController.window makeKeyAndOrderFront:nil];
 }
--(void)progressReceived:(NSNotification*)notification {
-    NSNumber *n = notification.object;
-    [printProgress setDoubleValue:n.doubleValue];
-}
--(void)printerInfoReceived:(NSNotification*)notification {
-    [printStatusLabel setStringValue:[notification object]];
-}
--(void)temperatureRead:(NSNotification*)notification {
-    NSMutableString *tr = [NSMutableString stringWithCapacity:50];
-    [tr appendFormat:@"Extruder: %1.2f°C",connection->extruderTemp];
-    if (connection->analyzer->extruderTemp>0)
-        [tr appendFormat:@"/%1.0f°C",connection->analyzer->extruderTemp];
-    else 
-        [tr appendString:@"/Off"];
-    if (connection->bedTemp > 0)
-    {
-        [tr appendFormat:@" Bed: %1.2f",connection->bedTemp];
-        if (connection->analyzer->bedTemp > 0) 
-            [tr appendFormat:@"/%1.0f°C",connection->analyzer->bedTemp];
-        else 
-            [tr appendString:@"°C/Off"];
-    }
-    [printTempLabel setStringValue:tr];
-}
--(void)jobChanged:(NSNotification*)notification {
-    [self updateJobButtons];
-}
-- (void)connectionOpened:(NSNotification *)notification {
-    [connectButton setLabel:@"Disconnect"];
-    [connectButton setImage:disconnectedImage];
-    [printTempLabel setStringValue:@"Waiting for temperature"];  
-    [eepromMenuItem setEnabled:YES];
-    [emergencyButton setTag:YES];
-    [sendScript1Menu setEnabled:YES];
-    [sendScript2Menu setEnabled:YES];
-    [sendScript3Menu setEnabled:YES];
-    [sendScript4Menu setEnabled:YES];
-    [sendScript5Menu setEnabled:YES];
-}
 -(void)updateJobButtons {
     if(connection->connected) {
         [runJobButton setTag:YES];
@@ -254,9 +220,134 @@
     }
     [toolbar validateVisibleItems];
 }
-- (IBAction)toggleLog:(id)sender {   
+
+
+-(void)updateViewFilament {
+    if(conf3d->disableFilamentVisualization) {
+        [showFilamentButton setLabel:@"Hides filament"];
+        [showFilamentButton setImage:hideFilamentIcon];
+    } else {
+        [showFilamentButton setLabel:@"Shows filament"];
+        [showFilamentButton setImage:viewFilamentIcon];
+    }
+    [openGLView redraw];
+}
+-(void)updateViewTravel {
+    if(!conf3d->showTravel) {
+        [showTravelButton setLabel:@"Hides travel"];
+        [showTravelButton setImage:hideFilamentIcon];
+    } else {
+        [showTravelButton setLabel:@"Shows travel"];
+        [showTravelButton setImage:viewFilamentIcon];
+    }
+}
+
+#pragma mark -
+#pragma mark Notifications
+
+/** Replaces the current preview model with the one
+ computed in a different thread. 
+ */
+-(void)replaceGCodeView:(NSNotification*)event {
+    [codePreview->models remove:codeVisual];
+    codeVisual = event.object;
+    [codePreview->models addLast:codeVisual];
+    [openGLView redraw];
+    @synchronized(gcodeView->editor->timer) {
+        gcodeView->editor->nextView = nil;
+    }
+}
+
+-(void)progressReceived:(NSNotification*)notification {
+    NSNumber *n = notification.object;
+    [printProgress setDoubleValue:n.doubleValue];
+}
+-(void)printerInfoReceived:(NSNotification*)notification {
+    [printStatusLabel setStringValue:[notification object]];
+}
+-(void)temperatureRead:(NSNotification*)notification {
+    NSMutableString *tr = [NSMutableString stringWithCapacity:50];
+    [connection->tempLock lock];
+    if(connection->extruderTemp.count>1) {
+        for(NSNumber *key in connection->extruderTemp) {
+            int e = key.intValue;
+            [tr appendFormat:@"Extruder %d: %1.2f°C",e+1,[connection getExtruderTemperature:e]];
+            if ([connection->analyzer getExtruderTemperature:e]>0)
+                [tr appendFormat:@"/%1.0f°C ",[connection->analyzer getExtruderTemperature:e]];
+            else
+                [tr appendString:@"/Off "];
+        }
+    } else if(connection->extruderTemp.count==1){
+        [tr appendFormat:@"Extruder: %1.2f°C",[connection getExtruderTemperature:-1]];
+        if ([connection->analyzer getExtruderTemperature:-1]>0)
+            [tr appendFormat:@"/%1.0f°C ",[connection->analyzer getExtruderTemperature:-1]];
+        else
+            [tr appendString:@"/Off "];
+    }
+    [connection->tempLock unlock];
+    if (connection->bedTemp > 0)
+    {
+        [tr appendFormat:@"Bed: %1.2f",connection->bedTemp];
+        if (connection->analyzer->bedTemp > 0)
+            [tr appendFormat:@"/%1.0f°C",connection->analyzer->bedTemp];
+        else
+            [tr appendString:@"°C/Off"];
+    }
+    [printTempLabel setStringValue:tr];
+}
+
+-(void)jobChanged:(NSNotification*)notification {
+    [self updateJobButtons];
+}
+- (void)connectionOpened:(NSNotification *)notification {
+    [connectButton setLabel:@"Disconnect"];
+    [connectButton setImage:disconnectedImage];
+    [printTempLabel setStringValue:@"Waiting for temperature"];
+    [eepromMenuItem setEnabled:YES];
+    [emergencyButton setTag:YES];
+    [sendScript1Menu setEnabled:YES];
+    [sendScript2Menu setEnabled:YES];
+    [sendScript3Menu setEnabled:YES];
+    [sendScript4Menu setEnabled:YES];
+    [sendScript5Menu setEnabled:YES];
+}
+
+-(void)firmwareDetected:(NSNotification*)event {
+    [firmwareLabel setStringValue:[event object]];
+}
+
+- (void)connectionClosed:(NSNotification *)notification {
+    [connectButton setLabel:@"  Connect  "];
+    [connectButton setImage:connectedImage];    
+    [printTempLabel setStringValue:@"Disconnected"];    
+    [eepromMenuItem setEnabled:NO];
+    [emergencyButton setTag:NO];
+    [sendScript1Menu setEnabled:NO];
+    [sendScript2Menu setEnabled:NO];
+    [sendScript3Menu setEnabled:NO];
+    [sendScript4Menu setEnabled:NO];
+    [sendScript5Menu setEnabled:NO];
+    [self updateJobButtons];
+}
+
+#pragma mark -
+#pragma mark UI Actions
+
+-(void)openRecentSTL:(NSMenuItem*)item {
+    NSString *file = item.title;
+    [composer loadSTLFile:file];
+}
+-(void)openRecentGCode:(NSMenuItem*)item {
+    NSString *file = item.title;
+    [gcodeView loadGCodeGCode:file];
+}
+- (IBAction)toggleLog:(id)sender {
     
-  //  [topLogView setHidden:![topLogView isHidden]];
+    //  [topLogView setHidden:![topLogView isHidden]];
+}
+
+- (IBAction)toggleETAAction:(id)sender {
+    connection->job->etaTimeLeft = !connection->job->etaTimeLeft;
 }
 
 - (IBAction)showEEPROM:(NSMenuItem *)sender {
@@ -272,15 +363,15 @@
     if (job->dataComplete)
     {
         [connection pause:@"You can also add a pause command into the G-Code. Just add a line like\n@pause Change filament\ninto your code."];
-
-      //  conn.pause("Press OK to continue.\n\nYou can add pauses in your code with\n@pause Some text like this");
+        
+        //  conn.pause("Press OK to continue.\n\nYou can add pauses in your code with\n@pause Some text like this");
     }
     else
     {
         [runJobButton setLabel:@"Pause"];
         [runJobButton setImage:pauseJobIcon];
-
-       // toolRunJob.Image = imageList.Images[3];
+        
+        // toolRunJob.Image = imageList.Images[3];
         [printVisual clear];
         [job beginJob];
         [job pushShortArray:gcodeView->prepend->textArray];
@@ -289,6 +380,7 @@
         [job endJob ];
     }
 }
+
 
 - (IBAction)killJobAction:(id)sender {
     [runJobButton setLabel:@"Run"];
@@ -305,7 +397,7 @@
                 [gcodeView loadGCodeGCode:[[urls objectAtIndex:0] path]];
             }
             // Use the URLs to build a list of items to import.
-        }        
+        }
     }];
 }
 
@@ -316,25 +408,6 @@
     [sdcardManager.window makeKeyAndOrderFront:nil];
 }
 
--(void)updateViewFilament {
-    if(conf3d->disableFilamentVisualization) {
-        [showFilamentButton setLabel:@"Hide filament"];
-        [showFilamentButton setImage:hideFilamentIcon];
-    } else {
-        [showFilamentButton setLabel:@"Show filament"];
-        [showFilamentButton setImage:viewFilamentIcon];
-    }
-    [openGLView redraw];
-}
--(void)updateViewTravel {
-    if(!conf3d->showTravel) {
-        [showTravelButton setLabel:@"Hide travel"];
-        [showTravelButton setImage:hideFilamentIcon];
-    } else {
-        [showTravelButton setLabel:@"Show travel"];
-        [showTravelButton setImage:viewFilamentIcon];
-    }
-}
 - (IBAction)showFilamentAction:(NSToolbarItem *)sender {
     conf3d->disableFilamentVisualization = !conf3d->disableFilamentVisualization;
     [self updateViewFilament];
@@ -344,19 +417,6 @@
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     [d setObject:[NSNumber numberWithInt:!conf3d->showTravel] forKey:@"threedShowTravel"];
 }
-- (void)connectionClosed:(NSNotification *)notification {
-    [connectButton setLabel:@"  Connect  "];
-    [connectButton setImage:connectedImage];    
-    [printTempLabel setStringValue:@"Disconnected"];    
-    [eepromMenuItem setEnabled:NO];
-    [emergencyButton setTag:NO];
-    [sendScript1Menu setEnabled:NO];
-    [sendScript2Menu setEnabled:NO];
-    [sendScript3Menu setEnabled:NO];
-    [sendScript4Menu setEnabled:NO];
-    [sendScript5Menu setEnabled:NO];
-    [self updateJobButtons];
-}
 
 - (IBAction)showPreferences:(NSMenuItem *)sender {
        [preferences->prefWindow makeKeyAndOrderFront:nil];
@@ -364,10 +424,12 @@
 
 - (IBAction)emergencyAction:(id)sender {
     if (!connection->connected) return;
-    connection->closeAfterM112 = YES;
+    connection->closeAfterM112 = NO; //YES;
     [connection injectManualCommandFirst:@"M112"];
     [connection->job killJob];
     [rhlog addError:@"Send emergency stop to printer. You may need to reset the printer for a restart!"];
+    // Try to reset board by toggling DTR line
+    [connection sendReset];
    /* while ([connection hasInjectedMCommand:112])
     {
         [NSApplication 
@@ -454,22 +516,6 @@
     {
         [connection injectManualCommand:code->text];
     }
-}
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename {
-    NSString *ext = filename.pathExtension;
-    if([ext compare:@"gcode" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
-        [gcodeView loadGCodeGCode:filename];
-        return YES;
-    } else if([ext compare:@"stl" options:NSCaseInsensitiveSearch]==NSOrderedSame) {
-        [stlComposer loadSTLFile:filename];
-        return YES;
-    }
-    return NO;
-}
--(void)clearGraphicContext {
-    [codePreview clearGraphicContext];
-    [stlView clearGraphicContext];
-    [printPreview clearGraphicContext];
 }
 
 - (IBAction)donateAction:(id)sender {

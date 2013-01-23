@@ -55,12 +55,16 @@
         dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
         [dateFormatter setTimeStyle:NSDateFormatterLongStyle];
+        timeFormatter = [[NSDateFormatter alloc] init];
+        //[timeFormatter setTimeStyle:NSDateFormatterLongStyle];
+        [timeFormatter setDateFormat:@"HH:mm:ss"];
         dataComplete = NO;
         totalLines = 0;
         linesSend = 0;
         computedPrintingTime = 0;
         exclusive = NO;
         mode = 0;
+        etaTimeLeft = YES;
     }
     return self;
 }
@@ -71,6 +75,7 @@
     //[times release];
     //[timeLock release];
     [dateFormatter release];
+    [timeFormatter release];
     [super dealloc];
 }
 -(void) updateJobButtons {
@@ -132,7 +137,8 @@
     }
     if (currentPrinterConfiguration->afterJobDisableExtruder)
     {
-        [connection injectManualCommand:@"M104 S0"];
+        for(int i=0;i<connection->numberExtruder;i++)
+            [connection injectManualCommand:[NSString stringWithFormat:@"M104 S0 T%d",i]];
     }
     if(currentPrinterConfiguration->afterJobDisableHeatedBed) 
         [connection injectManualCommand:@"M140 S0"];
@@ -247,12 +253,17 @@
     } else
        ticks = (((NSDate*)[NSDate date]).timeIntervalSince1970 - jobStarted.timeIntervalSince1970) * (totalLines - linesSend) / linesSend;
     [timeLock unlock];*/
-    long hours = ticks / 3600;
-    ticks -= 3600 * hours;
-    long min = ticks / 60;
-    ticks -= 60 * min;
-    long sec = ticks;
-    NSString *s = [NSString stringWithFormat:@"%ldh:%02ldm:%02lds",hours,min,sec];
-    return s;
+    if(etaTimeLeft) {
+        long hours = ticks / 3600;
+        ticks -= 3600 * hours;
+        long min = ticks / 60;
+        ticks -= 60 * min;
+        long sec = ticks;
+        NSString *s = [NSString stringWithFormat:@"%ldh:%02ldm:%02lds",hours,min,sec];
+        return s;
+    } else {
+        NSDate *date = [[NSDate date] dateByAddingTimeInterval:ticks];
+        return [timeFormatter stringFromDate:date];
+    }
 }
 @end

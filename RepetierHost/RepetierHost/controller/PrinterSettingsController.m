@@ -30,10 +30,12 @@
 
 @synthesize baudRates;
 @synthesize protocolNames;
+@synthesize numberOfExtruder;
 
 - (id) init {
     if((self = [super initWithWindowNibName:@"PrinterSettings"])) {
         initDone = NO;
+        [self setNumberOfExtruder:1];
         //[self.window setReleasedWhenClosed:NO];
     }
     return self;
@@ -84,7 +86,8 @@
 	[AMSerialPortList sharedPortList]; // initialize port list to arm notifications
     [baudRatePopup removeAllItems];
     [self setBaudRates:[NSArray arrayWithObjects:@"9600",@"14400",@"19200",@"28800",@"38400",@"56000",@"57600",
-                        @"76800",@"111112",@"115200",@"128000",@"230400",@"250000",@"256000",nil]];
+                        @"76800",@"111112",@"115200",@"128000",@"230400",@"250000",@"256000",
+                        @"460800",@"500000",@"921600",@"1000000",@"1382400",@"1500000",@"2000000",nil]];
     [baudRatePopup  addItemsWithTitles:baudRates];
     [protocolPopup removeAllItems];
     [self setProtocolNames:[NSArray arrayWithObjects:@"Autodetect",@"Force ASCII protocol",@"Force Repetier protocol", nil]];
@@ -169,6 +172,7 @@
     [yMin setDoubleValue:c->yMin];
     [bedFront setDoubleValue:c->bedFront];
     [bedLeft setDoubleValue:c->bedLeft];
+    [self setNumberOfExtruder:c->numberOfExtruder];
 }
 -(void)saveToConfig {
     PrinterConfiguration *c = currentPrinterConfiguration;
@@ -214,6 +218,7 @@
     c->yMin = [yMin doubleValue];
     c->bedFront = [bedFront doubleValue];
     c->bedLeft = [bedLeft doubleValue];
+    c->numberOfExtruder = numberOfExtruder;
     [c saveToRepository];
 }
 

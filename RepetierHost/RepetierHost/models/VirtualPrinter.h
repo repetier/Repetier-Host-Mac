@@ -19,7 +19,9 @@
 #import "GCodeAnalyzer.h"
 @interface VirtualPrinter : NSObject {
     @public
-    float bedTemp, extruderTemp;
+    float bedTemp;
+    float extruderTemp[3];
+    float extruderOut[3];
     GCodeAnalyzer *ana;
     RHLinkedList *output;
     NSThread *writeThread;

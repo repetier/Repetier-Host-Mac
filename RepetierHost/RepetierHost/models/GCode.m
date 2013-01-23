@@ -16,6 +16,7 @@
 
 #import "GCode.h"
 #import "PrinterConnection.h"
+#import "StringUtil.h"
 
 @implementation GCode
 -(id)initFromString:(NSString *)cmd {
@@ -87,10 +88,10 @@
 -(NSString*)getText {
     return [[text retain] autorelease];
 }
--(uint8)getG {
+-(uint16)getG {
     return g;
 }
--(uint8)getM {
+-(uint16)getM {
     return m;
 }
 -(uint8)getT {
@@ -165,7 +166,7 @@
                     int pos = i;
                     while (pos < l && isspace([cmd characterAtIndex:pos])) pos++;
                     int end = pos;
-                    while (end < l && !isspace([cmd characterAtIndex:end])) end++;
+                    while (end < l && (m == 117 || !isspace([cmd characterAtIndex:end]))) end++;
                     range.location = pos;
                     range.length = end-pos;
                     text = [[cmd substringWithRange:range] retain];
@@ -255,7 +256,13 @@
         [st appendFormat:@"%d",(int)n];
         [st appendString:@" "];
     }
-    if(forceASCII) [st appendString:orig];
+    if(forceASCII) {
+        NSRange cp = [orig rangeOfString:@";"];
+        if(cp.location==NSNotFound)
+            [st appendString:orig];
+        else
+            [st appendString:[StringUtil trim:[orig substringToIndex:cp.location]]];
+    }
     else {
         if (self.hasM)
         {

@@ -26,7 +26,9 @@
     GCodeAnalyzer *_ana;
     //NSLock *timeLock;
     NSDateFormatter *dateFormatter;
+    NSDateFormatter *timeFormatter;
 @public
+    BOOL etaTimeLeft;
     BOOL dataComplete;
     int totalLines;
     int linesSend;

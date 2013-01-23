@@ -175,7 +175,7 @@
 - (void)doubleClick:(id)object {
     NSInteger rowNumber = [table clickedRow];
     if(rowNumber<0 || rowNumber>=files->count) return;
-    SDCardFile *file = [files objectAtIndex:rowNumber];
+    SDCardFile *file = [files objectAtIndex:(int)rowNumber];
     if(file->isDirectory) {
         if([file->filename compare:@".."]==NSOrderedSame) {
             NSRange last = [[file->dirname substringToIndex:file->dirname.length-1] rangeOfString:@"/" options:NSBackwardsSearch];
@@ -257,7 +257,7 @@
         BOOL fc = [table selectedRow]>=0;
         BOOL isfolder = NO;
         if(fc) {
-            SDCardFile *f = [files objectAtIndex:table.selectedRow];
+            SDCardFile *f = [files objectAtIndex:(int)table.selectedRow];
             isfolder = (f!=nil && f->isDirectory);
         }
         [uploadButton setTag:mounted];
@@ -610,7 +610,8 @@
     {
         if (currentPrinterConfiguration->afterJobDisableExtruder)
         {
-            [job pushData:@"M104 S0"];
+            for(int i=0;i<connection->numberExtruder;i++)
+                [job pushData:[NSString stringWithFormat:@"M104 S0 T%d",i]];
         }
         if (currentPrinterConfiguration->afterJobDisableHeatedBed)
              [job pushData:@"M140 S0"];

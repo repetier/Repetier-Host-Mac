@@ -17,6 +17,7 @@
 
 #import "RHManualControl.h"
 #import "PrinterConnection.h"
+#import "RHAppDelegate.h"
 
 @implementation RHManualControl
 
@@ -41,6 +42,7 @@
             [self scrollPoint:NSMakePoint(0,0)];
             lastx = lasty = lastz = -1000;
             dontsend = FALSE;
+            [self updateExtruderCount];
             status=disconnected;
             statusSet=CFAbsoluteTimeGetCurrent();
             timer = [NSTimer scheduledTimerWithTimeInterval:0.1
@@ -123,6 +125,7 @@
     [setHomeButton setEnabled:c];
     [speedMultiplySlider setEnabled:c];
     [flowMultiplySlider setEnabled:c];
+    [activeExtruderSelector setEnabled:c];
 }
 -(void)changeStatus:(PrinterStatus)value
 {
@@ -180,12 +183,13 @@
 {
     double timestamp = CFAbsoluteTimeGetCurrent();
     double diff = timestamp - statusSet;
+    float et = [connection->analyzer getExtruderTemperature:-1];
     if (connection->connected == NO)
     {
         if (status != disconnected)
             [self changeStatus:disconnected];
     }
-    else if (connection->analyzer->extruderTemp > 15 && connection->analyzer->extruderTemp - connection->extruderTemp > 5)
+    else if (et > 15 && et - [connection getExtruderTemperature:-1] > 5)
         [self changeStatus:heatingExtruder];
     else if (connection->analyzer->bedTemp > 15 && connection->analyzer->bedTemp - connection->bedTemp > 5 && connection->bedTemp > 15) // only if has bed
         [self changeStatus:heatingBed];
@@ -258,14 +262,33 @@
     [self updatePrinterState];
     dontsend = FALSE;    
 }
+-(void)updateExtruderCount {
+    if(connection->config->numberOfExtruder==activeExtruderSelector.itemArray.count) return;
+    dontsend = YES;
+    int sidx = connection->analyzer->activeExtruder;
+    NSMutableArray *exlist = [NSMutableArray new];
+    int n = connection->config->numberOfExtruder,i;
+    for(i=0;i<n;i++) {
+        [exlist addObject:[NSString stringWithFormat:@"Extruder %d",1+i]];
+    }
+    [activeExtruderSelector removeAllItems];
+    [activeExtruderSelector addItemsWithTitles:exlist];
+    if(sidx<n)
+        [activeExtruderSelector selectItemAtIndex:sidx];
+    dontsend = NO;
+    [exlist release];
+}
 -(void)updatePrinterState {
     GCodeAnalyzer *a = connection->analyzer;
     if(a==nil) return;
-    [extruderTargetTempLabel setIntValue:a->extruderTemp];
+    [extruderTargetTempLabel setIntValue:[a getExtruderTemperature:-1]];
     [heatedBedTargetTempLabel setIntValue:a->bedTemp];
-    [extruderOnButton setState:a->extruderTemp>0];
+    [extruderOnButton setState:[a getExtruderTemperature:-1]];
     [heatedBedOnButton setState:a->bedTemp>0];
     [fanOnButton setState:a->fanOn];
+    dontsend = YES;
+    [activeExtruderSelector selectItemAtIndex:connection->analyzer->activeExtruder];
+    dontsend = NO;
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     if(a->fanOn) 
         [d setInteger:(int)((double)a->fanVoltage/2.55) forKey:@"fanSpeed"];
@@ -284,6 +307,11 @@
     if ([debugErrorButton state]==1) v += 4;
     if ([debugDryRunButton state]==1) v += 8;
     [connection injectManualCommand:[NSString stringWithFormat:@"M111 S%d",v]];
+}
+
+- (IBAction)extruderChangeAction:(id)sender {
+    if(dontsend) return;
+    [connection injectManualCommand:[NSString stringWithFormat:@"T%d",(int)[activeExtruderSelector indexOfSelectedItem]]];
 }
 - (IBAction)debugEchoAction:(NSButton *)sender {
     [self sendDebug];

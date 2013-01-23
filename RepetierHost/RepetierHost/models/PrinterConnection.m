@@ -68,8 +68,9 @@
         isVirtualActive = NO;
         virtualPrinter = [VirtualPrinter new];
         x = y = z = e = 0;
-        extruderTemp = bedTemp = 0;
-        extruderOutput = -1;
+        extruderTemp = [NSMutableDictionary new];
+        extruderOutput = [NSMutableDictionary new];
+        bedTemp = 0;
         injectCommands = [RHLinkedList new];
         nackLines = [RHLinkedList new];
         self.variables = [NSMutableDictionary dictionaryWithCapacity:100];
@@ -87,6 +88,7 @@
         historyLock = [NSLock new];
         injectLock = [NSLock new];
         nackLock = [NSLock new];
+        tempLock = [NSLock new];
         timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self
                 selector:@selector(handleTimer:) userInfo:self repeats:YES];
         analyzer = [[GCodeAnalyzer alloc] init];
@@ -113,12 +115,45 @@
     [nextlineLock release];
     [historyLock release];
     [injectLock release];
-    [nackLock release];    
+    [nackLock release];
+    [tempLock release];
     [notifyOpen release];
     [analyzer release];
     [eeprom release];
     [tempHistory release];
+    [extruderTemp release];
+    [extruderOutput release];
     [super dealloc];
+}
+-(float)getExtruderTemperature:(int)extruder {
+    if(extruder<0) extruder = analyzer->activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    id res = [extruderTemp objectForKey:en];
+    if(res==nil) return 0;
+    return ((NSNumber*)res).floatValue;
+}
+-(void)setExtruder:(int)extruder temperature:(float)temp {
+    if(extruder<0) extruder = analyzer->activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    NSNumber *etemp = [NSNumber numberWithFloat:temp];
+    [tempLock lock];
+    [extruderTemp setObject:etemp forKey:en];
+    [tempLock unlock];
+}
+-(int)getExtruderOutput:(int)extruder {
+    if(extruder<0) extruder = analyzer->activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    id res = [extruderOutput objectForKey:en];
+    if(res==nil) return -1;
+    return ((NSNumber*)res).intValue;
+}
+-(void)setExtruder:(int)extruder output:(int)outp {
+    if(extruder<0) extruder = analyzer->activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    NSNumber *eout = [NSNumber numberWithFloat:outp];
+    [tempLock lock];
+    [extruderOutput setObject:eout forKey:en];
+    [tempLock unlock];
 }
 -(void)firePrinterState:(NSString*)stateInfo {
     [ThreadedNotification notifyASAP:@"RHPrinterInfo" object:stateInfo];
@@ -171,6 +206,7 @@
 		self.port.readDelegate = self;
     //NSLog(@"ClearDTR: %i",(int)[port clearDTR]);
         [port setHangupOnClose:NO];
+    //[port setRTSInputFlowControl:NO];
     //    [port setDTRInputFlowControl:NO];
         [port commitChanges];
 		[rhlog addInfo:@"Attempting to connect to printer"];
@@ -241,11 +277,19 @@
         comErrorsReceived = 0;
 		[rhlog add:@"Connection closed" level:RHLogInfo];
     }
-    extruderOutput = -1;
-    [ThreadedNotification notifyNow:@"RHConnectionClosed" object:nil]; 
+    [extruderOutput removeAllObjects];
+    [extruderTemp removeAllObjects];
+    [ThreadedNotification notifyNow:@"RHConnectionClosed" object:nil];
     [self firePrinterState:@"Idle"];
     [job updateJobButtons];
     
+}
+-(void)sendReset {
+    [port clearDTR];
+    [NSThread sleepForTimeInterval:0.2];
+    [port setDTR];
+    [NSThread sleepForTimeInterval:0.2];
+    [port clearDTR];
 }
 - (void)pauseDidEnd {
     // Undo moves
@@ -545,7 +589,7 @@
 -(void)trySendNextLine
 {
     if (!garbageCleared) return;
-    [nextlineLock lock];
+    if(![nextlineLock tryLock]) return; // Can't get lock, skip to prevent deadlock if this is main thread
     if (config->pingPongMode && !readyForNextSend) {[nextlineLock unlock];return;}
     if (!connected) {[nextlineLock unlock];return;} // Not ready yet
     GCode *gc = nil;
@@ -553,7 +597,7 @@
     if (resendNode != nil) {
         gc = resendNode->value;
         if (binaryVersion == 0 || gc->forceASCII)  {
-           NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
+           NSString *cmd = [NSString stringWithFormat:@"%@\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && 
                 self.receivedCount + cmd.length + 2 > config->receiveCacheSize) {
                 [nextlineLock unlock];return;
@@ -564,7 +608,7 @@
                [nackLines addLast:[NSNumber numberWithInt:(int)(cmd.length + 2)]]; 
                [nackLock unlock];
            }
-           [self writeString:[cmd stringByAppendingString:@"\r\n"]];
+           [self writeString:cmd];
            bytesSend += cmd.length;
         } else  {
             NSData *cmd = [gc getBinary:binaryVersion];
@@ -600,6 +644,7 @@
             [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
             [analyzer analyze:gc];
             [nextlineLock unlock];
+            [self trySendNextLine];
             return;
         }
         if(gc->m!=117)
@@ -610,7 +655,7 @@
         }
         else
         if (binaryVersion == 0 || gc->forceASCII)  {
-            NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
+            NSString *cmd = [NSString stringWithFormat:@"%@\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && self.receivedCount + cmd.length + 2 > config->receiveCacheSize) { 
                 --lastline;
                 [historyLock unlock];
@@ -661,11 +706,12 @@
         gc = job.peekData;
         if (gc->hostCommand)
         {
-            [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
-            [analyzer analyze:gc];
             [historyLock unlock];
             [job popData];
+            [ThreadedNotification notifyNow:@"RHHostCommand" object:gc];
+            [analyzer analyze:gc];
             [nextlineLock unlock];
+            [self trySendNextLine];
             return;
         }
         if(gc->m!=117)
@@ -676,7 +722,7 @@
         }
         else
         if (binaryVersion == 0 || gc->forceASCII) {
-            NSString *cmd = [NSString stringWithFormat:@"%@\r\n",[gc getAsciiWithLine:YES withChecksum:YES]];
+            NSString *cmd = [NSString stringWithFormat:@"%@\n",[gc getAsciiWithLine:YES withChecksum:YES]];
             if (!config->pingPongMode && self.receivedCount + cmd.length + 2 > config->receiveCacheSize) { 
                 --lastline;
                 [historyLock unlock];
@@ -830,17 +876,35 @@
         e = h.doubleValue;
     }
     bool tempChange = false;
+    h = [self extract:res identifier:@"T0:"];
+    if (h != nil) {
+        int ecnt = 0;
+        do {
+            h = [self extract:res identifier:[NSString stringWithFormat:@"T%d:",ecnt]];
+            if(h== nil) break;
+            float t = h.floatValue;
+            [self setExtruder:ecnt temperature:t];
+            h = [self extract:res identifier:[NSString stringWithFormat:@"@%d:",ecnt]];
+            if(h!= nil) {
+                int  eo = h.floatValue;
+                if(isMarlin) eo*=2;
+                [self setExtruder:ecnt output:eo];
+            }
+            ecnt++;
+        } while(YES);
+    }
     h = [self extract:res identifier:@"T:"];
     if (h != nil)
     {
         level = RHLogText; // dont log, we see result in status
-        extruderTemp = h.doubleValue;
+        [self setExtruder:-1 temperature:h.floatValue];
         tempChange = true;
         h = [self extract:res identifier:@"@:"];
         if (h != nil)
         {
-            extruderOutput = h.intValue;
-            if(isMarlin) extruderOutput*=2;
+            int eo = h.intValue;
+            if(isMarlin) eo*=2;
+            [self setExtruder:-1 output:eo];
         }
     }
     h = [self extract:res identifier:@"B:"];
@@ -865,12 +929,12 @@
     }
     if ((h = [self extract:res identifier:@"TargetExtr0:"])!=nil)  {
         if(analyzer->activeExtruder==0)
-            analyzer->extruderTemp = h.intValue;
+            [analyzer setExtruder:0 temperature:h.floatValue];
         [ThreadedNotification notifyNow:@"TargetExtr0" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetExtr1:"])!=nil)  {
         if(analyzer->activeExtruder==1)
-            analyzer->extruderTemp = h.intValue;
+            [analyzer setExtruder:1 temperature:h.floatValue];
         [ThreadedNotification notifyNow:@"TargetExtr1" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetBed:"])!=nil)  {
@@ -895,7 +959,7 @@
             {
                 [temperatureDelegate monitoredTemperatureAt:time temp:temp target:target output:output];
             }
-            TempertureEntry *te = [[TempertureEntry alloc] initWithMonitor:analyzer->tempMonitor temp:temp output:output targetBed:analyzer->bedTemp targetExtruder:analyzer->extruderTemp];
+            TempertureEntry *te = [[TempertureEntry alloc] initWithMonitor:analyzer->tempMonitor temp:temp output:output targetBed:analyzer->bedTemp targetExtruder:[analyzer  getExtruderTemperature:-1]];
             [ThreadedNotification notifyASAP:@"RHTempMonitor" object:te];
             [te release];
 
@@ -929,11 +993,11 @@
     }
     if (tempChange) {
         if(temperatureDelegate != nil)
-            [temperatureDelegate receivedTemperature:extruderTemp bed:bedTemp];
+            [temperatureDelegate receivedTemperature:[self getExtruderTemperature:-1] bed:bedTemp];
         [ThreadedNotification notifyASAP:@"RHTemperatureRead" object:nil];
-        TempertureEntry *te = [[TempertureEntry alloc] initWithExtruder:extruderTemp bed:bedTemp targetBed:analyzer->bedTemp targetExtruder:analyzer->extruderTemp];
+        TempertureEntry *te = [[TempertureEntry alloc] initWithExtruder:[self getExtruderTemperature:-1] bed:bedTemp targetBed:analyzer->bedTemp targetExtruder:[analyzer getExtruderTemperature:-1]];
         if(extruderOutput>=0)
-            te->output = extruderOutput;
+            te->output = [self getExtruderOutput:-1] ;
         [ThreadedNotification notifyASAP:@"RHTempMonitor" object:te];
         [te release];
     }

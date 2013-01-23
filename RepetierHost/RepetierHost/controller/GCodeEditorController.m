@@ -28,6 +28,8 @@
 
 @synthesize variableKeys;
 
+#pragma mark Initalization
+
 - (id)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
@@ -90,6 +92,10 @@
 -(void)awakeFromNib
 {
 }
+
+#pragma mark -
+#pragma mark Layer Handling
+
 -(int)showMinLayer {
     return showMinLayer;
 }
@@ -136,6 +142,17 @@
         [self setShowMaxLayer:maxLayer];
     
 }
+- (IBAction)goFirstLayer:(id)sender {
+    [editor goLayer:showMinLayer];
+}
+
+- (IBAction)goLastLayer:(id)sender {
+    [editor goLayer:showMaxLayer+1];
+}
+
+#pragma mark -
+#pragma mark File Handling
+
 -(int)fileIndex {
     id obj = editor->cur;
     int idx = 0;
@@ -146,12 +163,6 @@
     if(idx==0) return 1;
     if(idx==1) return 0;
     return idx;
-}
--(void)gcodeUpdateStatus:(NSNotification*)event {
-    [updateText setStringValue:event.object];
-    if([event.object length]==0) {
-        [editor updateLayer];
-    }
 }
 -(void)loadGCode:(NSString*)file {
     [editor loadFile:file];
@@ -168,10 +179,6 @@
     [editor loadFile:file];
     [app->gcodeHistory add:file];
     [app->rightTabView selectTabViewItem:app->gcodeTab];
-}
-- (void)drawRect:(NSRect)dirtyRect
-{
-    // Drawing code here.
 }
 -(NSString*)getContent:(int)idx
 {
@@ -194,7 +201,7 @@
 -(NSMutableArray*)getContentArray
 {
     NSInteger len = prepend->textArray.count+gcode->textArray.count
-    +append->textArray.count;    
+    +append->textArray.count;
     NSMutableArray *updateCode = [[NSMutableArray alloc] initWithCapacity:len];
     [updateCode addObjectsFromArray:prepend->textArray];
     [updateCode addObjectsFromArray:gcode->textArray];
@@ -206,14 +213,6 @@
     NSMutableArray *updateCode = [[NSMutableArray alloc] initWithCapacity:orig.count];
     [updateCode addObjectsFromArray:orig];
     return [updateCode autorelease];
-}
-
-- (IBAction)goFirstLayer:(id)sender {
-    [editor goLayer:showMinLayer];
-}
-
-- (IBAction)goLastLayer:(id)sender {
-    [editor goLayer:showMaxLayer+1];
 }
 -(NSMutableArray*)getContentArrayAtIndex:(int)idx
 {
@@ -244,6 +243,24 @@
         [c setText:text];
     }
 }
+
+#pragma mark -
+#pragma mark Notifications
+
+-(void)gcodeUpdateStatus:(NSNotification*)event {
+    [updateText setStringValue:event.object];
+    if([event.object length]==0) {
+        [editor updateLayer];
+    }
+}
+- (void)drawRect:(NSRect)dirtyRect
+{
+    // Drawing code here.
+}
+
+
+#pragma mark -
+#pragma mark UI Actions
 
 - (IBAction)save:(id)sender {
     if(editor->cur==gcode) {
@@ -307,6 +324,9 @@
     [app->codeVisual stats];
     [app->openGLView redraw];
 }
+
+#pragma mark -
+#pragma mark Variable table handling
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
     self.variableKeys = [[connection.variables allKeys] sortedArrayUsingSelector: @selector(compare:)];

@@ -73,6 +73,7 @@ typedef enum printerStatus {disconnected,idle,heatingExtruder,heatingBed,motorSt
     BOOL dontsend;
     IBOutlet NSTextField *flowMultiplyLabel;
     IBOutlet NSTextField *statusLabel;
+    IBOutlet NSPopUpButton *activeExtruderSelector;
 }
 -(void)updateConnectionStatus:(BOOL)c;
 -(void)updateStatus;
@@ -107,7 +108,8 @@ typedef enum printerStatus {disconnected,idle,heatingExtruder,heatingBed,motorSt
 - (IBAction)fanSpeedChangedAction:(NSSlider *)sender;
 - (IBAction)retractExtruderAction:(NSButton *)sender;
 - (IBAction)setHomeAction:(id)sender;
-
+-(void)updateExtruderCount;
 -(void)sendDebug;
+- (IBAction)extruderChangeAction:(id)sender;
 
 @end

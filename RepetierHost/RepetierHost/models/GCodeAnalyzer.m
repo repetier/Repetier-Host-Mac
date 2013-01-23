@@ -29,7 +29,7 @@
     if((self=[super init])) {
         delegate = nil;
         activeExtruder = 0;
-        extruderTemp=0;
+        extruderTemp=[NSMutableDictionary new];
         uploading = NO;
         bedTemp = 0;
         x = y = z = e = emax = 0;
@@ -53,16 +53,20 @@
     }
     return self;
 }
+-(void)dealloc {
+    [extruderTemp release];
+    [super dealloc];
+}
 -(void)fireChanged {
     if(privateAnalyzer) return;
     [ThreadedNotification notifyASAP:@"RHPrinterStateChanged" object:self];
     [delegate printerStateChanged:self];
 }
 -(void) start {
+    [extruderTemp removeAllObjects];
     relative = NO;
     eRelative = NO;
     activeExtruder = 0;
-    extruderTemp = 0;
     bedTemp = 0;
     layer = 0;
     fanOn = NO;
@@ -93,7 +97,19 @@
     lastX = lastY = lastZ = lastE = 0;
     xOffset = yOffset = zOffset = eOffset = 0;
 }
-
+-(float)getExtruderTemperature:(int)extruder {
+    if(extruder<0) extruder = activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    id res = [extruderTemp objectForKey:en];
+    if(res==nil) return 0;
+    return ((NSNumber*)res).floatValue;
+}
+-(void)setExtruder:(int)extruder temperature:(float)temp {
+    if(extruder<0) extruder = activeExtruder;
+    NSNumber *en = [NSNumber numberWithInt:extruder];
+    NSNumber *etemp = [NSNumber numberWithFloat:temp];
+    [extruderTemp setObject:etemp forKey:en];
+}
 -(void) analyze:(GCode*) code
 {
     isG1Move = false;
@@ -250,8 +266,12 @@
                 break;
             case 104:
             case 109:
-                if (code.hasS) extruderTemp = code.getS;
+            {
+                int t = -1;
+                if(code.hasT) t = code->t;
+                if (code.hasS) [self setExtruder:t temperature:code.getS];
                 [self fireChanged];
+            }
                 break;
             case 106:
                 fanOn = YES;
@@ -284,6 +304,7 @@
     else if (code.hasT)
     {
         activeExtruder = code.getT;
+        [self fireChanged];
     }
 }
 -(void) analyzeShort:(GCodeShort*) code

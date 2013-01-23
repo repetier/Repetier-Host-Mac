@@ -70,6 +70,7 @@
         defaultExtruderTemp = 200;
         defaultHeatedBedTemp = 55;
         protocol = 0;
+        numberOfExtruder = 1;
         pingPongMode = NO;
         okAfterResend = YES;
         hasDumpArea = YES;
@@ -167,6 +168,7 @@
     dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     addPrintingTime = [d doubleForKey:[b stringByAppendingString:@".addPrintingTime"]];
+    numberOfExtruder = (int)[d integerForKey:[b stringByAppendingString:@".numberOfExtruder"]];
     [self sanityCheck];
     return self;
 }
@@ -235,6 +237,7 @@
     [d setObject:[NSNumber numberWithDouble:40] forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setObject:[NSNumber numberWithDouble:22] forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     [d setObject:[NSNumber numberWithDouble:8] forKey:[b stringByAppendingString:@".addPrintingTime"]];
+    [d setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".numberOfExtruder"]];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d];
@@ -296,7 +299,8 @@
     [d setDouble:dumpAreaWidth forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
-    
+    [d setInteger:numberOfExtruder forKey:[b stringByAppendingString:@".numberOfExtruder"]];
+    [app->manualControl updateExtruderCount];
 }
 +(void)initPrinter {
     printerConfigurations = [NSMutableArray new];

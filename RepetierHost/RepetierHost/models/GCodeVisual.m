@@ -1367,12 +1367,12 @@
 }
 /** Draw stored travel moves */
 -(void)drawMoves {
-    int l = travelMoves.count;
+    NSUInteger l = travelMoves.count;
     if(!hasTravelBuf || travelMovesBuffered+100<l) {
         // Revill vbo
         if(hasTravelBuf)
             glDeleteBuffers(2,travelBuf);
-        int len = sizeof(float)*6*l;
+        NSUInteger len = sizeof(float)*6*l;
         float *pts = malloc(len);
         GLint *idx = malloc(sizeof(GLint)*2*l);
         GLint *idxp = idx;
@@ -1410,12 +1410,12 @@
     glBindBuffer(GL_ARRAY_BUFFER,travelBuf[0]);
     glVertexPointer(3, GL_FLOAT, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, travelBuf[1]);
-    glDrawElements(GL_LINES, travelMovesBuffered*2, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, (GLsizei)(travelMovesBuffered*2), GL_UNSIGNED_INT, 0);
     glDisableClientState(GL_VERTEX_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER,0);
     // Draw new lines one by one
     glBegin(GL_LINES);
-    for (int i = travelMovesBuffered; i < l; i++)
+    for (NSUInteger i = travelMovesBuffered; i < l; i++)
     {
         GCodeTravel *t = [travelMoves objectAtIndex:i];
         glVertex3fv(t->p1);
@@ -1425,10 +1425,10 @@
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,conf3d->blackColor);
 }
 -(void)drawMovesFrom:(int)mstart to:(int)mend {
-    int l = travelMoves.count;
+    NSUInteger l = travelMoves.count;
     // Check if inside mark area
-    int estart = 0;
-    int eend = l;
+    NSUInteger estart = 0;
+    NSUInteger eend = l;
     //GCodePoint *lastP = nil;
     int startP = -1, endP = -1,p=0;
     for (GCodeTravel *t in travelMoves)
@@ -1469,7 +1469,7 @@
     glBindBuffer(GL_ARRAY_BUFFER,travelBuf[0]);
     glVertexPointer(3, GL_FLOAT, 0, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, travelBuf[1]);
-    glDrawElements(GL_LINES, 2*(eend-estart), GL_UNSIGNED_INT, (void *)(sizeof(int)*estart*2));
+    glDrawElements(GL_LINES, (GLsizei)(2*(eend-estart)), GL_UNSIGNED_INT, (void *)(sizeof(int)*estart*2));
     //glDrawElements(GL_LINES, travelMovesBuffered*2, GL_UNSIGNED_INT, 0);
     glDisableClientState(GL_VERTEX_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER,0);

@@ -73,7 +73,7 @@
     NSMutableArray *segments;
     NSMutableArray *travelMoves;
     GLuint travelBuf[2];
-    int travelMovesBuffered;
+    NSUInteger travelMovesBuffered;
     BOOL hasTravelBuf;
     GCodeAnalyzer *ana;
     //GCode *act;

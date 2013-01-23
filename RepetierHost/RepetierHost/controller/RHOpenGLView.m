@@ -406,6 +406,7 @@
     self.moveStart = self.moveLast = [Geom3DVector vectorWithX:0 y:0 z:0];
     [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
     [movePlane intersectLine:c.pickLine result:moveStart];
+    //NSLog(@"Move start %@",self.moveStart.ToString);
     ThreeDModel *selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
     last = p;
     if(selmod!=nil) {
@@ -431,6 +432,7 @@
     speedY = (p.y - last.y)*200*c->zoom / bounds.height;*/
     Geom3DVector *diff = [movePos sub:moveLast];
     self.moveLast = [Geom3DVector vectorFromVector:movePos];
+    //NSLog(@"Move %@",self.moveLast.ToString);
     [[NSNotificationQueue defaultQueue] enqueueNotification:[NSNotification notificationWithName:@"RHObjectMoved" object:[RHPoint withX:diff->x Y:diff->y]] postingStyle:NSPostASAP];
     //  if (eventObjectMoved != null)
     //      eventObjectMoved(speedX,-speedY);
@@ -468,6 +470,11 @@
         speedY = -(p.y - down.y) / bounds.height;
         c->userPosition[0] = startUserPosition[0] + speedX * 200 * c->zoom;
         c->userPosition[2] = startUserPosition[2] - speedY * 200 * c->zoom;
+        if(c->topView) {
+            c->viewCenter[0] = startViewCenter[0]+speedX *200*c->zoom;
+            c->viewCenter[2] = startViewCenter[2]-speedY *200*c->zoom;
+        }
+        
         //userPosition.X += (float)milliseconds * speedX * Math.Abs(speedX) / 10.0f;
         //userPosition.Z -= (float)milliseconds * speedY *Math.Abs(speedY)/ 10.0f;
     }
@@ -477,6 +484,10 @@
         speedY = -(p.y - down.y) / bounds.height;
         c->viewCenter[0] = startViewCenter[0]-speedX *200*c->zoom;
         c->viewCenter[2] = startViewCenter[2]+speedY *200*c->zoom;
+        if(c->topView) {
+            c->userPosition[0] = startUserPosition[0] - speedX * 200 * c->zoom;
+            c->userPosition[2] = startUserPosition[2] + speedY * 200 * c->zoom;
+        }
         //viewCenter.X -= (float)milliseconds * speedX * Math.Abs(speedX) / 10.0f;
         //viewCenter.Z += (float)milliseconds * speedY * Math.Abs(speedY)/ 10.0f;
     }

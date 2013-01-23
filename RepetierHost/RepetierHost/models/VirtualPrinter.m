@@ -22,7 +22,7 @@
 -(id)init {
     if((self = [super init])) {
         bedTemp = 20;
-        extruderTemp = 20;
+        extruderTemp[0] = extruderTemp[1] = extruderTemp[2] = 20;
         cnt = cnt2 = 0;
         monitor = -1;
         output = [RHLinkedList new];
@@ -70,12 +70,14 @@
         cnt = 0;
         if(bedTemp!=ana->bedTemp)
             bedTemp = bedTemp + (ana->bedTemp - bedTemp>0 ? 0.5 : -0.5);
-        if(extruderTemp!=ana->extruderTemp)
-            extruderTemp = extruderTemp + (ana->extruderTemp - extruderTemp>0? 1 : -1);
         if (ana->bedTemp > 20 && bedTemp > ana->bedTemp) bedTemp = ana->bedTemp;
-        if (ana->extruderTemp > 20 && extruderTemp > ana->extruderTemp) extruderTemp = ana->extruderTemp;
         if (bedTemp < 20) bedTemp = 20;
-        if (extruderTemp < 20) extruderTemp = 20;
+        for(int e=0;e<3;e++) {
+            if(extruderTemp[e]!=[ana getExtruderTemperature:e]);
+            extruderTemp[e] += ([ana getExtruderTemperature:e] - extruderTemp[e]>0? 1 : -1);
+            if ([ana getExtruderTemperature:e] > 20 && extruderTemp[e] > [ana getExtruderTemperature:e]) extruderTemp[e] = [ana getExtruderTemperature:e];
+            if (extruderTemp[e] < 20) extruderTemp[e] = 20;
+        }
     }
     cnt2++;
     if(cnt2>=250) {
@@ -86,10 +88,12 @@
         unsigned int millis = (unsigned int)((time-floor(time/2000000.0)*2000000.0)*1000.0);
         switch(ana->tempMonitor) {
             case 0:
-                outp = (ana->extruderTemp-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897)); 
+            case 1:
+            case 2:
+                outp = ([ana getExtruderTemperature:ana->tempMonitor]-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897));
                 if(outp<0) outp = 0;
                 if(outp>255) outp = 255;
-                epr = [NSString stringWithFormat:@"MTEMP:%d %d %d %d",millis,(int)extruderTemp,(int)ana->extruderTemp,(int)outp];
+                epr = [NSString stringWithFormat:@"MTEMP:%d %d %d %d",millis,(int)extruderTemp[ana->tempMonitor],(int)[ana getExtruderTemperature:ana->tempMonitor],(int)outp];
                 [connection virtualResponse:epr];
                 break;
             case 100:
@@ -149,10 +153,10 @@
             {
                 double time = CFAbsoluteTimeGetCurrent();
                 unsigned int millis = (unsigned int)((time-floor(time/2000000.0)*2000000.0)*1000.0);
-                int outp = (ana->extruderTemp-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897)); 
+                int outp = ([ana getExtruderTemperature:-1]-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897));
                 if(outp<0) outp = 0;
                 if(outp>255) outp = 255;
-                [output addLast:[NSString stringWithFormat:@"T:%d B:%d @:%d",(int)extruderTemp,(int)bedTemp,outp]];
+                [output addLast:[NSString stringWithFormat:@"T:%.2f B:%d @:%d T0:%.2f @0:%d T1:%.2f @1:%d T2:%.2f @2:%d",extruderTemp[ana->activeExtruder],(int)bedTemp,outp,extruderTemp[0],outp,extruderTemp[1],outp,extruderTemp[2],outp]];
             }
             break;
         case 205: // EEPROM Settings

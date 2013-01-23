@@ -44,10 +44,24 @@
     @public
     __unsafe_unretained NSToolbarItem *toolbarConnect;
     
+    NSImage *connectedImage,*disconnectedImage;
+    NSImage *runJobIcon,*pauseJobIcon;
+    NSImage *viewFilamentIcon,*hideFilamentIcon;
+    IBOutlet PrinterSettingsController * printerSettingsController;
+    IBOutlet NSWindow *window;
+    ThreeDContainer *codePreview;
+    ThreeDContainer *stlView;
+    ThreeDContainer *printPreview;
+    GCodeVisual *codeVisual;
+    GCodeVisual *printVisual;
+    RHFileHistory *stlHistory;
+    RHFileHistory *gcodeHistory;
+    EEPROMController *eepromController;
+    SDCardManager *sdcardManager;
+    Preferences *preferences;
     IBOutlet NSTextView *logViewText;
     IBOutlet NSToolbarItem *connectButton;
-    IBOutlet RHLogView *logView;
-    
+    IBOutlet RHLogView *logView;    
     IBOutlet NSSplitView *logSplitView;
     IBOutlet NSView *topLogView;
     IBOutlet NSTextField *printStatusLabel;
@@ -59,20 +73,8 @@
     IBOutlet NSTabViewItem *gcodeTab;
     IBOutlet NSTabViewItem *printTab;
     IBOutlet NSTabViewItem *composerTab;
-    NSImage *connectedImage,*disconnectedImage;
-    NSImage *runJobIcon,*pauseJobIcon;
-    NSImage *viewFilamentIcon,*hideFilamentIcon;
-    IBOutlet PrinterSettingsController * printerSettingsController;
-    IBOutlet NSWindow *window;
-    ThreeDContainer *codePreview;
-    ThreeDContainer *stlView;
-    ThreeDContainer *printPreview;
-    GCodeVisual *codeVisual;
-    GCodeVisual *printVisual;
     IBOutlet ThreeDView *openGLView;
     IBOutlet RHActionTabDelegate *actionTabDelegate;
-    EEPROMController *eepromController;
-    SDCardManager *sdcardManager;
     IBOutlet NSToolbarItem *runJobButton;
     IBOutlet NSTabView *rightTabView;
     IBOutlet NSTabView *leftTabView;
@@ -88,15 +90,12 @@
     NSAlert *pausePanel;
     IBOutlet NSWindow *mainWindow;
     IBOutlet NSMenuItem *eepromMenuItem;
-    Preferences *preferences;
     IBOutlet Slicer *slicer;
     IBOutlet Slic3rConfig *slic3r;
     IBOutlet NSMenuItem *openRecentSTLMenuItem;
     IBOutlet NSMenuItem *openRecentGCodeMenuItem;
     IBOutlet NSMenu *openRecentSTLMenu;
     IBOutlet NSMenu *openRecentGCodeMenu;
-    RHFileHistory *stlHistory;
-    RHFileHistory *gcodeHistory;
     IBOutlet STLComposer *composer;
     IBOutlet NSTabViewItem *threedViewTabItem;
     IBOutlet NSTabViewItem *temperatureTabItem;
@@ -134,6 +133,7 @@
 -(void)temperatureRead:(NSNotification*)notification;
 //@property (assign) IBOutlet NSScrollView *sendGCodeAction;
 - (IBAction)toggleLog:(id)sender;
+- (IBAction)toggleETAAction:(id)sender;
 -(void)updateViewFilament;
 -(void)updateViewTravel;
 - (IBAction)showEEPROM:(NSMenuItem *)sender;

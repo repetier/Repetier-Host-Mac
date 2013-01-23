@@ -63,6 +63,7 @@
     rotX = 20;
     rotZ = 0;
     zoom = 1.0f;
+    topView = NO;
     PrinterConfiguration *conf = connection->config;
     viewCenter[0] = 0;//0.25 * conf->width;
     viewCenter[1] = 0;// conf->depth * 0.25;
@@ -76,6 +77,7 @@
     rotX = 90;
     rotZ = 0;
     zoom = 1.0f;
+    topView = YES;
     PrinterConfiguration *conf = connection->config;
     viewCenter[0] = 0;//0.25 * conf->width;
     viewCenter[1] = 0;// conf->depth * 0.25;
@@ -426,8 +428,12 @@
     float fpy = (float)(nearHeight * 0.5 * norm_y);
     float fpx = (float)(nearHeight * 0.5 * aspectRatio * norm_x);
     
-    
+    if(!conf3d->showPerspective)  {
+        fpy*=4.0f;
+        fpx*=4.0f;
+    }
     float dirN[4] = {fpx, fpy, -nearDist, 0};
+    if(!conf3d->showPerspective) dirN[0] = dirN[1] = 0;
     Matrix4f rotx;
     matrix4RotateXf(rotx,(float)(rotX * M_PI / 180.0));
     Matrix4f rotz;
@@ -441,6 +447,11 @@
     matrix4MulMatf(ntrans2,trans,ntrans);
     matrix4Invert(ntrans,ntrans2);
     float frontPoint[4] = {ntrans[3],ntrans[7],ntrans[11],ntrans[15]}; //.Row3;
+    if(!conf3d->showPerspective) {
+        //Vector4.Transform(frontPointN, ntrans)
+        float frontPointN[4] = {fpx,fpy,0,1};
+        matrix4MulVecf(ntrans, frontPointN, frontPoint);
+    }
     //float frontPoint[4] = {ntrans[12],ntrans[13],ntrans[14],ntrans[15]}; //.Row3;
     float dirVec[4];
     matrix4MulVecf(ntrans, dirN, dirVec); // = Vector4.Transform(dirN, ntrans);

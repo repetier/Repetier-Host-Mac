@@ -146,43 +146,52 @@
     [self setupColor];
     [self setNeedsDisplay:YES];
 }
--(void)timerFired :(NSTimer*)timer {
+
+#pragma mark -
+#pragma mark Update view thread handling
+
+-(void)timerFired :(NSTimer*)timers {
     blink = !blink;
     if(changedCounter>0) {
         changedCounter--;
        // if(changedCounter==0 && contentChangedEvent!=null)
        //     contentChangedEvent();
     }
-    if(updateCode2==nil && changedCounter==0 && mustUpdate && nextView==nil) {
-        mustUpdate = NO; 
-        //[cur fromActive];        
-        updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
-        updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
-        updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
-        nextView = [[GCodeVisual alloc] init];
-        updateViewThread = [[NSThread alloc] initWithTarget:self
+    @synchronized(timer) {
+        if(updateCode2==nil && changedCounter==0 && mustUpdate && nextView==nil) {
+            mustUpdate = NO;
+            //[cur fromActive];        
+            updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
+            updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
+            updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
+            nextView = [[GCodeVisual alloc] init];
+            updateViewThread = [[NSThread alloc] initWithTarget:self
                                               selector:@selector(updateViewThread) object:nil];
-        [updateViewThread start];
+            [updateViewThread start];
+        }
     }
     if(focused && col>=topCol && row>=topRow && row<=topRow+rowsVisible+1)
         [self setNeedsDisplay:YES];
 }
 -(void)triggerViewUpdate{
-    if(nextView==nil && updateViewThread==nil) {
-        mustUpdate = NO; 
-        //[cur fromActive];        
-        updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
-        updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
-        updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
-        nextView = [[GCodeVisual alloc] init];
-        updateViewThread = [[NSThread alloc] initWithTarget:self
+    @synchronized(timer) {
+        if(nextView==nil && updateViewThread==nil) {
+            mustUpdate = NO;
+            //[cur fromActive];
+            updateCode0 = [[controller getClonedContentArrayAtIndex:1] retain];
+            updateCode1 = [[controller getClonedContentArrayAtIndex:0] retain];
+            updateCode2 = [[controller getClonedContentArrayAtIndex:2] retain];
+            nextView = [[GCodeVisual alloc] init];
+            updateViewThread = [[NSThread alloc] initWithTarget:self
                                                    selector:@selector(updateViewThread) object:nil];
-        [updateViewThread start];        
-    } else {
-        changedCounter=0;
-        mustUpdate = YES;
+            [updateViewThread start];
+        } else {
+            changedCounter=0;
+            mustUpdate = YES;
+        }
     }
 }
+
 -(void) updateViewThread
 {
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@"Updating..."];
@@ -208,13 +217,15 @@
     [updateCode2 release];
     controller->printingTime = v->ana->printingTime;
     [v release];
+    @synchronized(timer) {
     if(conf3d->disableFilamentVisualization)
         nextView = nil; // do it only if visualization is disabled
-    updateCode0 = nil;
-    updateCode1 = nil;
-    updateCode2 = nil;
-    [updateViewThread release];
-    updateViewThread = nil;
+        updateCode0 = nil;
+        updateCode1 = nil;
+        updateCode2 = nil;
+        [updateViewThread release];
+        updateViewThread = nil;
+    }
     //nextView = nil; now done if displayed.
     //red = 1000*(CFAbsoluteTimeGetCurrent()-red);
     //start = 1000*(CFAbsoluteTimeGetCurrent()-start);    
@@ -222,6 +233,10 @@
     [ThreadedNotification notifyASAP:@"RHGCodeUpdateStatus" object:@""];
     [pool release];
 }
+
+// ------------- END Thread handling ---------------
+
+
 
 -(BOOL)becomeFirstResponder {
     focused = YES;
@@ -940,7 +955,7 @@
         [sb appendString:l];
         if(i!=rend) [sb appendString:@"\n"];
     }
-    NSLog(@"Selection:%@",sb);
+    //NSLog(@"Selection:%@",sb);
     return sb;
 }
 -(void)deleteSelectionRedraw:(BOOL)redraw

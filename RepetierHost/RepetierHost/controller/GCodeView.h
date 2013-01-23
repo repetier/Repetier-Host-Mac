@@ -22,7 +22,12 @@
 @class GCodeContent;
 @class GCodeEditorController;
 
+/** The GCodeView is the editor view in the GCode editor.
+*/
 @interface GCodeView : NSView {
+    /// View update is only done if counter is 0. Used as countdown, so not every change triggers immediate update.
+    int changedCounter;
+    BOOL mustUpdate; ///< Flag if content has changed
 @public
     GCodeEditorController *controller;
     GCodeContent *cur;
@@ -32,8 +37,6 @@
     NSUInteger selRow,selCol;
     NSUInteger topRow,topCol;
     NSUInteger maxCol;
-    int changedCounter;
-    BOOL mustUpdate;
     BOOL hasSel, forceSel;
     BOOL focused;
     BOOL blink;

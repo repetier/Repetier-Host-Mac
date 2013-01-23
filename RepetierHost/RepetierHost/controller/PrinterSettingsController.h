@@ -28,6 +28,7 @@
     IBOutlet NSTextField *receiveCacheSizeText;
     IBOutlet NSButton *pingPongCheck;
     IBOutlet NSButton *okAfterResendCheck;
+    IBOutlet NSTextField *numberExtruder;
     NSArray *baudRates;
     NSArray *protocolNames;
     IBOutlet NSPanel *newConfigPanel;
@@ -69,9 +70,11 @@
     IBOutlet NSTextField *yMax;
     IBOutlet NSTextField *bedLeft;
     IBOutlet NSTextField *bedFront;
+    int numberOfExtruder;
 }
 @property (retain)NSArray* baudRates;
 @property (retain)NSArray* protocolNames;
+@property (nonatomic, readwrite) int numberOfExtruder;
 
 -(void)configRemoved:(NSNotification*)event;
 -(void)configCreated:(NSNotification*)event;

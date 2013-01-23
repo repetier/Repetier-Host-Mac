@@ -54,8 +54,8 @@
 -(BOOL)isV2;
 
 -(NSString*)getText;
--(uint8)getG;
--(uint8)getM;
+-(uint16)getG;
+-(uint16)getM;
 -(uint8)getT;
 -(int32_t)getN;
 -(int32_t)getS;

@@ -52,6 +52,7 @@
     double dumpAreaWidth;
     double dumpAreaDepth;
     double addPrintingTime;
+    int numberOfExtruder;
     NSString *startCode;
     NSString *endCode;
     NSString *jobkillCode;

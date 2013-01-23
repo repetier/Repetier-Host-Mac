@@ -40,7 +40,9 @@
     id<temperatureReceivedDelegate> temperatureDelegate;
     NSNotification *notifyOpen;
     NSNotification *notifyTemp;
-@public    
+    NSMutableDictionary *extruderOutput;
+@public
+    NSMutableDictionary *extruderTemp;
     GCodeAnalyzer *analyzer;
     RHPrintjob *job;
     
@@ -60,15 +62,16 @@
     NSLock *historyLock;
     NSLock *injectLock;
     NSLock *nackLock;
+    NSLock *tempLock;
     // Printer data
     NSString *machine;
     NSString *firmware;
     NSString *firmwareUrl;
     NSString *protocol;
     int numberExtruder;
-    double extruderTemp;
+    //double extruderTemp;
     double bedTemp;
-    int extruderOutput;
+    //int extruderOutput;
     double x, y, z, e;
     int lastline;
     long lastReceived;
@@ -117,6 +120,10 @@
 
 -(void)open;
 -(void)close;
+-(float)getExtruderTemperature:(int)extruder;
+-(void)setExtruder:(int)extruder temperature:(float)temp;
+-(int)getExtruderOutput:(int)extruder;
+-(void)setExtruder:(int)extruder output:(int)outp;
 -(void)writeString:(NSString*)text;
 -(void)writeData:(NSData*)data;
 // Send RHPrinterInfo notification with stateInfo as printer state
@@ -141,6 +148,7 @@
 -(void)importVariablesFormDictionary:(NSDictionary*)dict;
 -(BOOL)containsVariables:(NSString*)orig;
 -(NSString*)replaceVariables:(NSString*)orig;
+-(void)sendReset;
 @end
 
 extern PrinterConnection *connection;
