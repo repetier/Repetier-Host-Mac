@@ -131,11 +131,11 @@
         else if ([hc compare:@"@isathome"]==NSOrderedSame)
         {
             hasXHome = hasYHome = hasZHome = YES;
-            x = (currentPrinterConfiguration->homeXMax?currentPrinterConfiguration->xMax:currentPrinterConfiguration->xMin);
+            x = [currentPrinterConfiguration xHomePosition];
             xOffset = 0;
-            y = (currentPrinterConfiguration->homeYMax?currentPrinterConfiguration->yMax:currentPrinterConfiguration->yMin);
+            y = [currentPrinterConfiguration yHomePosition];
             yOffset = 0;
-            z = (currentPrinterConfiguration->homeZMax?currentPrinterConfiguration->height:0);
+            z = [currentPrinterConfiguration zHomePosition];
             zOffset = 0;
         } 
         return;
@@ -219,9 +219,9 @@
             case 161:
             {
                 bool homeAll = !(code.hasX || code.hasY || code.hasZ);
-                if (code.hasX || homeAll) { xOffset = 0; x = (currentPrinterConfiguration->homeXMax?currentPrinterConfiguration->xMax:currentPrinterConfiguration->xMin); hasXHome = YES; }
-                if (code.hasY || homeAll) { yOffset = 0; y = (currentPrinterConfiguration->homeYMax?currentPrinterConfiguration->yMax:currentPrinterConfiguration->yMin); hasYHome = YES; }
-                if (code.hasZ || homeAll) { zOffset = 0; z = (currentPrinterConfiguration->homeZMax?currentPrinterConfiguration->height:0); hasZHome = YES; }
+                if (code.hasX || homeAll) { xOffset = 0; x = [currentPrinterConfiguration xHomePosition]; hasXHome = YES; }
+                if (code.hasY || homeAll) { yOffset = 0; y = [currentPrinterConfiguration yHomePosition]; hasYHome = YES; }
+                if (code.hasZ || homeAll) { zOffset = 0; z = [currentPrinterConfiguration zHomePosition]; hasZHome = YES; }
                 if (code.hasE) { eOffset = 0; e = 0; emax = 0; }
                 [delegate positionChanged:self];
             }
@@ -418,9 +418,9 @@
         case 5:
             {
                 bool homeAll = !(code.hasX || code.hasY || code.hasZ);
-                if (code.hasX || homeAll) { xOffset = 0; x = (currentPrinterConfiguration->homeXMax?currentPrinterConfiguration->xMax:currentPrinterConfiguration->xMin); hasXHome = YES; }
-                if (code.hasY || homeAll) { yOffset = 0; y = (currentPrinterConfiguration->homeYMax?currentPrinterConfiguration->yMax:currentPrinterConfiguration->yMin); hasYHome = YES; }
-                if (code.hasZ || homeAll) { zOffset = 0; z = currentPrinterConfiguration->height; hasZHome = YES; }
+                if (code.hasX || homeAll) { xOffset = 0; x = [currentPrinterConfiguration xHomePosition]; hasXHome = YES; }
+                if (code.hasY || homeAll) { yOffset = 0; y = [currentPrinterConfiguration yHomePosition]; hasYHome = YES; }
+                if (code.hasZ || homeAll) { zOffset = 0; z = [currentPrinterConfiguration zHomePosition]; hasZHome = YES; }
                 //[delegate positionChangedFastX:x y:y z:z e:e];
             }
             break;
@@ -446,11 +446,11 @@
                 else if ([hc compare:@"@isathome"]==NSOrderedSame)
                 {
                     hasXHome = hasYHome = hasZHome = YES;
-                    x = (currentPrinterConfiguration->homeXMax?currentPrinterConfiguration->xMax:currentPrinterConfiguration->xMin);
+                    x = [currentPrinterConfiguration xHomePosition];
                     xOffset = 0;
-                    y = (currentPrinterConfiguration->homeYMax?currentPrinterConfiguration->yMax:currentPrinterConfiguration->yMin);
+                    y = [currentPrinterConfiguration yHomePosition];
                     yOffset = 0;
-                    z = (currentPrinterConfiguration->homeZMax?currentPrinterConfiguration->height:0);
+                    z = [currentPrinterConfiguration zHomePosition];
                     zOffset = 0;
                 }
             }

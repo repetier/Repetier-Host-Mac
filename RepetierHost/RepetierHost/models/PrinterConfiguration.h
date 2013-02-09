@@ -22,15 +22,19 @@
     NSString *name;
     NSString *port;
 @public
+    int printerType; // 0 = normal, 1 = normal dump, 2 = delta round
     int baud;
     AMSerialParity parity;
     AMSerialStopBits stopBits;
     int databits;
     int protocol; // 0 = autodetect, 1 = ASCII, 2 = repetier
+    double deltaDiameter;
+    double deltaHeight;
     double width,height,depth;
     double xMin,xMax,yMin,yMax;
     double bedLeft,bedFront;
-    BOOL homeXMax,homeYMax,homeZMax;
+    //  BOOL homeXMax,homeYMax,homeZMax;
+    int homeX,homeY,homeZ;
     double travelFeedrate;
     double travelZFeedrate;
     double disposeX,disposeY,disposeZ;
@@ -46,7 +50,6 @@
     int defaultHeatedBedTemp;
     int receiveCacheSize;
     BOOL pingPongMode;
-    BOOL hasDumpArea;
     double dumpAreaLeft;
     double dumpAreaFront;
     double dumpAreaWidth;
@@ -89,6 +92,10 @@
 +(PrinterConfiguration*)selectPrinter:(NSString*)name;
 +(BOOL)createPrinter:(NSString*)name;
 +(BOOL)deletePrinter:(NSString*)name;
+-(double)xHomePosition;
+-(double)yHomePosition;
+-(double)zHomePosition;
+-(BOOL)PointInsideX:(float)x Y:(float)y Z:(float) z;
 @end
 extern PrinterConfiguration* currentPrinterConfiguration;
 extern NSMutableArray* printerConfigurations;

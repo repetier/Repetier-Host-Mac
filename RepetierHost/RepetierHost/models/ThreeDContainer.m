@@ -24,6 +24,7 @@
 #include "STL.h"
 #include "RHMatrix.h"
 #include "Geom3D.h"
+#include "RHAppDelegate.h"
 
 @implementation ThreeDContainer
 
@@ -218,79 +219,122 @@
         
         glBegin(GL_LINES);
         int i;
-        // Print cube
-        glVertex3d(l, f, 0);
-        glVertex3d(l, f, conf->height);
-        glVertex3d(l+conf->width, f, 0);
-        glVertex3d(l+conf->width, f, conf->height);
-        glVertex3d(l, f+conf->depth, 0);
-        glVertex3d(l, f+conf->depth, conf->height);
-        glVertex3d(l+conf->width, f+conf->depth, 0);
-        glVertex3d(l+conf->width, f+conf->depth, conf->height);
-        glVertex3d(l, f, conf->height);
-        glVertex3d(l+conf->width, f, conf->height);
-        glVertex3d(l+conf->width, f, conf->height);
-        glVertex3d(l+conf->width, f+conf->depth, conf->height);
-        glVertex3d(l+conf->width, f+conf->depth, conf->height);
-        glVertex3d(l, f+conf->depth, conf->height);
-        glVertex3d(l, f+conf->depth, conf->height);
-        glVertex3d(l, f, conf->height);
-        if (conf->hasDumpArea)
-        {
-            if (dy1 != 0)
+        if(conf->printerType<2) {
+            // Print cube
+            glVertex3d(l, f, 0);
+            glVertex3d(l, f, conf->height);
+            glVertex3d(l+conf->width, f, 0);
+            glVertex3d(l+conf->width, f, conf->height);
+            glVertex3d(l, f+conf->depth, 0);
+            glVertex3d(l, f+conf->depth, conf->height);
+            glVertex3d(l+conf->width, f+conf->depth, 0);
+            glVertex3d(l+conf->width, f+conf->depth, conf->height);
+            glVertex3d(l, f, conf->height);
+            glVertex3d(l+conf->width, f, conf->height);
+            glVertex3d(l+conf->width, f, conf->height);
+            glVertex3d(l+conf->width, f+conf->depth, conf->height);
+            glVertex3d(l+conf->width, f+conf->depth, conf->height);
+            glVertex3d(l, f+conf->depth, conf->height);
+            glVertex3d(l, f+conf->depth, conf->height);
+            glVertex3d(l, f, conf->height);
+            if (conf->printerType==1)
             {
-                glVertex3d(l+dx1, f+dy1, 0);
+                if (dy1 != 0)
+                {
+                    glVertex3d(l+dx1, f+dy1, 0);
+                    glVertex3d(l+dx2, f+dy1, 0);
+                }
                 glVertex3d(l+dx2, f+dy1, 0);
+                glVertex3d(l+dx2, f+dy2, 0);
+                glVertex3d(l+dx2, f+dy2, 0);
+                glVertex3d(l+dx1, f+dy2, 0);
+                glVertex3d(l+dx1, f+dy2, 0);
+                glVertex3d(l+dx1, f+dy1, 0);
             }
-            glVertex3d(l+dx2, f+dy1, 0);
-            glVertex3d(l+dx2, f+dy2, 0);
-            glVertex3d(l+dx2, f+dy2, 0);
-            glVertex3d(l+dx1, f+dy2, 0);
-            glVertex3d(l+dx1, f+dy2, 0);
-            glVertex3d(l+dx1, f+dy1, 0);
+            double dx = 10; //conf->width / 20;
+            double dy = 10; //conf->depth / 20;
+            double x,y;
+            for (i = 0; i < 201; i++)
+            {
+                x = (double)i*dx;
+                if(x>conf->width) x = conf->width;
+                if (conf->printerType==1 && x >= dx1 && x <= dx2)
+                {
+                    glVertex3d(l+x, f, 0);
+                    glVertex3d(l+x, f+dy1, 0);
+                    glVertex3d(l+x, f+dy2, 0);
+                    glVertex3d(l+x, f+conf->depth, 0);
+                }
+                else
+                {
+                    glVertex3d(l+x, f, 0);
+                    glVertex3d(l+x, f+conf->depth, 0);
+                }
+                if(x >=conf->width) break;
+            }
+            for (i = 0; i < 21; i++)
+            {
+                y = (double)i*dy;
+                if(y>conf->depth) y = conf->depth;
+                if (conf->printerType==1 && y >= dy1 && y <= dy2)
+                {
+                    glVertex3d(l, f+y, 0);
+                    glVertex3d(l+dx1, f+y, 0);
+                    glVertex3d(l+dx2, f+y, 0);
+                    glVertex3d(l+conf->width, f+y, 0);
+                }
+                else
+                {
+                    glVertex3d(l, f+y, 0);
+                    glVertex3d(l+conf->width, f+y, 0);
+                }
+                if(y>=conf->depth) break;
+            }
         }
-        double dx = 10; //conf->width / 20;
-        double dy = 10; //conf->depth / 20;
-        double x,y;
-        for (i = 0; i < 201; i++)
+        else if(conf->printerType == 2) // Cylinder shape
         {
-            x = (double)i*dx;
-            if(x>conf->width) x = conf->width;
-            if (conf->hasDumpArea && x >= dx1 && x <= dx2)
+            int ncirc = 32;
+            int vertexevery = 4;
+            delta = (float)(M_PI * 2 / ncirc);
+            float alpha = 0;
+            for (i = 0; i < ncirc; i++)
             {
-                glVertex3d(l+x, f, 0);
-                glVertex3d(l+x, f+dy1, 0);
-                glVertex3d(l+x, f+dy2, 0);
-                glVertex3d(l+x, f+conf->depth, 0);
+                float alpha2 = (float)(alpha + delta);
+                float x1 = (float)(conf->deltaDiameter*.5 * sin(alpha));
+                float y1 = (float)(conf->deltaDiameter*.5 * cos(alpha));
+                float x2 = (float)(conf->deltaDiameter*.5 * sin(alpha2));
+                float y2 = (float)(conf->deltaDiameter*.5 * cos(alpha2));
+                glVertex3d(x1, y1, 0);
+                glVertex3d(x2, y2, 0);
+                glVertex3d(x1, y1, conf->deltaHeight);
+                glVertex3d(x2, y2, conf->deltaHeight);
+                if ((i % vertexevery) == 0)
+                {
+                    glVertex3d(x1, y1, 0);
+                    glVertex3d(x1, y1, conf->deltaHeight);
+                }
+                alpha = alpha2;
             }
-            else
+            delta = 10;
+            float x = (float)(floor(conf->deltaDiameter*0.5 / delta) * delta);
+            while (x > -conf->deltaDiameter*0.5)
             {
-                glVertex3d(l+x, f, 0);
-                glVertex3d(l+x, f+conf->depth, 0);
+                alpha = (float)acos(x *2/ conf->deltaDiameter);
+                float y = (float)(conf->deltaDiameter*.5 * sin(alpha));
+                glVertex3d(x, -y, 0);
+                glVertex3d(x, y, 0);
+                glVertex3d(y, x, 0);
+                glVertex3d(-y, x, 0);
+                x -= (float)delta;
             }
-            if(x >=conf->width) break;
-        }
-        for (i = 0; i < 21; i++)
-        {
-            y = (double)i*dy;
-            if(y>conf->depth) y = conf->depth;
-            if (conf->hasDumpArea && y >= dy1 && y <= dy2)
-            {
-                glVertex3d(l, f+y, 0);
-                glVertex3d(l+dx1, f+y, 0);
-                glVertex3d(l+dx2, f+y, 0);
-                glVertex3d(l+conf->width, f+y, 0);
-            }
-            else
-            {
-                glVertex3d(l, f+y, 0);
-                glVertex3d(l+conf->width, f+y, 0);
-            }
-            if(y>=conf->depth) break;
         }
         glEnd();
     }
-    glEnable(GL_CULL_FACE);
+    if([app->rightTabView selectedTabViewItem]==app->composerTab ||
+       [app->rightTabView selectedTabViewItem]==app->slicerTab)
+        glDisable(GL_CULL_FACE);
+    else
+        glEnable(GL_CULL_FACE);
 
     for (ThreeDModel *model in models) {
         glPushMatrix();
@@ -370,7 +414,7 @@
         glBegin(GL_QUADS);
         glNormal3d(0,0,1);
 
-        if (conf->hasDumpArea) {
+        if (conf->printerType==1) {
             if(dy1>0) {
                 glVertex3d(l,f,0);
                 glVertex3d(l+conf->width, f,0);
@@ -395,11 +439,32 @@
                 glVertex3d(l+conf->width, f+dy2,0);
                 glVertex3d(l+dx2,f+dy2,0);
             }
-        } else {
+        } else if (conf->printerType==0){
             glVertex3d(l,f,0);
             glVertex3d(l+conf->width, f,0);
             glVertex3d(l+conf->width,f+conf->depth,0);
             glVertex3d(l,f+conf->depth,0);
+        } else if(conf->printerType==2) {
+            int ncirc = 32;
+            float delta = (float)(M_PI * 2 / ncirc);
+            float alpha = 0;
+            for (int i = 0; i < ncirc/4; i++)
+            {
+                float alpha2 = (float)(alpha + delta);
+                float x1 = (float)(conf->deltaDiameter*0.5* sin(alpha));
+                float y1 = (float)(conf->deltaDiameter*0.5 * cos(alpha));
+                float x2 = (float)(conf->deltaDiameter*0.5 * sin(alpha2));
+                float y2 = (float)(conf->deltaDiameter*0.5 * cos(alpha2));
+                glVertex3d(x1, y1, 0);
+                glVertex3d(x2, y2, 0);
+                glVertex3d(-x2, y2, 0);
+                glVertex3d(-x1, y1, 0);
+                glVertex3d(x1, -y1, 0);
+                glVertex3d(x2, -y2, 0);
+                glVertex3d(-x2, -y2, 0);
+                glVertex3d(-x1, -y1, 0);
+                alpha = alpha2;
+            }
         }
 
         glEnd();

@@ -281,8 +281,15 @@ STLComposer *stlComposer=nil;
 -(void)updateSTLState:(STL*)stl
 {
     [stl updateBoundingBox];
-    if (stl->xMin < currentPrinterConfiguration->bedLeft || stl->yMin < currentPrinterConfiguration->bedFront || stl->zMin < -0.001 || stl->xMax > currentPrinterConfiguration->bedLeft+currentPrinterConfiguration->width ||
-        stl->yMax > currentPrinterConfiguration->bedFront+currentPrinterConfiguration->depth || stl->zMax > currentPrinterConfiguration->height)
+    PrinterConfiguration *c = currentPrinterConfiguration;
+    if (![c PointInsideX:stl->xMin Y:stl->yMin Z:stl->zMin] ||
+        ![c PointInsideX:stl->xMax Y:stl->yMax Z:stl->zMin] ||
+        ![c PointInsideX:stl->xMin Y:stl->yMax Z:stl->zMin] ||
+        ![c PointInsideX:stl->xMax Y:stl->yMin Z:stl->zMin] ||
+        ![c PointInsideX:stl->xMin Y:stl->yMin Z:stl->zMax] ||
+        ![c PointInsideX:stl->xMax Y:stl->yMax Z:stl->zMax] ||
+        ![c PointInsideX:stl->xMin Y:stl->yMax Z:stl->zMax] ||
+        ![c PointInsideX:stl->xMax Y:stl->yMin Z:stl->zMax])
     {
         if(![stl hasAnimationWithName:@"pulse"]) {
             stl->outside = YES;
@@ -477,7 +484,7 @@ STLComposer *stlComposer=nil;
     float maxW = currentPrinterConfiguration->width;
     float maxH = currentPrinterConfiguration->depth;
     float xOff=currentPrinterConfiguration->bedLeft,yOff = currentPrinterConfiguration->bedFront;
-    if(currentPrinterConfiguration->hasDumpArea) {
+    if(currentPrinterConfiguration->printerType==1) {
         if(currentPrinterConfiguration->dumpAreaFront<=0) {
             yOff = currentPrinterConfiguration->dumpAreaDepth-currentPrinterConfiguration->dumpAreaFront;
             maxH-= yOff;

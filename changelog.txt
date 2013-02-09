@@ -3,6 +3,7 @@ Version 0.53 2012-09-2013
 	Fixed bug preventing sd card uploads.
 	Layer now start at the z-change.
 	Show layer change in editor.
+	Added delta like printer shape (cylindric shape).
 	Fixed bug crashing the host on fresh systems without previous running host.
 
 Version 0.52 2012-01-23-2013

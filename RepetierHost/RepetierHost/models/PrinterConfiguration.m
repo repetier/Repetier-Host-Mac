@@ -50,6 +50,9 @@
         width = 200;
         height = 100;
         depth = 200;
+        printerType = 0;
+        deltaDiameter = 250;
+        deltaHeight = 200;
         bedLeft = bedFront = xMin = yMin = 0;
         xMax = width;
         yMax = depth;
@@ -73,13 +76,12 @@
         numberOfExtruder = 1;
         pingPongMode = NO;
         okAfterResend = YES;
-        hasDumpArea = YES;
         dumpAreaLeft = 125;
         dumpAreaFront = 0;
         dumpAreaWidth = 40;
         dumpAreaDepth = 22;
         enableFilterPrg = NO;
-        homeXMax = homeYMax = homeZMax = NO;
+        homeX = homeY = homeZ = 0;
         [self setStartCode:@""];
         [self setEndCode:@""];
         [self setJobkillCode:@""];
@@ -143,9 +145,30 @@
     yMax = [d doubleForKey:[b stringByAppendingString:@".yMax"]];
     bedLeft = [d doubleForKey:[b stringByAppendingString:@".bedLeft"]];
     bedFront = [d doubleForKey:[b stringByAppendingString:@".bedFront"]];
-    homeXMax = [d boolForKey:[b stringByAppendingString:@".homeXMax"]];
-    homeYMax = [d boolForKey:[b stringByAppendingString:@".homeYMax"]];
-    homeZMax = [d boolForKey:[b stringByAppendingString:@".homeZMax"]];
+    if([d objectForKey:[b stringByAppendingString:@".homeXMax"]]!=nil) {
+        BOOL homeXMax = [d boolForKey:[b stringByAppendingString:@".homeXMax"]];
+        if(homeXMax) homeX = 0; else homeX = 1;
+        [d removeObjectForKey:[b stringByAppendingString:@".homeXMax"]];
+        [d setInteger:homeX forKey:[b stringByAppendingString:@".homeX"]];
+    } else {
+        homeX = [d integerForKey:[b stringByAppendingString:@".homeX"]];
+    }
+    if([d objectForKey:[b stringByAppendingString:@".homeYMax"]]!=nil) {
+        BOOL homeYMax = [d boolForKey:[b stringByAppendingString:@".homeYMax"]];
+        if(homeYMax) homeY = 0; else homeY = 1;
+        [d removeObjectForKey:[b stringByAppendingString:@".homeYMax"]];
+        [d setInteger:homeY forKey:[b stringByAppendingString:@".homeY"]];
+    } else {
+        homeY = [d integerForKey:[b stringByAppendingString:@".homeY"]];
+    }
+    if([d objectForKey:[b stringByAppendingString:@".homeZMax"]]!=nil) {
+        BOOL homeZMax = [d boolForKey:[b stringByAppendingString:@".homeZMax"]];
+        if(homeZMax) homeZ = 0; else homeZ = 1;
+        [d removeObjectForKey:[b stringByAppendingString:@".homeZMax"]];
+        [d setInteger:homeZ forKey:[b stringByAppendingString:@".homeZ"]];
+    } else {
+        homeZ = [d integerForKey:[b stringByAppendingString:@".homeZ"]];
+    }
     travelFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelFeedrate"]];
     travelZFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelZFeedrate"]];
     disposeX = [d doubleForKey:[b stringByAppendingString:@".disposeX"]];
@@ -162,11 +185,19 @@
     [self setScript5Code:[d stringForKey:[b stringByAppendingString:@".script5Code"]]];
     [self setFilterPrg:[d stringForKey:[b stringByAppendingString:@".filterPrg"]]];
     enableFilterPrg = [d boolForKey:[b stringByAppendingString:@".enableFilterPrg"]];
-    hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
+    if([d objectForKey:[b stringByAppendingString:@".hasDumpArea"]]!=nil) {
+        BOOL hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
+        if(hasDumpArea) printerType = 1;
+        else printerType = 0;
+        [d removeObjectForKey:[b stringByAppendingString:@".hasDumpArea"]];
+        [d setInteger:printerType forKey:[b stringByAppendingString:@".printerType"]];
+    } else printerType = [d integerForKey:[b stringByAppendingString:@".printerType"]];
     dumpAreaLeft = [d doubleForKey:[b stringByAppendingString:@".dumpAreaLeft"]];
     dumpAreaFront = [d doubleForKey:[b stringByAppendingString:@".dumpAreaFront"]];
     dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
+    deltaDiameter = [d doubleForKey:[b stringByAppendingString:@".deltaDiameter"]];
+    deltaHeight = [d doubleForKey:[b stringByAppendingString:@".deltaHeight"]];
     addPrintingTime = [d doubleForKey:[b stringByAppendingString:@".addPrintingTime"]];
     numberOfExtruder = (int)[d integerForKey:[b stringByAppendingString:@".numberOfExtruder"]];
     [self sanityCheck];
@@ -202,9 +233,9 @@
     [d setObject:[NSNumber numberWithDouble:yMax] forKey:[b stringByAppendingString:@".yMax"]];
     [d setObject:[NSNumber numberWithDouble:bedLeft] forKey:[b stringByAppendingString:@".bedLeft"]];
     [d setObject:[NSNumber numberWithDouble:bedFront] forKey:[b stringByAppendingString:@".bedFront"]];
-    [d setObject:[NSNumber numberWithBool:homeXMax] forKey:[b stringByAppendingString:@".homeXMax"]];
-    [d setObject:[NSNumber numberWithBool:homeYMax] forKey:[b stringByAppendingString:@".homeYMax"]];
-    [d setObject:[NSNumber numberWithBool:homeZMax] forKey:[b stringByAppendingString:@".homeZMax"]];
+    [d setObject:[NSNumber numberWithBool:homeX] forKey:[b stringByAppendingString:@".homeX"]];
+    [d setObject:[NSNumber numberWithBool:homeY] forKey:[b stringByAppendingString:@".homeY"]];
+    [d setObject:[NSNumber numberWithBool:homeZ] forKey:[b stringByAppendingString:@".homeZ"]];
     [d setObject:[NSNumber numberWithDouble:travelFeedrate] forKey:[b stringByAppendingString:@".travelFeedrate"]];
     [d setObject:[NSNumber numberWithDouble:travelZFeedrate] forKey:[b stringByAppendingString:@".travelZFeedrate"]];
     [d setObject:[NSNumber numberWithDouble:disposeX] forKey:[b stringByAppendingString:@".disposeX"]];
@@ -231,11 +262,14 @@
     [d setObject:[NSNumber numberWithBool:NO] forKey:@"debugDryRun"];
     [d setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];
     [d setObject:[NSNumber numberWithDouble:50] forKey:@"extruder.extrudeSpeed"];
-    [d setObject:[NSNumber numberWithBool:YES] forKey:[b stringByAppendingString:@".hasDumpArea"]];
+    //[d setObject:[NSNumber numberWithBool:NO] forKey:[b stringByAppendingString:@".hasDumpArea"]];
+    [d setObject:[NSNumber numberWithInt:0] forKey:[b stringByAppendingString:@".printerType"]];
     [d setObject:[NSNumber numberWithDouble:125] forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
     [d setObject:[NSNumber numberWithDouble:0] forKey:[b stringByAppendingString:@".dumpAreaFront"]];
     [d setObject:[NSNumber numberWithDouble:40] forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setObject:[NSNumber numberWithDouble:22] forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
+    [d setObject:[NSNumber numberWithDouble:250] forKey:[b stringByAppendingString:@".deltaDiameter"]];
+    [d setObject:[NSNumber numberWithDouble:200] forKey:[b stringByAppendingString:@".deltaHeight"]];
     [d setObject:[NSNumber numberWithDouble:8] forKey:[b stringByAppendingString:@".addPrintingTime"]];
     [d setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".numberOfExtruder"]];
     
@@ -274,9 +308,11 @@
     [d setDouble:yMax forKey:[b stringByAppendingString:@".yMax"]];
     [d setDouble:bedLeft forKey:[b stringByAppendingString:@".bedLeft"]];
     [d setDouble:bedFront forKey:[b stringByAppendingString:@".bedFront"]];
-    [d setBool:homeXMax forKey:[b stringByAppendingString:@".homeXMax"]];
-    [d setBool:homeYMax forKey:[b stringByAppendingString:@".homeYMax"]];
-    [d setBool:homeZMax forKey:[b stringByAppendingString:@".homeZMax"]];
+    [d setDouble:deltaDiameter forKey:[b stringByAppendingString:@".deltaDiameter"]];
+    [d setDouble:deltaHeight forKey:[b stringByAppendingString:@".deltaHeight"]];
+    [d setInteger:homeX forKey:[b stringByAppendingString:@".homeX"]];
+    [d setInteger:homeY forKey:[b stringByAppendingString:@".homeY"]];
+    [d setInteger:homeZ forKey:[b stringByAppendingString:@".homeZ"]];
     [d setDouble:travelFeedrate forKey:[b stringByAppendingString:@".travelFeedrate"]];
     [d setDouble:travelZFeedrate forKey:[b stringByAppendingString:@".travelZFeedrate"]];
     [d setDouble:disposeX forKey:[b stringByAppendingString:@".disposeX"]];
@@ -293,13 +329,14 @@
     [d setObject:script5Code forKey:[b stringByAppendingString:@".script5Code"]];
     [d setObject:filterPrg forKey:[b stringByAppendingString:@".filterPrg"]];
     [d setBool:enableFilterPrg forKey:[b stringByAppendingString:@".enableFilterPrg"]];
-    [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
+    //    [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
     [d setDouble:dumpAreaLeft forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
     [d setDouble:dumpAreaFront forKey:[b stringByAppendingString:@".dumpAreaFront"]];
     [d setDouble:dumpAreaWidth forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
     [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
     [d setInteger:numberOfExtruder forKey:[b stringByAppendingString:@".numberOfExtruder"]];
+    [d setInteger:printerType forKey:[b stringByAppendingString:@".printerType"]];
     if(app!=nil)
         [app->manualControl updateExtruderCount];
 }
@@ -391,6 +428,37 @@
     [d setObject:list forKey:@"printerList"];   
     [ThreadedNotification notifyNow:@"RHPrinterConfigRemoved" object:name];
     return YES;
+}
+-(double)xHomePosition {
+    if(homeX == 0) return xMin;
+    if(homeX == 1) return xMax;
+    return 0;
+}
+-(double)yHomePosition {
+    if(homeY == 0) return yMin;
+    if(homeY == 1) return yMax;
+    return 0;
+}
+-(double)zHomePosition {
+    if(homeZ == 0) return 0;
+    if(homeZ == 1) return (printerType<2 ? height : deltaHeight);
+    return 0;
+}
+-(BOOL)PointInsideX:(float)x Y:(float)y Z:(float) z
+{
+    if (printerType < 2)
+    {
+        if (z < -0.001 || z > height) return false;
+        if (x < bedLeft || x > bedLeft + width) return false;
+        if (y < bedFront || y > bedFront + depth) return false;
+    }
+    else
+    {
+        if (z < -0.001 || z > deltaHeight) return false;
+        float d = (float)sqrt(x * x + y * y);
+        return d <= 0.5*deltaDiameter;
+    }
+    return true;
 }
 @end
 
