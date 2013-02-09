@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithDouble:2.87] forKey:@"threedFilamentDiameter"];
     [d setObject:[NSNumber numberWithInt:0] forKey:@"disableFilamentVisualization"];
     [d setObject:[NSNumber numberWithInt:1] forKey:@"threedShowPerspective"];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"correctNormals"];
     // Skeinforge defaults
     NSString *skeinforge = [[NSBundle mainBundle] pathForResource:@"Skeinforge" ofType:@"app"];
     NSString *skApp = nil,*skCraft = nil;
@@ -126,6 +127,7 @@ int main(int argc, char *argv[])
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.125 green:0.698 blue:0.667 alpha:1]] forKey:@"editorSelectedBackgroundColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor whiteColor]] forKey:@"editorLineTextColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.372 green:0.62 blue:0.627 alpha:1]] forKey:@"editorLineBackgroundColor"];
+    [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.2 green:0.4 blue:0.41 alpha:1]] forKey:@"editorLineBackgroundAltColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor whiteColor]] forKey:@"editorBackgroundOddColor"];
     [d setObject:(NSData*)[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0.98 green:0.94 blue:0.9 alpha:1]] forKey:@"editorBackgroundEvenColor"];
     // Temp monitor colors

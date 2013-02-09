@@ -577,10 +577,10 @@
     job->exclusive = YES;
     [job pushData:[NSString stringWithFormat:@"M28 %@%@%@",(folder.length>0?@"/":@""),folder,[uplFilenameText stringValue]]];
     if([uplIncludeStartEndCheckbox state])
-        [job pushData:[app->gcodeView getContent:1]];
+        [job pushShortArray:app->gcodeView->prepend->textArray];
     if (source==0)
     {
-        [job pushData:[app->gcodeView getContent:0]];
+        [job pushShortArray:app->gcodeView->gcode->textArray];
     }
     else
     {
@@ -605,12 +605,12 @@
         }
     }
     if ([uplIncludeStartEndCheckbox state])
-        [job pushData:[app->gcodeView getContent:2]];
+        [job pushShortArray:app->gcodeView->append->textArray];
     if ([uplIncludeJobEndCheckbox state])
     {
         if (currentPrinterConfiguration->afterJobDisableExtruder)
         {
-            for(int i=0;i<connection->numberExtruder;i++)
+            for(int i=0;i<currentPrinterConfiguration->numberOfExtruder;i++)
                 [job pushData:[NSString stringWithFormat:@"M104 S0 T%d",i]];
         }
         if (currentPrinterConfiguration->afterJobDisableHeatedBed)

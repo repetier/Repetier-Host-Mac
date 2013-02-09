@@ -318,7 +318,6 @@
     arr = [NSArray arrayWithObjects:nil];
     slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
 }
-
 - (IBAction)configSlic3rExternal:(id)sender {
     if(slic3rExtRun!=nil) {
         if(slic3rExtRun->running) {
@@ -601,6 +600,7 @@
            [NSString stringWithFormat:@"%d,%d",(int)centerx,(int)centery],@"-o",slic3rExtOut,file,nil];
     slic3rExtSlice = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];    
 }
+/** Build Slic3r configuration file, store stl file and start Slic3r */
 -(void)sliceSlic3r:(NSString*)file {
     if(slic3rExtSlice!=nil) {
         if(slic3rExtSlice->running) {

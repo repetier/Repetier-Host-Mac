@@ -137,7 +137,7 @@
     }
     if (currentPrinterConfiguration->afterJobDisableExtruder)
     {
-        for(int i=0;i<connection->numberExtruder;i++)
+        for(int i=0;i<currentPrinterConfiguration->numberOfExtruder;i++)
             [connection injectManualCommand:[NSString stringWithFormat:@"M104 S0 T%d",i]];
     }
     if(currentPrinterConfiguration->afterJobDisableHeatedBed) 
@@ -158,7 +158,7 @@
         GCode *gcode = [[GCode alloc] initFromString:line];
         if (!gcode->comment)
         {
-            [jobList addLast:code];
+            [jobList addLast:line];
             totalLines++;
         }
         [gcode release];

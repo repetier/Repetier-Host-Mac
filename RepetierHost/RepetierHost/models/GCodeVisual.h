@@ -24,6 +24,7 @@
 
 #define MAX_EXTRUDER 3
 
+extern BOOL correctNormals;
 @interface GCodePoint : NSObject {
 @public
     float e;
@@ -81,6 +82,7 @@
     float lastFilHeight;
     float lastFilWidth;
     float lastFilDiameter;
+    BOOL lastCorrectNormals;
     BOOL lastFilUseHeight;
     float laste;
     float hotFilamentLength;

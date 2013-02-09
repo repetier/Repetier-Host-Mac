@@ -37,6 +37,7 @@
 @synthesize paramBrush;
 @synthesize commentBrush;
 @synthesize linesBgBrush;
+@synthesize linesBgAltBrush;
 @synthesize linesTextBrush;
 @synthesize backBrush;
 @synthesize evenBackBrush;
@@ -80,7 +81,7 @@
         //threedFacesColor
         NSArray *arr = [NSArray arrayWithObjects:@"editorCommandColor",
                         @"editorParameterIndicatorColor",@"editorParameterValueColor",@"editorCommentColor",  
-                        @"editorHostCommandColor",@"editorLineBackgroundColor",
+                        @"editorHostCommandColor",@"editorLineBackgroundColor",@"editorLineBackgroundAltColor",
                         @"editorLineTextColor",@"editorSelectedTextColor",@"editorSelectedBackgroundColor",@"editorBackgroundOddColor",
                         @"editorBackgroundEvenColor",nil];
         bindingsArray = arr.retain;
@@ -130,6 +131,7 @@
     [self setNormalBrush:[d colorForKey:@"editorParameterValueColor"]];
     [self setHostCommandBrush:[d colorForKey:@"editorHostCommandColor"]];
     [self setLinesBgBrush:[d colorForKey:@"editorLineBackgroundColor"]];
+    [self setLinesBgAltBrush:[d colorForKey:@"editorLineBackgroundAltColor"]];
     [self setLinesTextBrush:[d colorForKey:@"editorLineTextColor"]];
     [self setSelectionTextBrush:[d colorForKey:@"editorSelectedTextColor"]];
     [self setSelectionBrush:[d colorForKey:@"editorSelectedBackgroundColor"]];
@@ -416,12 +418,20 @@
     int lastLine =ceil((bounds.origin.y+bounds.size.height)/fontHeight);
     if(lastLine>=lines.count)
         lastLine = (int)lines.count-1;
-    [linesBgBrush set];
-    [NSBezierPath fillRect:NSMakeRect(0,firstLine*fontHeight,linesWidth-1,MAX(bounds.size.height,(lastLine-firstLine+1)*fontHeight))];
+    //    [linesBgBrush set];
+    //[NSBezierPath fillRect:NSMakeRect(0,firstLine*fontHeight,linesWidth-1,MAX(bounds.size.height,(lastLine-firstLine+1)*fontHeight))];
     //[backBrush set];
     //[NSBezierPath fillRect:NSMakeRect(linesWidth,0,bounds.size.width-linesWidth,bounds.size.height)];
     for (int r = firstLine; r <= lastLine; r++)
     {
+        if(([((GCodeShort*)([lines objectAtIndex:r])) layer] & 1)==0) {
+            [linesBgAltBrush set];
+        } else {
+            [linesBgBrush set];
+        }
+            
+            [NSBezierPath fillRect:NSMakeRect(0,r*fontHeight,linesWidth-1,MAX(bounds.size.height,(r+1)*fontHeight))];
+        
         [self drawRow:r y:r * fontHeight];
     }
     

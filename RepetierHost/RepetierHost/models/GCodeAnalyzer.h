@@ -17,6 +17,7 @@
 #import <Foundation/Foundation.h>
 #import "GCode.h"
 #import "GCodeShort.h"
+#import "RHLinkedList.h"
 
 @class GCodeAnalyzer;
 
@@ -28,6 +29,7 @@
 
 @interface GCodeAnalyzer : NSObject {
     NSMutableDictionary *extruderTemp;
+    RHLinkedList *unchangedLayer;
 @public
     id <GCodeAnalyzerDelegate> delegate;
     int activeExtruder;
@@ -50,9 +52,10 @@
     float printerWidth, printerHeight, printerDepth;
     int tempMonitor;
     BOOL drawing;
-    int layer;
+    int layer,lastlayer;
     BOOL isG1Move;
     BOOL eChanged;
+    float layerZ;
     float printingTime;
     GCode *actCode;
 }

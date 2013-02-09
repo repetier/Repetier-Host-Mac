@@ -19,6 +19,7 @@
 #import "RHAppDelegate.h"
 #import "DefaultsExtension.h"
 #import "RHOpenGLView.h"
+#import "GCodeVisual.h"
 
 @implementation ThreeDConfig
 
@@ -45,7 +46,7 @@
                 @"threedLight2AmbientColor",@"threedLight2DiffuseColor",@"threedLight2SpecularColor",        
                 @"threedLight3AmbientColor",@"threedLight3DiffuseColor",@"threedLight3SpecularColor",        
                 @"threedLight4AmbientColor",@"threedLight4DiffuseColor",@"threedLight4SpecularColor",
-                @"threedFilamentColor2",@"threedFilamentColor3",@"threedSelectedFilamentColor",@"threedOutsidePrintbedColor",@"threedSelectionBoxColor",@"threedTravelColor",@"threedShowTravel",@"threedShowPerspective",
+                @"threedFilamentColor2",@"threedFilamentColor3",@"threedSelectedFilamentColor",@"threedOutsidePrintbedColor",@"threedSelectionBoxColor",@"threedTravelColor",@"threedShowTravel",@"threedShowPerspective",@"correctNormals",
                         nil];
         bindingsArray = arr.retain;
         for(NSString *key in arr)
@@ -53,6 +54,7 @@
         drawMethodSelector = (int)[d integerForKey:@"threedAccelerationMethod"];
         disableFilamentVisualization = [d integerForKey:@"disableFilamentVisualization"];
         filamentVisualization = (int)[d integerForKey:@"threedFilamentVisualization"];
+        correctNormals = [d boolForKey:@"correctNormals"];
         showPrintbed = [d boolForKey:@"threedShowPrintbed"];
         showTravel = [d boolForKey:@"threedShowTravel"];
         showEdges = [d integerForKey:@"threedDrawEdges"];
@@ -196,6 +198,7 @@
     //drawMethod = (int)[d integerForKey:@"threedAccelerationMethod"];
     disableFilamentVisualization = [d integerForKey:@"disableFilamentVisualization"];
     filamentVisualization = (int)[d integerForKey:@"threedFilamentVisualization"];
+    correctNormals = [d boolForKey:@"correctNormals"];
     showPrintbed = [d boolForKey:@"threedShowPrintbed"];
     showTravel = [d boolForKey:@"threedShowTravel"];
     showEdges = [d integerForKey:@"threedDrawEdges"];

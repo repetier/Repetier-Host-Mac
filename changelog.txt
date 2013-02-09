@@ -1,4 +1,11 @@
-Version 0.52 under development
+Version 0.53 2012-09-2013
+	Improved rendering of filaments if using correct normals (default).
+	Fixed bug preventing sd card uploads.
+	Layer now start at the z-change.
+	Show layer change in editor.
+	Fixed bug crashing the host on fresh systems without previous running host.
+
+Version 0.52 2012-01-23-2013
   Slic3r 0.9.8
   Remove comments for M/G Codes > 255.
   Emergency kill now sends reset signal and M112.

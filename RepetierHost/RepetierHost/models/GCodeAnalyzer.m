@@ -45,16 +45,20 @@
         lastline = 0;
         lastZPrint = 0;
         printingTime = 0;
-        layer=0;
+        layer = lastlayer = 0;
         hasXHome = hasYHome = hasZHome = NO;
         privateAnalyzer = NO;
         tempMonitor = -1;
         drawing = YES;
+        lastlayer = 0;
+        layerZ = 0;
+        unchangedLayer = [RHLinkedList new];
     }
     return self;
 }
 -(void)dealloc {
     [extruderTemp release];
+    [unchangedLayer release];
     [super dealloc];
 }
 -(void)fireChanged {
@@ -79,6 +83,8 @@
     tempMonitor = -1;
     x = y = z = e = emax = 0;
     f = 1000;
+    lastlayer = 0;
+    layerZ = 0;
     lastX = lastY = lastZ = lastE = 0;
     xOffset = yOffset = zOffset = eOffset = 0;
     hasXHome = hasYHome = hasZHome = NO;
@@ -96,6 +102,8 @@
     x = y = z = e = emax = 0;
     lastX = lastY = lastZ = lastE = 0;
     xOffset = yOffset = zOffset = eOffset = 0;
+    lastlayer = 0;
+    layerZ = 0;
 }
 -(float)getExtruderTemperature:(int)extruder {
     if(extruder<0) extruder = activeExtruder;
@@ -142,6 +150,8 @@
         {
             case 0:
             case 1:
+            case 2:
+            case 3:
                 isG1Move = YES;
                 eChanged = NO;
                 if(code.hasF) f = code.getF;
@@ -312,7 +322,10 @@
     isG1Move = NO;
     switch (code.compressedCommand)
     {
+        case 0:
         case 1:
+        case 2:
+        case 3:
             isG1Move = YES;
             eChanged = NO;
             if(code.hasF) f = code->f;
@@ -385,6 +398,7 @@
                 printingTime += sqrt(dx * dx + dy * dy + dz * dz) * 60.0f / f;
             }
             else printingTime += de * 60.0f / f;
+            if(z!=lastZ) [unchangedLayer clear];
             lastX = x;
             lastY = y;
             lastZ = z;
@@ -451,6 +465,15 @@
             activeExtruder = code.tool;
             break;
     }
+    if(layer!=lastlayer) {
+        for(GCodeShort *c in unchangedLayer) {
+            [c setLayer:layer];
+        }
+        [unchangedLayer clear];
+        layerZ = z;
+        lastlayer = layer;
+    } else if(z!=layerZ)
+        [unchangedLayer addLast:code];
     code->emax = emax;
     [code setLayer:layer];
     [code setTool:activeExtruder];

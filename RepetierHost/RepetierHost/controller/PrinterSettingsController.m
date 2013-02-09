@@ -25,6 +25,7 @@
 #import "RHOpenGLView.h"
 #import "RHManualControl.h"
 #import "PrinterConnection.h"
+#import "RHSlicer.h"
 
 @implementation PrinterSettingsController
 
@@ -220,6 +221,7 @@
     c->bedLeft = [bedLeft doubleValue];
     c->numberOfExtruder = numberOfExtruder;
     [c saveToRepository];
+    [app->rhslicer updateSelections];
 }
 
 - (IBAction)createNewConfig:(id)sender {

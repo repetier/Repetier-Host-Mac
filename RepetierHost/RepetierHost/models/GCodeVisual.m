@@ -25,6 +25,8 @@
 #include "../RHAppDelegate.h"
 #include "../controller/GCodeView.h"
 
+BOOL correctNormals = true;
+
 @implementation GCodePoint
 
 -(id)init {
@@ -260,7 +262,7 @@
         free(elements);
     if(normals!=nil)
         free(normals);
-    if (method != 0) positionsLength = pointsCount*nv*3; else positionsLength = 3*pointsCount;
+    if (method != 0) positionsLength = pointsCount*nv*3*(correctNormals? 2 :1); else positionsLength = 3*pointsCount;
     positions = malloc(sizeof(float)*positionsLength);
     if (method != 0) normals = malloc(sizeof(float)*positionsLength); else normals = nil;
     if (method != 0) elementsLength=(pointsCount - pointsLists->count) * nv * 4+pointsLists->count*(nv-2)*4; else elementsLength = n * 2;
@@ -276,13 +278,15 @@
         float diru[3];
         float norm[3];
         float lastdir[3];
-        float actdir[3];
+        float actdir[3],actdirs[3];
         float laste = 0;
         float dh = 0.5f * h;
         float dw = 0.5f * w;
         float deltae;
         BOOL first = YES;
         float *last;
+        diru[0] = diru[1] = 0;
+        diru[2] = 1;
        // w *= 0.5f;
         for (RHLinkedList * points in pointsLists)
         {
@@ -350,7 +354,7 @@
                 //NSLog(@"dir %f %f %f",dir[0],dir[1],dir[2]);
                 //NSLog(@"lastdir %f %f %f",lastdir[0],lastdir[1],lastdir[2]);
                 double vacos = dir[0] * lastdir[0] + dir[1] * lastdir[1] + dir[2] * lastdir[2];
-                if(vacos<0.1) vacos = 0.1; else if(vacos>1) vacos = 1;
+                if(vacos<0.3) vacos = 0.3; else if(vacos>1) vacos = 1;
                 float zoomw = vacos; //cos(acos(vacos));
                 //NSLog(@"vacos %f,zoomz %f",vacos,zoomw);
                 lastdir[0] = actdir[0];
@@ -359,31 +363,92 @@
                 dirs[0] = -dir[1];
                 dirs[1] = dir[0];
                 dirs[2] = dir[2];
-                diru[0] = diru[1] = 0;
-                diru[2] = 1;
+                actdirs[0] = -actdir[1];
+                actdirs[1] = actdir[0];
+                actdirs[2] = actdir[2];
                 alpha = 0;
                 float c, s;
-                int b = vpos / 3-nv;
+                int b = vpos / 3-nv*(correctNormals ? 2 : 1);
                 for (i = 0; i < nv; i++)
                 {
                     c = (float)cos(alpha) * dh;
                     s = (float)sin(alpha) * dw/zoomw;
                     //NSLog(@"c=%f s=%f a=%f dh=%f,zoomw=%f",c,s,alpha,dh,zoomw);
-                    norm[0] = (float)(s * dirs[0] + c * diru[0]);
-                    norm[1] = (float)(s * dirs[1] + c * diru[1]);
-                    norm[2] = (float)(s * dirs[2] + c * diru[2]);
+                    if (correctNormals)
+                    {
+                        float s2 = (float)sin(alpha) * dw;
+                        norm[0] = (float)(s2 * actdirs[0] + c * diru[0]);
+                        norm[1] = (float)(s2 * actdirs[1] + c * diru[1]);
+                        norm[2] = (float)(s2 * actdirs[2] + c * diru[2]);
+                    }
+                    else
+                    {
+                        norm[0] = (float)(s * dirs[0] + c * diru[0]);
+                        norm[1] = (float)(s * dirs[1] + c * diru[1]);
+                        norm[2] = (float)(s * dirs[2] + c * diru[2]);
+                    }
                     [self normalize:norm];
                     if (!first)
                     {
-                        elements[pos++] = b + (i + 1)%nv;//2
-                        elements[pos++] = b + i;//1
-                        elements[pos++] = b + i + nv;//4
-                        elements[pos++] = b + (i + 1) % nv + nv;//3
+                        if (correctNormals)
+                        {
+                            elements[pos++] = b + 2*((i + 1) % nv)+1;
+                            elements[pos++] = b + 2*i+1;
+                            elements[pos++] = b + 2*(i + nv);
+                            elements[pos++] = b + 2*((i + 1) % nv + nv);
+                        }
+                        else
+                        {
+                            elements[pos++] = b + (i + 1)%nv;
+                            elements[pos++] = b + i;
+                            elements[pos++] = b + i + nv;
+                            elements[pos++] = b + (i + 1) % nv + nv;
+                        }
                                                                 //NSLog(@"Pts %i %i %i %i", elements[pos-4], elements[pos-3], elements[pos-2], elements[pos-1]);
                     }
-                    normals[npos++] = norm[0];
-                    normals[npos++] = norm[1];
-                    normals[npos++] = norm[2];
+                    if (correctNormals)
+                    {
+                        if (first || ptNode == nil)
+                        {
+                            if (first)
+                            {
+                                normals[npos++] = -actdir[0];
+                                normals[npos++] = -actdir[1];
+                                normals[npos++] = -actdir[2];
+                            }
+                            else
+                            {
+                                normals[npos++] = norm[0];
+                                normals[npos++] = norm[1];
+                                normals[npos++] = norm[2];
+                            }
+                            positions[vpos++] = v[0] + s * dirs[0] + c * diru[0];
+                            positions[vpos++] = v[1] + s * dirs[1] + c * diru[1];
+                            positions[vpos++] = v[2] - dh + s * dirs[2] + c * diru[2];
+                        }
+                        else
+                        {
+                            normals[npos] = normals[npos - 6 * nv+3];
+                            normals[npos + 1] = normals[npos - 6 * nv +4];
+                            normals[npos + 2] = normals[npos - 6 * nv +5];
+                            npos += 3;
+                            positions[vpos++] = v[0] + s * dirs[0] + c * diru[0];
+                            positions[vpos++] = v[1] + s * dirs[1] + c * diru[1];
+                            positions[vpos++] = v[2] - dh + s * dirs[2] + c * diru[2];
+                        }
+                    }
+                    if (correctNormals && ptNode == nil)
+                    {
+                        normals[npos++] = actdir[0];
+                        normals[npos++] = actdir[1];
+                        normals[npos++] = actdir[2];
+                    }
+                    else
+                    {
+                        normals[npos++] = norm[0];
+                        normals[npos++] = norm[1];
+                        normals[npos++] = norm[2];
+                    }
                     positions[vpos++] = v[0] + s * dirs[0] + c * diru[0];
                     positions[vpos++] = v[1] + s * dirs[1] + c * diru[1];
                     positions[vpos++] = v[2] - dh + s * dirs[2] + c * diru[2];
@@ -393,23 +458,43 @@
                 if (first || ptNode == nil) // Draw cap
                 {
                     //NSLog(@"Cap");
-                    b = vpos / 3 - nv;
+                    //b = vpos / 3 - nv;
                     int nn  = (nv-2)/2;
                     for (i = 0; i < nn; i++)
                     {
-                        if (first)
+                        if (correctNormals)
                         {
-                            elements[pos++] = b+i;
-                            elements[pos++] = b + i + 1;
-                            elements[pos++] = b + nv - i - 2;
-                            elements[pos++] = b + nv - i - 1;
+                            if (first)
+                            {
+                                elements[pos++] = b + 2*i;
+                                elements[pos++] = b + 2*i + 2;
+                                elements[pos++] = b + 2*nv - 2*i - 4;
+                                elements[pos++] = b + 2*nv - 2*i - 2;
+                            }
+                            else
+                            {
+                                elements[pos++] = b + 2*(nv -i -1)+1;
+                                elements[pos++] = b + 2*(nv - i -2)+1;
+                                elements[pos++] = b + 2*i + 3;
+                                elements[pos++] = b + 2*i+1;
+                            }
                         }
                         else
                         {
-                            elements[pos++] = b + nv - i - 1;
-                            elements[pos++] = b + nv - i - 2;
-                            elements[pos++] = b + i + 1;
-                            elements[pos++] = b + i;
+                            if (first)
+                            {
+                                elements[pos++] = b+i;
+                                elements[pos++] = b + i + 1;
+                                elements[pos++] = b + nv - i - 2;
+                                elements[pos++] = b + nv - i - 1;
+                            }
+                            else
+                            {
+                                elements[pos++] = b + nv - i - 1;
+                                elements[pos++] = b + nv - i - 2;
+                                elements[pos++] = b + i + 1;
+                                elements[pos++] = b + i;
+                            }
                         }
                     }
                 }
@@ -513,6 +598,7 @@
         maxLayer = 1000000;
         fileid = actLine = 0;
         showSelection = YES;
+        lastCorrectNormals = correctNormals;
     }
     return self;
 }        
@@ -547,6 +633,7 @@
         maxLayer = 1000000;
         fileid = actLine = 0;
         showSelection = NO;
+        lastCorrectNormals = correctNormals;
     }
     return self;
 }        
@@ -982,6 +1069,7 @@
             cp = malloc(cplength=sizeof(float)*path->positionsLength);
             int nv = 8 * (method - 1);
             if (method == 1) nv = 4;
+            if(correctNormals) nv*=2;
             if (method == 0) nv = 1;
             int p = 0;
             for (RHLinkedList *points in path->pointsLists)
@@ -1054,6 +1142,7 @@
                 cp = malloc(sizeof(float)*path->positionsLength);
                 int nv = 8 * (method - 1);
                 if (method == 1) nv = 4;
+                if(correctNormals) nv*=2;
                 if (method == 0) nv = 1;
                 int p = 0;
                 for (RHLinkedList *points in path->pointsLists)
@@ -1522,11 +1611,12 @@
     w = h * wfac;
     fixedH = conf3d->useLayerHeight;
     dfac = (float)(M_PI * conf3d->filamentDiameter * conf3d->filamentDiameter * 0.25 / wfac);
-    recompute = lastFilHeight != h || lastFilWidth != w || fixedH != lastFilUseHeight || dfac != lastFilDiameter;
+    recompute = lastFilHeight != h || lastFilWidth != w || fixedH != lastFilUseHeight || dfac != lastFilDiameter || lastCorrectNormals!=correctNormals;
     lastFilHeight = h;
     lastFilWidth = w;
     lastFilDiameter = dfac;
     lastFilUseHeight = fixedH;
+    lastCorrectNormals = correctNormals;
     //   int cnt=0;
     for(int i=0;i<MAX_EXTRUDER;i++) {
         if(i==0)

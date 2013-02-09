@@ -108,6 +108,17 @@
     if(app && app->gcodeView)
         [app->gcodeView->variablesTable.tableView reloadData];
 }
+-(void)setPopup:(NSPopUpButton*)pop enabled:(BOOL)enable {
+    [pop removeAllItems];
+    if(enable) {
+        [pop addItemsWithTitles:slic3rFilamentList];
+        for(NSMenuItem *item in [pop itemArray]) {
+            [item setEnabled:enable];
+        }
+    }
+    [pop setEnabled:enable];
+    [[pop cell] setEnabled:enable];
+}
 -(void)updateSelections {
     NSString *cdir = [RHSlicer slic3rConfigDir];
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
@@ -130,12 +141,9 @@
             [slic3rFilamentList addObject:[file stringByDeletingPathExtension]];
         }
     }
-    [slic3rFilamentSettings removeAllItems];
-    [slic3rFilamentSettings addItemsWithTitles:slic3rFilamentList];
-    [slic3rFilamentSettings2 removeAllItems];
-    [slic3rFilamentSettings2 addItemsWithTitles:slic3rFilamentList];
-    [slic3rFilamentSettings3 removeAllItems];
-    [slic3rFilamentSettings3 addItemsWithTitles:slic3rFilamentList];
+    [self setPopup:slic3rFilamentSettings enabled:currentPrinterConfiguration->numberOfExtruder>0];
+    [self setPopup:slic3rFilamentSettings2 enabled:currentPrinterConfiguration->numberOfExtruder>1];
+    [self setPopup:slic3rFilamentSettings3 enabled:currentPrinterConfiguration->numberOfExtruder>2];
     // Print list
     enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/print",cdir] error:nil];
     [slic3rPrintList removeAllObjects];

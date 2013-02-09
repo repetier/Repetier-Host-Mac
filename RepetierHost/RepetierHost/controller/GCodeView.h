@@ -50,6 +50,7 @@
     NSColor *paramBrush;
     NSColor *commentBrush;
     NSColor *linesBgBrush;
+    NSColor *linesBgAltBrush;
     NSColor *linesTextBrush;
     NSColor *backBrush;
     NSColor *evenBackBrush;
@@ -90,6 +91,7 @@
 @property (retain)NSColor *paramBrush;
 @property (retain)NSColor *commentBrush;
 @property (retain)NSColor *linesBgBrush;
+@property (retain)NSColor *linesBgAltBrush;
 @property (retain)NSColor *backBrush;
 @property (retain)NSColor *evenBackBrush;
 @property (retain)NSColor *linesTextBrush;

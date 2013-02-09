@@ -300,7 +300,8 @@
     [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
     [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
     [d setInteger:numberOfExtruder forKey:[b stringByAppendingString:@".numberOfExtruder"]];
-    [app->manualControl updateExtruderCount];
+    if(app!=nil)
+        [app->manualControl updateExtruderCount];
 }
 +(void)initPrinter {
     printerConfigurations = [NSMutableArray new];
