@@ -220,6 +220,9 @@
             [port setParity:config->parity];
             [port setStopBits:config->stopBits];
             [port setDataBits:config->databits];
+            [port clearDTR];
+            [NSThread sleepForTimeInterval:0.2];
+
 			[port commitChanges];
 			[rhlog addInfo:@"Connection opened"];
             
@@ -313,7 +316,7 @@
     pauseY = analyzer->y-analyzer->yOffset;
     pauseZ = analyzer->z-analyzer->zOffset;
     pauseF = analyzer->f;
-    pauseE = analyzer->e-analyzer->eOffset;
+    pauseE = analyzer->activeExtruder->e-analyzer->activeExtruder->eOffset;
     pauseRelative = analyzer->relative;
 
     for (GCodeShort *code in app->gcodeView->pausejob->textArray)
@@ -584,6 +587,8 @@
     else if ([com compare:@"@sound"]==NSOrderedSame)
     {
         [sound playCommand:NO];
+    } else if([com compare:@"@execute"]==NSOrderedSame) {
+        [RHTask execute:gc.hostParameter];
     }
 }
 -(void)trySendNextLine
@@ -1063,6 +1068,7 @@
         if(pos.location==0) break;
     } while ([source characterAtIndex:pos.location-1] != ' ');
     int start = (int)(pos.location + ident.length);
+    while (start < source.length && [source characterAtIndex:start] == ' ') start++;
     int end = start;
     while (end < source.length && [source characterAtIndex:end] != ' ') end++;
     pos.location = start;

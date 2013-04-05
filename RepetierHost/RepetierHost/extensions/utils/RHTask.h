@@ -26,6 +26,9 @@
     @public
     BOOL running;
 }
+
++(void)execute:(NSString*)cmd;
+
 -(id)initProgram:(NSString*)prg args:(NSArray*)args logPrefix:(NSString*)prefix;
 -(void)taskThread:(id)obj;
 -(void)bringToFront;

@@ -8,6 +8,7 @@
 
 #import "GCodeShort.h"
 #import "PrinterConnection.h"
+#import "StringUtil.h"
 
 @implementation GCodeShort
 
@@ -147,6 +148,10 @@ Command values:
     if([self hasVariables])
         text2 = [connection replaceVariables:text];
     int l = (int)[text2 length],i;
+    if([StringUtil string:text2 startsWith:@";@"]) {
+        [self setCompressedCommand:12]; // Host command
+        return;
+    }
     int mode = 0; // 0 = search code, 1 = search value
     char code = ';';
     int p1=0;
@@ -184,5 +189,14 @@ Command values:
         range.length = l-p1;
         [self addCode:code value:[text2 substringWithRange:range]];
     }
+}
+-(float)getValueFor:(NSString*) key default:(float)def
+{
+    NSRange p = [text rangeOfString:key options:NSCaseInsensitiveSearch];
+    if (p.location == NSNotFound) return def;
+    p.location++;
+    NSRange end = [text rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] options:NSCaseInsensitiveSearch range:NSMakeRange(p.location,text.length-p.location)];
+    if(end.location == NSNotFound) end.location = text.length;
+    return [[text substringWithRange:NSMakeRange(p.location,end.location-p.location)] floatValue];
 }
 @end

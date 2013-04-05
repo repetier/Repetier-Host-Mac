@@ -109,7 +109,7 @@ extern BOOL correctNormals;
 }
 -(id)initWithAnalyzer:(GCodeAnalyzer*)a;
 -(void)printerStateChanged:(GCodeAnalyzer*)analyzer;
--(void)positionChanged:(GCodeAnalyzer*)analyzer;
+-(void)positionChanged:(GCodeAnalyzer*)analyzer  x:(float)xp y:(float)yp z:(float)zp;
 -(void) positionChangedFastX:(float)x y:(float)y z:(float)z e:(float)e;
 -(void)reduce;
 -(void)stats;

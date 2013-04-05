@@ -125,6 +125,15 @@
 -(float)getF {
     return f;
 }
+-(float)getI {
+    return ii;
+}
+-(float)getJ {
+    return j;
+}
+-(float)getR {
+    return r;
+}
 -(NSString*)getOriginal {
     return [[orig retain] autorelease];
 }
@@ -137,6 +146,10 @@
     int l = (int)[cmd length],i;
     int mode = 0; // 0 = search code, 1 = search value
     char code = ';';
+    if([StringUtil string:cmd startsWith:@";@"]) {
+        hostCommand = YES;
+        return;
+    }
     int p1=0;
     NSRange range;
     for (i = 0; i < l; i++)
@@ -381,6 +394,7 @@
             break;
         case 'T':
         case 't':
+            if(d>255) forceASCII = YES;
             t = (uint8)d;
             fields|=512;
             break;
@@ -452,7 +466,9 @@
 {
     NSRange pos = [orig rangeOfString:@" "];
     if (pos.location==NSNotFound) return orig;
-    return [orig substringToIndex:pos.location];
+    NSString *res = [orig substringToIndex:pos.location];
+    if([res characterAtIndex:0]==';') res = [res substringFromIndex:1];
+    return res;
 }
 -(NSString*)hostParameter
 {

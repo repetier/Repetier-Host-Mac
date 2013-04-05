@@ -156,7 +156,7 @@
                 int outp = ([ana getExtruderTemperature:-1]-20.0)*255.0/350*(1.0+0.05*sin((millis % 7000)*0.000897));
                 if(outp<0) outp = 0;
                 if(outp>255) outp = 255;
-                [output addLast:[NSString stringWithFormat:@"T:%.2f B:%d @:%d T0:%.2f @0:%d T1:%.2f @1:%d T2:%.2f @2:%d",extruderTemp[ana->activeExtruder],(int)bedTemp,outp,extruderTemp[0],outp,extruderTemp[1],outp,extruderTemp[2],outp]];
+                [output addLast:[NSString stringWithFormat:@"T:%.2f B:%d @:%d T0:%.2f @0:%d T1:%.2f @1:%d T2:%.2f @2:%d",extruderTemp[ana->activeExtruder->extruderId],(int)bedTemp,outp,extruderTemp[0],outp,extruderTemp[1],outp,extruderTemp[2],outp]];
             }
             break;
         case 205: // EEPROM Settings

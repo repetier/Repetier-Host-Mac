@@ -17,11 +17,15 @@
 #import "RHTask.h"
 #import "RHLogger.h"
 #import "ThreadedNotification.h"
+#import "StringUtil.h"
+
+static RHLinkedList *executeList = nil;
 
 @implementation RHTask
 
 -(id)initProgram:(NSString*)prg args:(NSArray*)args logPrefix:(NSString*)prefix {
     if((self=[super init])) {
+        [executeList addLast:self];
         task = [[NSTask alloc] init];
         pipe = [[NSPipe pipe] retain];
         logPrefix = [prefix retain];
@@ -47,6 +51,42 @@
     [thread release];
     [logPrefix release];
     [super dealloc];
+}
++(void)execute:(NSString*)cmd {
+    if(executeList==nil) {
+        executeList = [RHLinkedList new];
+    }
+    NSMutableArray *arr = [NSMutableArray new];
+    NSString *exe = nil;
+    cmd = [StringUtil trim:cmd];
+    NSUInteger exeEnd = 0;
+    NSUInteger cmdLength = cmd.length;
+    if ([StringUtil string:cmd startsWith:@"\""])
+    {
+        while (exeEnd < cmdLength && [cmd characterAtIndex:exeEnd] != '"') exeEnd++;
+        exe = [[cmd substringToIndex:exeEnd] substringFromIndex:1];
+    }
+    else
+    {
+        while (exeEnd < cmdLength && [cmd characterAtIndex:exeEnd] != ' ') exeEnd++;
+        exe = [cmd substringToIndex:exeEnd];
+    }
+    do {
+        cmd = [StringUtil trim:[cmd substringFromIndex:exeEnd]];
+        if(cmd.length==0) break;
+        if ([StringUtil string:cmd startsWith:@"\""])
+        {
+            while (exeEnd < cmdLength && [cmd characterAtIndex:exeEnd] != '"') exeEnd++;
+            [arr  addObject:[[cmd substringToIndex:exeEnd] substringFromIndex:1]];
+        }
+        else
+        {
+            while (exeEnd < cmdLength && [cmd characterAtIndex:exeEnd] != ' ') exeEnd++;
+            [arr addObject:[cmd substringToIndex:exeEnd]];
+        }
+    } while(YES);
+    RHTask *task = [[RHTask alloc] initProgram:exe args:arr logPrefix:[exe lastPathComponent]];
+    [task release];
 }
 -(void)bringToFront {
     int pid  = [task processIdentifier];
@@ -87,6 +127,7 @@
     [task terminate];
 }
 -(BOOL)finishedSuccessfull {
+    [executeList remove:self];
     if (task==nil) {
         if (status == 0)
             return YES;

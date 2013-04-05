@@ -39,4 +39,5 @@
 -(BOOL)hasE;
 -(BOOL)hasF;
 -(NSUInteger)length;
+-(float)getValueFor:(NSString*) key default:(float)def;
 @end

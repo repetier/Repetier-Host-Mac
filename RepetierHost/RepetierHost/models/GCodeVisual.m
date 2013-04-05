@@ -736,7 +736,7 @@ BOOL correctNormals = true;
 {
     //act = g;
     [ana analyze:g];
-    laste = ana->emax;
+    laste = ana->activeExtruder->emax;
 }
 /// <summary>
 /// Remove all drawn lines.
@@ -765,17 +765,17 @@ BOOL correctNormals = true;
     [changeLock unlock];
 }
 -(void) printerStateChanged:(GCodeAnalyzer*)analyzer {}
--(void) positionChanged:(GCodeAnalyzer*)analyzer {
+-(void) positionChanged:(GCodeAnalyzer*)analyzer x:(float)xp y:(float)yp z:(float)zp {
     if(!analyzer->isG1Move) return;
-    float xp = analyzer->x; 
+   /* float xp = analyzer->x;
     float yp = analyzer->y;
-    float zp = analyzer->z;
+    float zp = analyzer->z;*/
     if (!ana->drawing)
     {
         lastx = xp;
         lasty = yp;
         lastz = zp;
-        laste = ana->emax;
+        laste = ana->activeExtruder->emax;
         return;
     }
     float locDist = (float)sqrt((xp - lastx) * (xp - lastx) + (yp - lasty) * (yp - lasty) + (zp - lastz) * (zp - lastz));
@@ -797,12 +797,12 @@ BOOL correctNormals = true;
     int segpos = analyzer->activeExtruder;
     if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
     RHLinkedList *seg = [segments objectAtIndex:segpos];
-    if (seg->count == 0 || laste >= ana->e) // start new segment
+    if (seg->count == 0 || laste >= ana->activeExtruder->e) // start new segment
     {
         if (!isLastPos) // no move, no action
         {
             GCodePath *p = [GCodePath new];
-            [p add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            [p add:mypos extruder:ana->activeExtruder->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             if (seg->count > 0 && ((RHLinkedList*)((GCodePath*)(seg.peekLast))->pointsLists.peekLastFast)->count == 1)
             {
                 [seg removeLast];
@@ -817,14 +817,14 @@ BOOL correctNormals = true;
         if (!isLastPos)
         {
             totalDist += locDist;
-            [seg.peekLastFast add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            [seg.peekLastFast add:mypos extruder:ana->activeExtruder->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             changed = YES;
         }
     }
     lastx = xp;
     lasty = yp;
     lastz = zp;
-    laste = analyzer->emax;
+    laste = analyzer->activeExtruder->emax;
     [changeLock unlock];
 }
 /// Optimized version for editor preview
@@ -834,7 +834,7 @@ BOOL correctNormals = true;
         lastx = xp;
         lasty = yp;
         lastz = zp;
-        laste = ana->emax;
+        laste = ana->activeExtruder->emax;
         lastLayer = ana->layer;
         return;
     }
@@ -873,7 +873,7 @@ BOOL correctNormals = true;
         if (!isLastPos) // no move, no action
         {
             GCodePath *p = [GCodePath new];
-            [p add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            [p add:mypos extruder:ana->activeExtruder->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             if (seg->count > 0 && ((RHLinkedList*)((GCodePath*)(seg.peekLastFast))->pointsLists.peekLastFast)->count == 1)
             {
                 [seg removeLast];
@@ -888,14 +888,14 @@ BOOL correctNormals = true;
         if (!isLastPos)
         {
             totalDist += locDist;
-            [seg.peekLastFast add:mypos extruder:ana->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
+            [seg.peekLastFast add:mypos extruder:ana->activeExtruder->emax distance:totalDist fline:[GCodePoint toFile:fileid line:actLine]];
             //changed = YES;
         }
     }
     lastx = xp;
     lasty = yp;
     lastz = zp;
-    laste = ana->emax;
+    laste = ana->activeExtruder->emax;
     lastLayer = ana->layer;
 }
 
@@ -978,7 +978,7 @@ BOOL correctNormals = true;
     int cnt=0;
     for(GCodeShort *code in codes) {
         [ana analyzeShort:code];
-        laste = ana->emax;
+        laste = ana->activeExtruder->emax;
         actLine++;
         if(cnt++>100000) {
             cnt = 0;

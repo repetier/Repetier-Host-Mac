@@ -23,22 +23,36 @@
 
 @protocol GCodeAnalyzerDelegate
 -(void) printerStateChanged:(GCodeAnalyzer*)analyzer;
--(void) positionChanged:(GCodeAnalyzer*)analyzer;
+-(void) positionChanged:(GCodeAnalyzer*)analyzer  x:(float)xp y:(float)yp z:(float)zp;
 -(void) positionChangedFastX:(float)x y:(float)y z:(float)z e:(float)e;
 @end
 
+@interface ExtruderData : NSObject
+{
+@public
+    int extruderId;
+    float temperature;
+    float e;
+    float emax;
+    float lastE;
+    float eOffset;
+    bool retracted;
+}
+-(id)initWithId:(int)_id;
+@end
+
 @interface GCodeAnalyzer : NSObject {
-    NSMutableDictionary *extruderTemp;
+    NSMutableDictionary *extruder;
     RHLinkedList *unchangedLayer;
 @public
     id <GCodeAnalyzerDelegate> delegate;
-    int activeExtruder;
+    ExtruderData *activeExtruder;
     //float extruderTemp;
     BOOL uploading;
     float bedTemp;
-    float x, y, z, e,emax,f;
-    float lastX,lastY,lastZ,lastE;
-    float xOffset, yOffset, zOffset, eOffset;
+    float x, y, z,f;
+    float lastX,lastY,lastZ;
+    float xOffset, yOffset, zOffset;
     float lastZPrint;
     BOOL fanOn;
     int fanVoltage;
@@ -66,4 +80,5 @@
 -(void)analyzeShort:(GCodeShort*)code;
 -(void) start;
 -(void) startJob;
+-(ExtruderData*)getExtruderDataFor:(int)ex;
 @end

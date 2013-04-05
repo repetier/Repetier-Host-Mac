@@ -65,6 +65,9 @@
 -(float)getZ;
 -(float)getE;
 -(float)getF;
+-(float)getI;
+-(float)getJ;
+-(float)getR;
 -(NSString*)getOriginal;
 -(void)setN:(int32_t)line;
 -(void)parse;

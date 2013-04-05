@@ -1,3 +1,12 @@
+Version 0.54 to be released
+  Slic3r 0.9.9
+	Preview of G2/G3 in xy plane.
+	Fixed some viewing errors.
+	Set DTR to off on connect.
+	Better error correction with Marlin.
+	Added @execute host command to call programs during print.
+
+
 Version 0.53 2012-09-2013
 	Improved rendering of filaments if using correct normals (default).
 	Fixed bug preventing sd card uploads.
