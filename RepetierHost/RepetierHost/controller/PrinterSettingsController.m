@@ -26,6 +26,7 @@
 #import "RHManualControl.h"
 #import "PrinterConnection.h"
 #import "RHSlicer.h"
+#import "ThreadedNotification.h"
 
 @implementation PrinterSettingsController
 
@@ -128,6 +129,7 @@
         currentPrinterConfiguration = [PrinterConfiguration findPrinter:[change objectForKey:NSKeyValueChangeNewKey]];
         [self loadFromConfig];
         [PrinterConfiguration fillFormsWithCurrent];
+        [ThreadedNotification notifyNow:@"RHPrinterChanged" object:currentPrinterConfiguration];
         //    [configPopup setTitle:[currentPrinterConfiguration name]];
     } 
 }

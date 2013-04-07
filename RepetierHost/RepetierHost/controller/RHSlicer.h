@@ -58,5 +58,7 @@
 - (IBAction)sliceAction:(id)sender;
 @property (assign) IBOutlet NSButtonCell *killButton;
 -(void)slicerConfigToVariables;
+-(void)printerChanged:(NSNotification*)event;
+-(void)updateBindings;
 +(NSString*)slic3rConfigDir;
 @end

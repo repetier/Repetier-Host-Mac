@@ -287,7 +287,8 @@
     [heatedBedOnButton setState:a->bedTemp>0];
     [fanOnButton setState:a->fanOn];
     dontsend = YES;
-    [activeExtruderSelector selectItemAtIndex:connection->analyzer->activeExtruder];
+    if(connection->analyzer!=nil && connection->analyzer->activeExtruder!=nil)
+        [activeExtruderSelector selectItemAtIndex:connection->analyzer->activeExtruder->extruderId];
     dontsend = NO;
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
     if(a->fanOn) 

@@ -232,6 +232,7 @@ int main(int argc, char *argv[])
     [d setObject:[NSNumber numberWithInt:0] forKey:@"slic3r#Default#firstLayerBedTemperature"];
     [d setObject:[NSNumber numberWithBool:YES] forKey:@"slic3r#Default#randomizeStartingPoint"];
     [d setObject:[NSNumber numberWithInt:2] forKey:@"slic3r#Default#threads"];
+    [d setObject:[NSNumber numberWithInt:1] forKey:@"slic3rVersionGroup"];
     
     // Other data
     [d setObject:[NSNumber numberWithDouble:60] forKey:@"extruder.Speed"];

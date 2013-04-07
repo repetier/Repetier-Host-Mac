@@ -54,17 +54,25 @@
             [view setFrame:[self bounds]];
             [self addSubview:view];
             [self slicerConfigToVariables];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(printerChanged:) name:@"RHPrinterChanged" object:nil];
+            [self updateBindings];
         }
     }
     
     return self;
 }
+-(void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
 -(void)slicerConfigToVariables {
+    if(app!=nil)
+        [app->slicer checkConfig];
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     [connection.variables removeAllObjects];
     if([d integerForKey:@"activeSlicer"]==3) { // Skeinforge
         NSString *sdir = [d stringForKey:@"skeinforgeProfiles"];
-        NSString *prof = [d stringForKey:@"skeinforgeSelectedProfile"];
+        NSString *prof = currentPrinterConfiguration.skeinforgeProfile;
         NSString *configDir = [NSString stringWithFormat:@"%@/extrusion/%@",sdir,prof];
         NSArray* enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:configDir error:nil];
         for (NSString *file in enumerator)
@@ -87,9 +95,9 @@
         }
 
     } else { // Slic3r
-        NSString *sFilament = [d objectForKey:@"slic3rFilament"];
-        NSString *sPrint = [d objectForKey:@"slic3rPrint"];
-        NSString *sPrinter = [d objectForKey:@"slic3rPrinter"];
+        NSString *sFilament = currentPrinterConfiguration.slic3rFilament1;
+        NSString *sPrint = currentPrinterConfiguration.slic3rPrint;
+        NSString *sPrinter = currentPrinterConfiguration.slic3rPrinter;
         NSString *cdir = [RHSlicer slic3rConfigDir];
         NSString *fPrinter = [NSString stringWithFormat:@"%@/print/%@.ini",cdir,sPrint];
         IniFile *ini = [[[IniFile alloc] init] autorelease];
@@ -122,12 +130,12 @@
 -(void)updateSelections {
     NSString *cdir = [RHSlicer slic3rConfigDir];
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
-    NSString *oldFilament = [d objectForKey:@"slic3rFilament"];
-    NSString *oldFilament2 = [d objectForKey:@"slic3rFilament2"];
-    NSString *oldFilament3 = [d objectForKey:@"slic3rFilament3"];
-    NSString *oldPrint = [d objectForKey:@"slic3rPrint"];
-    NSString *oldPrinter = [d objectForKey:@"slic3rPrinter"];
-    NSString *oldProfile = [d objectForKey:@"skeinforgeSelectedProfile"];
+    NSString *oldFilament = currentPrinterConfiguration.slic3rFilament1;
+    NSString *oldFilament2 = currentPrinterConfiguration.slic3rFilament2;
+    NSString *oldFilament3 = currentPrinterConfiguration.slic3rFilament3;
+    NSString *oldPrint = currentPrinterConfiguration.slic3rPrint;
+    NSString *oldPrinter = currentPrinterConfiguration.slic3rPrinter;
+    NSString *oldProfile = currentPrinterConfiguration.skeinforgeProfile;
     // Filament list
     NSArray* enumerator = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/filament",cdir] error:nil];
     [slic3rFilamentList removeAllObjects];
@@ -193,41 +201,53 @@
     if(oldFilament==nil && slic3rFilamentList.count>0)
         oldFilament = [slic3rFilamentList objectAtIndex:0];
     if(oldFilament) {
-        [d setObject:oldFilament forKey:@"slic3rFilament"];
+        currentPrinterConfiguration.slic3rFilament1 = oldFilament;
         [slic3rFilamentSettings selectItemWithTitle:oldFilament];
     }
     if(oldFilament2==nil && slic3rFilamentList.count>0)
         oldFilament2 = [slic3rFilamentList objectAtIndex:0];
     if(oldFilament2) {
-        [d setObject:oldFilament2 forKey:@"slic3rFilament2"];
+        currentPrinterConfiguration.slic3rFilament2 = oldFilament2;
         [slic3rFilamentSettings2 selectItemWithTitle:oldFilament2];
     }
     if(oldFilament3==nil && slic3rFilamentList.count>0)
         oldFilament3 = [slic3rFilamentList objectAtIndex:0];
     if(oldFilament3) {
-        [d setObject:oldFilament3 forKey:@"slic3rFilament3"];
+        currentPrinterConfiguration.slic3rFilament3 = oldFilament3;
         [slic3rFilamentSettings3 selectItemWithTitle:oldFilament3];
     }
     if(oldPrint==nil && slic3rPrintList.count>0)
         oldPrint = [slic3rPrintList objectAtIndex:0];
     if(oldPrint) {
-        [d setObject:oldPrint forKey:@"slic3rPrint"];
+        currentPrinterConfiguration.slic3rPrint = oldPrint;
         [slic3rPrintSettings selectItemWithTitle:oldPrint];
     }
     if(oldPrinter==nil && slic3rPrinterList.count>0)
         oldPrinter = [slic3rPrinterList objectAtIndex:0];
     if(oldPrinter) {
-        [d setObject:oldPrinter forKey:@"slic3rPrinter"];
+        currentPrinterConfiguration.slic3rPrinter = oldPrinter;
         [slic3rPrinterSettings selectItemWithTitle:oldPrinter];
     }
     if(oldProfile==nil && skeinforgeProfileList.count>0)
         oldProfile = [skeinforgeProfileList objectAtIndex:0];
     if(oldProfile) {
-        [d setObject:oldProfile forKey:@"skeinforgeSelectedProfile"];
+        currentPrinterConfiguration.skeinforgeProfile = oldProfile;
         [skeinforgeProfile selectItemWithTitle:oldProfile];
     }
 }
-
+-(void)printerChanged:(NSNotification*)event {
+    [self updateBindings];
+    if(app!=nil)
+        [app->slicer checkConfig];
+}
+-(void)updateBindings {
+    [slic3rPrintSettings bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"slic3rPrint" options:nil];
+    [slic3rPrinterSettings bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"slic3rPrinter" options:nil];
+    [slic3rFilamentSettings bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"slic3rFilament1" options:nil];
+    [slic3rFilamentSettings2 bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"slic3rFilament2" options:nil];
+    [slic3rFilamentSettings3 bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"slic3rFilament3" options:nil];
+    [skeinforgeProfile bind:@"selectedValue" toObject:currentPrinterConfiguration withKeyPath:@"skeinforgeProfile" options:nil];
+}
 - (IBAction)sliceAction:(id)sender {
     [app->composer generateGCode:nil];
 }

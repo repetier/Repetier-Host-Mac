@@ -121,6 +121,7 @@
     IBOutlet NSMenuItem *sendScript3Menu;
     IBOutlet NSMenuItem *sendScript4Menu;
     IBOutlet NSMenuItem *sendScript5Menu;
+    IBOutlet NSPanel *heaterWarningPanel;
 }
 @property (assign) IBOutlet NSWindow *window;
 -(void)replaceGCodeView:(NSNotification*)event;
@@ -164,6 +165,9 @@
 - (IBAction)sendScript5Action:(id)sender;
 -(void)clearGraphicContext;
 - (IBAction)donateAction:(id)sender;
+- (IBAction)heaterRunningAbort:(id)sender;
+- (IBAction)heaterRunningDisconnect:(id)sender;
+-(void)showHeaterRunning;
 @end
 
 RHAppDelegate *app;

@@ -470,7 +470,7 @@
         speedY = -(p.y - down.y) / bounds.height;
         c->userPosition[0] = startUserPosition[0] + speedX * 200 * c->zoom;
         c->userPosition[2] = startUserPosition[2] - speedY * 200 * c->zoom;
-        if(c->topView) {
+        if(!conf3d->showPerspective) {
             c->viewCenter[0] = startViewCenter[0]+speedX *200*c->zoom;
             c->viewCenter[2] = startViewCenter[2]-speedY *200*c->zoom;
         }
@@ -484,7 +484,7 @@
         speedY = -(p.y - down.y) / bounds.height;
         c->viewCenter[0] = startViewCenter[0]-speedX *200*c->zoom;
         c->viewCenter[2] = startViewCenter[2]+speedY *200*c->zoom;
-        if(c->topView) {
+        if(!conf3d->showPerspective) {
             c->userPosition[0] = startUserPosition[0] - speedX * 200 * c->zoom;
             c->userPosition[2] = startUserPosition[2] + speedY * 200 * c->zoom;
         }

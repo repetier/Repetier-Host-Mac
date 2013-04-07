@@ -119,7 +119,8 @@
 @property (retain) NSMutableDictionary* variables;
 
 -(void)open;
--(void)close;
+-(bool)close;
+-(void)forceClose;
 -(float)getExtruderTemperature:(int)extruder;
 -(void)setExtruder:(int)extruder temperature:(float)temp;
 -(int)getExtruderOutput:(int)extruder;

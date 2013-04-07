@@ -176,6 +176,7 @@
         [self showWarning:@"Stop your printing process before quitting the program!" headline:@"Termination aborted"];
         return NO; 
     }
+    if(!connection.close) return NO;
     return YES;
 }
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag {
@@ -449,7 +450,11 @@
     [alert setAlertStyle:NSWarningAlertStyle];
     [alert beginSheetModalForWindow:mainWindow modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
-
+-(void)showHeaterRunning {
+    [heaterWarningPanel center];
+    [heaterWarningPanel makeKeyAndOrderFront:nil];
+    // [heaterWarningPanel orderFrontRegardless];
+}
 - (IBAction)pausedPanelContinue:(id)sender {
     [pausedPanel orderOut:window];
     [connection pauseDidEnd];
@@ -520,4 +525,13 @@
 
 - (IBAction)donateAction:(id)sender {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.repetier.com/donate-or-support/"]];}
+
+- (IBAction)heaterRunningAbort:(id)sender {
+    [heaterWarningPanel orderOut:window];
+}
+
+- (IBAction)heaterRunningDisconnect:(id)sender {
+    [heaterWarningPanel orderOut:window];
+    [connection forceClose];
+}
 @end

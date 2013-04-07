@@ -45,6 +45,7 @@
 -(void)checkConfig;
 -(void)slice:(NSString*)file;
 -(void)taskFinished:(NSNotification*)event;
+-(void)printerChanged:(NSNotification*)event;
 +(BOOL)fileExists:(NSString*)fname;
 -(void)killSlicing;
 // Start Skeinforge application

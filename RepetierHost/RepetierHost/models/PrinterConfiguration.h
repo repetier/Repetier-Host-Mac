@@ -67,7 +67,20 @@
     NSString *script5Code;
     NSString *filterPrg;
     BOOL enableFilterPrg;
+@private
+    // These vars are stored on change
+    NSUserDefaults *d;
+    NSString *b;
+    NSString *skeinforgeProfile;
+    NSString *slic3rPrint;
+    NSString *slic3rPrinter;
+    NSString *slic3rFilament1;
+    NSString *slic3rFilament2;
+    NSString *slic3rFilament3;
+    int activeSlicer;
+    BOOL importing;
 }
+@property (copy) NSString *b;
 @property (copy) NSString *name;
 @property (copy) NSString *port;
 @property (copy) NSString *startCode;
@@ -96,6 +109,20 @@
 -(double)yHomePosition;
 -(double)zHomePosition;
 -(BOOL)PointInsideX:(float)x Y:(float)y Z:(float) z;
+-(NSString*)skeinforgeProfile;
+-(void)setSkeinforgeProfile:(NSString*)value;
+-(NSString*)slic3rPrint;
+-(void)setSlic3rPrint:(NSString*)value;
+-(NSString*)slic3rPrinter;
+-(void)setSlic3rPrinter:(NSString*)value;
+-(NSString*)slic3rFilament1;
+-(void)setSlic3rFilament1:(NSString*)value;
+-(NSString*)slic3rFilament2;
+-(void)setSlic3rFilament2:(NSString*)value;
+-(NSString*)slic3rFilament3;
+-(void)setSlic3rFilament3:(NSString*)value;
+-(int)activeSlicer;
+-(void)setActiveSlicer:(int)value;
 @end
 extern PrinterConfiguration* currentPrinterConfiguration;
 extern NSMutableArray* printerConfigurations;

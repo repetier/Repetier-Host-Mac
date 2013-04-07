@@ -53,6 +53,7 @@
                 if (p.location!=NSNotFound)
                     full = [[full substringFromIndex:1+p.location] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                 [self.entries setValue:[NSString stringWithFormat:@"%@,%@",value,full] forKey:key];
+                //NSLog(@"Merge %@ and %@ to %@",value,full, [self.entries objectForKey:key]);
             }
             else
             {

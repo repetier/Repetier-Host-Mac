@@ -143,7 +143,11 @@
     else data = [self getExtruderDataFor:ext];
     data->temperature = temp;
 }
-
+-(bool)isAnyExtruderEnabled {
+    for(ExtruderData *data in extruder)
+        if(data->temperature>20) return YES;
+    return NO;
+}
 -(void) analyze:(GCode*) code
 {
     isG1Move = false;

@@ -52,6 +52,7 @@
         for(NSString *key in arr)
             [d addObserver:self forKeyPath:key options:NSKeyValueObservingOptionNew context:NULL];
         [[NSNotificationCenter defaultCenter] addObserver:self                                             selector:@selector(taskFinished:) name:@"RHTaskFinished" object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(printerChanged:) name:@"RHPrinterChanged" object:nil];
     }
     return self;
 }
@@ -60,6 +61,7 @@
     for(NSString *key in bindingsArray)
         [NSUserDefaults.standardUserDefaults removeObserver:self
                                                  forKeyPath:key];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [bindingsArray release];
     if(skeinforgeRun)
         [skeinforgeRun release];
@@ -76,6 +78,7 @@
     [slic3rInternalPath release];
     [emptyPath release];
     [self restoreSkeinforgeConfigs];
+    
     [super dealloc];
 }
 -(void)awakeFromNib
@@ -106,7 +109,7 @@
 // Checks configuration settings and enables/disables menus if necessary
 -(void)checkConfig {
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
-    activeSlicer = (int)[d integerForKey:@"activeSlicer"];
+    activeSlicer = currentPrinterConfiguration.activeSlicer;
     BOOL skeinOK = self.skeinforgeConfigured;
     if(activeSlicer==3 && !skeinOK) activeSlicer=1;
     [app->rhslicer.skeinforgeActive setEnabled:skeinOK];
@@ -178,6 +181,8 @@
         [app->gcodeView loadGCodeGCode:file];
         [app->rightTabView selectTabViewItem:app->gcodeTab];        
     }
+}
+-(void)printerChanged:(NSNotification*)event {
 }
 -(void)taskFinished:(NSNotification*)event {
     RHTask *t = event.object;
@@ -268,15 +273,15 @@
 }
 
 - (IBAction)activateSlic3rInternal:(id)sender {
-    [NSUserDefaults.standardUserDefaults setInteger:1 forKey:@"activeSlicer"];
+    currentPrinterConfiguration.activeSlicer = 1;
 }
 
 - (IBAction)activateSlic3rExternal:(id)sender {
-    [NSUserDefaults.standardUserDefaults setInteger:2 forKey:@"activeSlicer"];
+    currentPrinterConfiguration.activeSlicer = 2;
 }
 
 - (IBAction)activateSkeinforge:(id)sender {
-    [NSUserDefaults.standardUserDefaults setInteger:3 forKey:@"activeSlicer"];
+    currentPrinterConfiguration.activeSlicer = 3;
 }
 -(IBAction)runSkeinforge:(id)sender {
     if(skeinforgeRun!=nil) {
@@ -315,7 +320,11 @@
     if(!fileExists)
         exe = slic3rInternalPath;
     NSArray *arr;
-    arr = [NSArray arrayWithObjects:nil];
+    int version = [d integerForKey:@"slic3rVersionGroup"];
+    if(version == 1)
+        arr = [NSArray arrayWithObjects:@"--no-plater",@"--gui-mode",@"expert",nil];
+    else
+        arr = [NSArray arrayWithObjects:nil];
     slic3rExtRun = [[RHTask alloc] initProgram:exe args:arr logPrefix:@"<Slic3r> "];
 }
 - (IBAction)configSlic3rExternal:(id)sender {
@@ -347,7 +356,7 @@
     NSString *python = [d stringForKey:@"skeinforgePythonCraft"];
     NSString *skein = [d stringForKey:@"skeinforgeCraft"];
     NSString *sdir = [d stringForKey:@"skeinforgeProfiles"];
-    NSString *prof = [d stringForKey:@"skeinforgeSelectedProfile"];
+    NSString *prof = currentPrinterConfiguration.skeinforgeProfile;
     profileConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/skeinforge_profile.csv",sdir]];
     extrusionConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/extrusion.csv",sdir]];
     exportConfig = [[SkeinConfig alloc] initWithPath:[NSString stringWithFormat:@"%@/extrusion/%@/export.csv",sdir,prof]];
@@ -610,6 +619,7 @@
     }
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
     NSString *exe = [d stringForKey:@"slic3rPath"];
+
     [[NSApplication sharedApplication] deactivate];
     BOOL isDir;
     NSFileManager *fm = [NSFileManager defaultManager];
@@ -620,11 +630,11 @@
 
     NSArray *arr;
     
-    NSString *sFilament = [d objectForKey:@"slic3rFilament"];
-    NSString *sFilament2 = [d objectForKey:@"slic3rFilament2"];
-    NSString *sFilament3 = [d objectForKey:@"slic3rFilament3"];
-    NSString *sPrint = [d objectForKey:@"slic3rPrint"];
-    NSString *sPrinter = [d objectForKey:@"slic3rPrinter"];
+    NSString *sFilament = currentPrinterConfiguration.slic3rFilament1;
+    NSString *sFilament2 = currentPrinterConfiguration.slic3rFilament2;
+    NSString *sFilament3 = currentPrinterConfiguration.slic3rFilament3;
+    NSString *sPrint = currentPrinterConfiguration.slic3rPrint;
+    NSString *sPrinter = currentPrinterConfiguration.slic3rPrinter;
 
     NSString *dir = @"~/Library/Repetier";
     dir = [dir stringByExpandingTildeInPath];
@@ -637,12 +647,18 @@
     [ini2 read:[NSString stringWithFormat:@"%@/printer/%@.ini",cdir,sPrinter]];
     IniFile *ini3 = [[[IniFile alloc] init] autorelease];
     [ini3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament]];
-    IniFile *ini3_2 = [[[IniFile alloc] init] autorelease];
-    [ini3_2 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament2]];
-    IniFile *ini3_3 = [[[IniFile alloc] init] autorelease];
-    [ini3_3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament3]];
-    [ini3 merge:ini3_2];
-    [ini3 merge:ini3_3];
+    IniFile *ini3_2 = nil;
+    if(currentPrinterConfiguration->numberOfExtruder>1) {
+        ini3_2 = [[[IniFile alloc] init] autorelease];
+        [ini3_2 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament2]];
+        [ini3 merge:ini3_2];
+    }
+    IniFile *ini3_3 = nil;
+    if(currentPrinterConfiguration->numberOfExtruder>2) {
+        ini3_3 = [[[IniFile alloc] init] autorelease];
+        [ini3_3 read:[NSString stringWithFormat:@"%@/filament/%@.ini",cdir,sFilament3]];
+        [ini3 merge:ini3_3];
+    }
     [ini add:ini2];
     [ini add:ini3 ];
     [ini flatten];

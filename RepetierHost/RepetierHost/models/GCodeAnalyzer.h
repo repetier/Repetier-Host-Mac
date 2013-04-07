@@ -73,6 +73,7 @@
     float printingTime;
     GCode *actCode;
 }
+-(bool)isAnyExtruderEnabled;
 -(float)getExtruderTemperature:(int)extruder;
 -(void)setExtruder:(int)extruder temperature:(float)temp;
 -(void)fireChanged;

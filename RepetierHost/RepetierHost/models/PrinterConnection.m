@@ -261,7 +261,7 @@
     
 }
 
--(void)close {
+-(void)forceClose {
     if(connected) {
         if (isVirtualActive)
         {
@@ -286,6 +286,18 @@
     [self firePrinterState:@"Idle"];
     [job updateJobButtons];
     
+}
+-(bool)close {
+    if(connected) {
+        bool heaterOn = analyzer.isAnyExtruderEnabled;
+        if(analyzer->bedTemp>20) heaterOn = YES;
+        if(heaterOn) { // Warning about temperture left on
+            [app showHeaterRunning];
+            return NO;
+        }
+    }
+    [self forceClose];
+    return YES;
 }
 -(void)sendReset {
     [port clearDTR];

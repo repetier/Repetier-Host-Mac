@@ -5,7 +5,9 @@ Version 0.54 to be released
 	Set DTR to off on connect.
 	Better error correction with Marlin.
 	Added @execute host command to call programs during print.
-
+  Stores slicer profile selection together with selected printer.
+  In parallel mode, panning moves viewpoint and user.
+  Security question when disconnecting with enabled heaters.
 
 Version 0.53 2012-09-2013
 	Improved rendering of filaments if using correct normals (default).
