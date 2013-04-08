@@ -94,7 +94,7 @@
         [self setScript4Code:@""];
         [self setScript5Code:@""];
         [self setFilterPrg:@""];
-        [self setActiveSlicer:0];
+        [self setActiveSlicer:1];
         [self setSkeinforgeProfile:@""];
         [self setSlic3rFilament1:@""];
         [self setSlic3rFilament2:@""];
@@ -292,7 +292,7 @@
     [d2 setObject:[NSNumber numberWithDouble:200] forKey:[b stringByAppendingString:@".deltaHeight"]];
     [d2 setObject:[NSNumber numberWithDouble:8] forKey:[b stringByAppendingString:@".addPrintingTime"]];
     [d2 setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".numberOfExtruder"]];
-    
+    [d2 setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".activeSlicer"]];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d2];
     //[d release];
@@ -357,6 +357,13 @@
     [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
     [d setInteger:numberOfExtruder forKey:[b stringByAppendingString:@".numberOfExtruder"]];
     [d setInteger:printerType forKey:[b stringByAppendingString:@".printerType"]];
+    [d setObject:slic3rPrint forKey:[b stringByAppendingString:@".slic3rPrint"]];
+    [d setObject:slic3rPrinter forKey:[b stringByAppendingString:@".slic3rPrinter"]];
+    [d setObject:slic3rFilament1 forKey:[b stringByAppendingString:@".slic3rFilament1"]];
+    [d setObject:slic3rFilament2 forKey:[b stringByAppendingString:@".slic3rFilament2"]];
+    [d setObject:slic3rFilament3 forKey:[b stringByAppendingString:@".slic3rFilament3"]];
+    [d setInteger:activeSlicer  forKey:[b stringByAppendingString:@".activeSlicer"]];
+
     if(app!=nil)
         [app->manualControl updateExtruderCount];
 }

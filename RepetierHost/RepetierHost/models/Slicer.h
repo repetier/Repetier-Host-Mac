@@ -32,7 +32,6 @@
     NSString *slic3rInternalPath;
     NSString *emptyPath;
     NSArray *bindingsArray;
-    int activeSlicer;
     NSString *slic3rExtOut;
     NSString *slic3rIntOut;
     NSString *skeinforgeOut;

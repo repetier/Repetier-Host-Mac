@@ -109,9 +109,8 @@
 // Checks configuration settings and enables/disables menus if necessary
 -(void)checkConfig {
     NSUserDefaults *d = NSUserDefaults.standardUserDefaults;
-    activeSlicer = currentPrinterConfiguration.activeSlicer;
     BOOL skeinOK = self.skeinforgeConfigured;
-    if(activeSlicer==3 && !skeinOK) activeSlicer=1;
+    if(currentPrinterConfiguration.activeSlicer==3 && !skeinOK) currentPrinterConfiguration.activeSlicer=1;
     [app->rhslicer.skeinforgeActive setEnabled:skeinOK];
     
     NSString *exe = [d stringForKey:@"slic3rPath"];
@@ -125,13 +124,13 @@
     fileExists = [fm fileExistsAtPath:exe isDirectory:&isDir];
     [app->rhslicer.slic3rActive setEnabled:fileExists];
     
-    if(activeSlicer==2)
-        activeSlicer=1;
+    if(currentPrinterConfiguration.activeSlicer==2)
+        currentPrinterConfiguration.activeSlicer=1;
     //[slic3rExtMenu setEnabled:slic3rExt];
     
-    [app->rhslicer.slic3rActive setState:activeSlicer!=3];
-    [app->rhslicer.skeinforgeActive setState:activeSlicer==3];
-    if(activeSlicer==3) {
+    [app->rhslicer.slic3rActive setState:currentPrinterConfiguration.activeSlicer!=3];
+    [app->rhslicer.skeinforgeActive setState:currentPrinterConfiguration.activeSlicer==3];
+    if(currentPrinterConfiguration.activeSlicer==3) {
         NSString *path = [d objectForKey:@"skeinforgeProfiles"];
         if([path rangeOfString:@"sfact"].location!=NSNotFound) {
             [app->rhslicer.runSlice setTitle:@"Slice with SFACT"];
@@ -681,7 +680,7 @@
     [app->rhslicer.killButton setEnabled:YES];
 }
 -(void)slice:(NSString*)file {
-    switch(activeSlicer) {
+    switch(currentPrinterConfiguration.activeSlicer) {
         case 1:
         case 2:
             [self sliceSlic3r:file];

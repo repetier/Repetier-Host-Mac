@@ -1,4 +1,7 @@
-Version 0.54 to be released
+Version 0.55 2013-04-08
+  Fixed a bug preventing some users from slicing.
+
+Version 0.54 2013-04-06
   Slic3r 0.9.9
 	Preview of G2/G3 in xy plane.
 	Fixed some viewing errors.
