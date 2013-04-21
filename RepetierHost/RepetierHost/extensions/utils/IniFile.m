@@ -94,7 +94,7 @@
             actSect = [sections objectForKey:secname];
             if (actSect == nil)
             {
-                actSect = [[IniSection alloc] initWithName:secname];
+                actSect = [[[IniSection alloc] initWithName:secname] autorelease];
                 [sections setValue:actSect forKey:secname];
             }
             continue;

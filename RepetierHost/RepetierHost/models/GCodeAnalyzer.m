@@ -46,6 +46,8 @@
         delegate = nil;
         activeExtruder = nil;
         extruder=[NSMutableDictionary new];
+        activeExtruder = [[ExtruderData alloc] initWithId:0];
+        [extruder setObject:activeExtruder forKey:[NSNumber numberWithInt:0]];
         uploading = NO;
         bedTemp = 0;
         x = y = z = 0;
@@ -114,7 +116,7 @@
     NSNumber *en = [NSNumber numberWithInt:ex];
     ExtruderData *exData = [extruder objectForKey:en];
     if(exData == nil) {
-        exData = [[ExtruderData alloc] initWithId:ex];
+        exData = [[[ExtruderData alloc] initWithId:ex] autorelease];
         [extruder setObject:exData forKey:en];
     }
     return exData;
@@ -133,13 +135,13 @@
 }
 -(float)getExtruderTemperature:(int)ext {
     ExtruderData *data;
-    if(extruder<0) data = activeExtruder;
+    if(ext<0) data = activeExtruder;
     else data = [self getExtruderDataFor:ext];
     return data->temperature;
 }
 -(void)setExtruder:(int)ext temperature:(float)temp {
     ExtruderData *data;
-    if(extruder<0) data = activeExtruder;
+    if(ext<0) data = activeExtruder;
     else data = [self getExtruderDataFor:ext];
     data->temperature = temp;
 }
@@ -975,7 +977,7 @@
         [unchangedLayer addLast:code];
     code->emax = activeExtruder->emax;
     [code setLayer:layer];
-    [code setTool:activeExtruder];
+    [code setTool:activeExtruder->extruderId];
 }
 
 -(void) arcPosition:(float[])position target:(float[]) target offset:(float[]) offset radius:(float) radius clockwise:(BOOL) isclockwise gcode:(GCode*) code

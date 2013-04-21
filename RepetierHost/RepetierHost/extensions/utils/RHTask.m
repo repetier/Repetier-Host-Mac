@@ -56,7 +56,7 @@ static RHLinkedList *executeList = nil;
     if(executeList==nil) {
         executeList = [RHLinkedList new];
     }
-    NSMutableArray *arr = [NSMutableArray new];
+    NSMutableArray *arr = [[NSMutableArray new] autorelease];
     NSString *exe = nil;
     cmd = [StringUtil trim:cmd];
     NSUInteger exeEnd = 0;

@@ -431,7 +431,7 @@
             [text release];
             return;
         }
-        STLTriangle *tri = [STLTriangle new];
+        STLTriangle *tri = [[STLTriangle new] autorelease];
         [self extractVector:tri->normal from:[text substringWithRange:NSMakeRange(normal.location+6,outer.location-normal.location-6)]];
         if(error!=nil) {
             [text release];

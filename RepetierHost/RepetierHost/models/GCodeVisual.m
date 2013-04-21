@@ -794,7 +794,7 @@ BOOL correctNormals = true;
         [travelMoves addObject:travel];
         [travel release];
     }
-    int segpos = analyzer->activeExtruder;
+    int segpos = analyzer->activeExtruder->extruderId;
     if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
     RHLinkedList *seg = [segments objectAtIndex:segpos];
     if (seg->count == 0 || laste >= ana->activeExtruder->e) // start new segment
@@ -841,7 +841,7 @@ BOOL correctNormals = true;
     float locDist = (float)sqrt((xp - lastx) * (xp - lastx) + (yp - lasty) * (yp - lasty) + (zp - lastz) * (zp - lastz));
     BOOL isLastPos = locDist < 0.00001;
     float mypos[3] = {xp,yp,zp};
-    int segpos = ana->activeExtruder;
+    int segpos = ana->activeExtruder->extruderId;
     if(segpos<0 || segpos>=MAX_EXTRUDER) segpos = 0;
     RHLinkedList *seg = [segments objectAtIndex:segpos];
     if(lastLayer == minLayer-1 && laste<e && lastx<1e19) {

@@ -123,156 +123,156 @@
     if(bedFront<yMin) bedFront = yMin;
 }
 -(PrinterConfiguration*)initLoadFromRepository:(NSString*)confname {
+    self=[self init];
     self.b = [@"printer." stringByAppendingString:confname];
     d = [NSUserDefaults standardUserDefaults];
-    self=[self init];
-    [self initDefaultsRepository:confname]; // Make sure we have data to read
+    [self setupDefaultsRepository:confname]; // Make sure we have data to read
     [self setName:confname];
-    [self setPort:[d objectForKey:[b stringByAppendingString:@".port"]]];
-    baud = (int)[d integerForKey:[b stringByAppendingString:@".baud"]];
-    parity = (int)[d integerForKey:[b stringByAppendingString:@".parity"]];
-    stopBits = (int)[d integerForKey:[b stringByAppendingString:@".stopBits"]];
-    databits = (int)[d integerForKey:[b stringByAppendingString:@".databits"]];
-    protocol = (int)[d integerForKey:[b stringByAppendingString:@".protocol"]];
-    autocheckInterval = (int)[d integerForKey:[b stringByAppendingString:@".autocheckInterval"]];
-    defaultExtruderTemp = (int)[d integerForKey:[b stringByAppendingString:@".defaultExtruderTemp"]];
-    defaultHeatedBedTemp = (int)[d integerForKey:[b stringByAppendingString:@".defaultHeatedBedTemp"]];
-    receiveCacheSize = (int)[d integerForKey:[b stringByAppendingString:@".receiveCacheSize"]];
-    afterJobGoDispose = [d boolForKey:[b stringByAppendingString:@".afterJobGoDispose"]];
-    afterJobDisableExtruder = [d boolForKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
-    afterJobDisableHeatedBed = [d boolForKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
-    afterJobDisableMotors = [d boolForKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
-    dontLogM105 = [d boolForKey:[b stringByAppendingString:@".dontLogM105"]];
-    autocheckTemp = [d boolForKey:[b stringByAppendingString:@".autocheckTemp"]];
-    okAfterResend = [d boolForKey:[b stringByAppendingString:@".okAfterResend"]];
-    pingPongMode = [d boolForKey:[b stringByAppendingString:@".pingPongMode"]];
-    width = [d doubleForKey:[b stringByAppendingString:@".width"]];
-    height = [d doubleForKey:[b stringByAppendingString:@".height"]];
-    depth = [d doubleForKey:[b stringByAppendingString:@".depth"]];
-    xMin = [d doubleForKey:[b stringByAppendingString:@".xMin"]];
-    xMax = [d doubleForKey:[b stringByAppendingString:@".xMax"]];
-    yMin = [d doubleForKey:[b stringByAppendingString:@".yMin"]];
-    yMax = [d doubleForKey:[b stringByAppendingString:@".yMax"]];
-    bedLeft = [d doubleForKey:[b stringByAppendingString:@".bedLeft"]];
-    bedFront = [d doubleForKey:[b stringByAppendingString:@".bedFront"]];
-    if([d objectForKey:[b stringByAppendingString:@".homeXMax"]]!=nil) {
-        BOOL homeXMax = [d boolForKey:[b stringByAppendingString:@".homeXMax"]];
+    [self setPort:[d objectForKey:[self.b stringByAppendingString:@".port"]]];
+    baud = (int)[d integerForKey:[self.b stringByAppendingString:@".baud"]];
+    parity = (int)[d integerForKey:[self.b stringByAppendingString:@".parity"]];
+    stopBits = (int)[d integerForKey:[self.b stringByAppendingString:@".stopBits"]];
+    databits = (int)[d integerForKey:[self.b stringByAppendingString:@".databits"]];
+    protocol = (int)[d integerForKey:[self.b stringByAppendingString:@".protocol"]];
+    autocheckInterval = (int)[d integerForKey:[self.b stringByAppendingString:@".autocheckInterval"]];
+    defaultExtruderTemp = (int)[d integerForKey:[self.b stringByAppendingString:@".defaultExtruderTemp"]];
+    defaultHeatedBedTemp = (int)[d integerForKey:[self.b stringByAppendingString:@".defaultHeatedBedTemp"]];
+    receiveCacheSize = (int)[d integerForKey:[self.b stringByAppendingString:@".receiveCacheSize"]];
+    afterJobGoDispose = [d boolForKey:[self.b stringByAppendingString:@".afterJobGoDispose"]];
+    afterJobDisableExtruder = [d boolForKey:[self.b stringByAppendingString:@".afterJobDisableExtruder"]];
+    afterJobDisableHeatedBed = [d boolForKey:[self.b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    afterJobDisableMotors = [d boolForKey:[self.b stringByAppendingString:@".afterJobDisableMotors"]];
+    dontLogM105 = [d boolForKey:[self.b stringByAppendingString:@".dontLogM105"]];
+    autocheckTemp = [d boolForKey:[self.b stringByAppendingString:@".autocheckTemp"]];
+    okAfterResend = [d boolForKey:[self.b stringByAppendingString:@".okAfterResend"]];
+    pingPongMode = [d boolForKey:[self.b stringByAppendingString:@".pingPongMode"]];
+    width = [d doubleForKey:[self.b stringByAppendingString:@".width"]];
+    height = [d doubleForKey:[self.b stringByAppendingString:@".height"]];
+    depth = [d doubleForKey:[self.b stringByAppendingString:@".depth"]];
+    xMin = [d doubleForKey:[self.b stringByAppendingString:@".xMin"]];
+    xMax = [d doubleForKey:[self.b stringByAppendingString:@".xMax"]];
+    yMin = [d doubleForKey:[self.b stringByAppendingString:@".yMin"]];
+    yMax = [d doubleForKey:[self.b stringByAppendingString:@".yMax"]];
+    bedLeft = [d doubleForKey:[self.b stringByAppendingString:@".bedLeft"]];
+    bedFront = [d doubleForKey:[self.b stringByAppendingString:@".bedFront"]];
+    if([d objectForKey:[self.b stringByAppendingString:@".homeXMax"]]!=nil) {
+        BOOL homeXMax = [d boolForKey:[self.b stringByAppendingString:@".homeXMax"]];
         if(homeXMax) homeX = 0; else homeX = 1;
-        [d removeObjectForKey:[b stringByAppendingString:@".homeXMax"]];
-        [d setInteger:homeX forKey:[b stringByAppendingString:@".homeX"]];
+        [d removeObjectForKey:[self.b stringByAppendingString:@".homeXMax"]];
+        [d setInteger:homeX forKey:[self.b stringByAppendingString:@".homeX"]];
     } else {
-        homeX = [d integerForKey:[b stringByAppendingString:@".homeX"]];
+        homeX = [d integerForKey:[self.b stringByAppendingString:@".homeX"]];
     }
-    if([d objectForKey:[b stringByAppendingString:@".homeYMax"]]!=nil) {
-        BOOL homeYMax = [d boolForKey:[b stringByAppendingString:@".homeYMax"]];
+    if([d objectForKey:[self.b stringByAppendingString:@".homeYMax"]]!=nil) {
+        BOOL homeYMax = [d boolForKey:[self.b stringByAppendingString:@".homeYMax"]];
         if(homeYMax) homeY = 0; else homeY = 1;
-        [d removeObjectForKey:[b stringByAppendingString:@".homeYMax"]];
-        [d setInteger:homeY forKey:[b stringByAppendingString:@".homeY"]];
+        [d removeObjectForKey:[self.b stringByAppendingString:@".homeYMax"]];
+        [d setInteger:homeY forKey:[self.b stringByAppendingString:@".homeY"]];
     } else {
-        homeY = [d integerForKey:[b stringByAppendingString:@".homeY"]];
+        homeY = [d integerForKey:[self.b stringByAppendingString:@".homeY"]];
     }
-    if([d objectForKey:[b stringByAppendingString:@".homeZMax"]]!=nil) {
-        BOOL homeZMax = [d boolForKey:[b stringByAppendingString:@".homeZMax"]];
+    if([d objectForKey:[self.b stringByAppendingString:@".homeZMax"]]!=nil) {
+        BOOL homeZMax = [d boolForKey:[self.b stringByAppendingString:@".homeZMax"]];
         if(homeZMax) homeZ = 0; else homeZ = 1;
-        [d removeObjectForKey:[b stringByAppendingString:@".homeZMax"]];
-        [d setInteger:homeZ forKey:[b stringByAppendingString:@".homeZ"]];
+        [d removeObjectForKey:[self.b stringByAppendingString:@".homeZMax"]];
+        [d setInteger:homeZ forKey:[self.b stringByAppendingString:@".homeZ"]];
     } else {
-        homeZ = [d integerForKey:[b stringByAppendingString:@".homeZ"]];
+        homeZ = [d integerForKey:[self.b stringByAppendingString:@".homeZ"]];
     }
-    travelFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelFeedrate"]];
-    travelZFeedrate = [d doubleForKey:[b stringByAppendingString:@".travelZFeedrate"]];
-    disposeX = [d doubleForKey:[b stringByAppendingString:@".disposeX"]];
-    disposeY = [d doubleForKey:[b stringByAppendingString:@".disposeY"]];
-    disposeZ = [d doubleForKey:[b stringByAppendingString:@".disposeZ"]];
-    [self setStartCode:[d stringForKey:[b stringByAppendingString:@".startCode"]]];
-    [self setEndCode:[d stringForKey:[b stringByAppendingString:@".endCode"]]];
-    [self setJobkillCode:[d stringForKey:[b stringByAppendingString:@".jobkillCode"]]];
-    [self setJobpauseCode:[d stringForKey:[b stringByAppendingString:@".jobpauseCode"]]];
-    [self setScript1Code:[d stringForKey:[b stringByAppendingString:@".script1Code"]]];
-    [self setScript2Code:[d stringForKey:[b stringByAppendingString:@".script2Code"]]];
-    [self setScript3Code:[d stringForKey:[b stringByAppendingString:@".script3Code"]]];
-    [self setScript4Code:[d stringForKey:[b stringByAppendingString:@".script4Code"]]];
-    [self setScript5Code:[d stringForKey:[b stringByAppendingString:@".script5Code"]]];
-    [self setFilterPrg:[d stringForKey:[b stringByAppendingString:@".filterPrg"]]];
-    enableFilterPrg = [d boolForKey:[b stringByAppendingString:@".enableFilterPrg"]];
-    if([d objectForKey:[b stringByAppendingString:@".hasDumpArea"]]!=nil) {
-        BOOL hasDumpArea = [d boolForKey:[b stringByAppendingString:@".hasDumpArea"]];
+    travelFeedrate = [d doubleForKey:[self.b stringByAppendingString:@".travelFeedrate"]];
+    travelZFeedrate = [d doubleForKey:[self.b stringByAppendingString:@".travelZFeedrate"]];
+    disposeX = [d doubleForKey:[self.b stringByAppendingString:@".disposeX"]];
+    disposeY = [d doubleForKey:[self.b stringByAppendingString:@".disposeY"]];
+    disposeZ = [d doubleForKey:[self.b stringByAppendingString:@".disposeZ"]];
+    [self setStartCode:[d stringForKey:[self.b stringByAppendingString:@".startCode"]]];
+    [self setEndCode:[d stringForKey:[self.b stringByAppendingString:@".endCode"]]];
+    [self setJobkillCode:[d stringForKey:[self.b stringByAppendingString:@".jobkillCode"]]];
+    [self setJobpauseCode:[d stringForKey:[self.b stringByAppendingString:@".jobpauseCode"]]];
+    [self setScript1Code:[d stringForKey:[self.b stringByAppendingString:@".script1Code"]]];
+    [self setScript2Code:[d stringForKey:[self.b stringByAppendingString:@".script2Code"]]];
+    [self setScript3Code:[d stringForKey:[self.b stringByAppendingString:@".script3Code"]]];
+    [self setScript4Code:[d stringForKey:[self.b stringByAppendingString:@".script4Code"]]];
+    [self setScript5Code:[d stringForKey:[self.b stringByAppendingString:@".script5Code"]]];
+    [self setFilterPrg:[d stringForKey:[self.b stringByAppendingString:@".filterPrg"]]];
+    enableFilterPrg = [d boolForKey:[self.b stringByAppendingString:@".enableFilterPrg"]];
+    if([d objectForKey:[self.b stringByAppendingString:@".hasDumpArea"]]!=nil) {
+        BOOL hasDumpArea = [d boolForKey:[self.b stringByAppendingString:@".hasDumpArea"]];
         if(hasDumpArea) printerType = 1;
         else printerType = 0;
-        [d removeObjectForKey:[b stringByAppendingString:@".hasDumpArea"]];
-        [d setInteger:printerType forKey:[b stringByAppendingString:@".printerType"]];
-    } else printerType = [d integerForKey:[b stringByAppendingString:@".printerType"]];
-    dumpAreaLeft = [d doubleForKey:[b stringByAppendingString:@".dumpAreaLeft"]];
-    dumpAreaFront = [d doubleForKey:[b stringByAppendingString:@".dumpAreaFront"]];
-    dumpAreaWidth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaWidth"]];
-    dumpAreaDepth = [d doubleForKey:[b stringByAppendingString:@".dumpAreaDepth"]];
-    deltaDiameter = [d doubleForKey:[b stringByAppendingString:@".deltaDiameter"]];
-    deltaHeight = [d doubleForKey:[b stringByAppendingString:@".deltaHeight"]];
-    addPrintingTime = [d doubleForKey:[b stringByAppendingString:@".addPrintingTime"]];
-    numberOfExtruder = (int)[d integerForKey:[b stringByAppendingString:@".numberOfExtruder"]];
+        [d removeObjectForKey:[self.b stringByAppendingString:@".hasDumpArea"]];
+        [d setInteger:printerType forKey:[self.b stringByAppendingString:@".printerType"]];
+    } else printerType = [d integerForKey:[self.b stringByAppendingString:@".printerType"]];
+    dumpAreaLeft = [d doubleForKey:[self.b stringByAppendingString:@".dumpAreaLeft"]];
+    dumpAreaFront = [d doubleForKey:[self.b stringByAppendingString:@".dumpAreaFront"]];
+    dumpAreaWidth = [d doubleForKey:[self.b stringByAppendingString:@".dumpAreaWidth"]];
+    dumpAreaDepth = [d doubleForKey:[self.b stringByAppendingString:@".dumpAreaDepth"]];
+    deltaDiameter = [d doubleForKey:[self.b stringByAppendingString:@".deltaDiameter"]];
+    deltaHeight = [d doubleForKey:[self.b stringByAppendingString:@".deltaHeight"]];
+    addPrintingTime = [d doubleForKey:[self.b stringByAppendingString:@".addPrintingTime"]];
+    numberOfExtruder = (int)[d integerForKey:[self.b stringByAppendingString:@".numberOfExtruder"]];
 
     importing = YES;
-    [self setSkeinforgeProfile:[d stringForKey:[b stringByAppendingString:@".skeinforgeProfile"]]];
-    [self setSlic3rPrint:[d stringForKey:[b stringByAppendingString:@".slic3rPrint"]]];
-    [self setSlic3rPrinter:[d stringForKey:[b stringByAppendingString:@".slic3rPrinter"]]];
-    [self setSlic3rFilament1:[d stringForKey:[b stringByAppendingString:@".slic3rFilament1"]]];
-    [self setSlic3rFilament2:[d stringForKey:[b stringByAppendingString:@".slic3rFilament2"]]];
-    [self setSlic3rFilament3:[d stringForKey:[b stringByAppendingString:@".slic3rFilament3"]]];
-    activeSlicer = (int)[d integerForKey:[b stringByAppendingString:@".activeSlicer"]];
+    [self setSkeinforgeProfile:[d stringForKey:[self.b stringByAppendingString:@".skeinforgeProfile"]]];
+    [self setSlic3rPrint:[d stringForKey:[self.b stringByAppendingString:@".slic3rPrint"]]];
+    [self setSlic3rPrinter:[d stringForKey:[self.b stringByAppendingString:@".slic3rPrinter"]]];
+    [self setSlic3rFilament1:[d stringForKey:[self.b stringByAppendingString:@".slic3rFilament1"]]];
+    [self setSlic3rFilament2:[d stringForKey:[self.b stringByAppendingString:@".slic3rFilament2"]]];
+    [self setSlic3rFilament3:[d stringForKey:[self.b stringByAppendingString:@".slic3rFilament3"]]];
+    activeSlicer = (int)[d integerForKey:[self.b stringByAppendingString:@".activeSlicer"]];
     importing = NO;
     [self sanityCheck];
     return self;
 }
--(void)initDefaultsRepository:(NSString*)confname {
+-(void)setupDefaultsRepository:(NSString*)confname {
     NSMutableDictionary *d2 = [NSMutableDictionary dictionary];
     self.b = [@"printer." stringByAppendingString:confname];
-    [d2 setObject:port forKey:[b stringByAppendingString:@".port"]];
-    [d2 setObject:[NSNumber numberWithInt:baud] forKey:[b stringByAppendingString:@".baud"]];
-    [d2 setObject:[NSNumber numberWithInt:parity] forKey:[b stringByAppendingString:@".parity"]];
-    [d2 setObject:[NSNumber numberWithInt:stopBits] forKey:[b stringByAppendingString:@".stopBits"]];
-    [d2 setObject:[NSNumber numberWithInt:databits] forKey:[b stringByAppendingString:@".databits"]];
-    [d2 setObject:[NSNumber numberWithInt:protocol] forKey:[b stringByAppendingString:@".protocol"]];
-    [d2 setObject:[NSNumber numberWithInt:autocheckInterval] forKey:[b stringByAppendingString:@".autocheckInterval"]];
-    [d2 setObject:[NSNumber numberWithInt:defaultExtruderTemp] forKey:[b stringByAppendingString:@".defaultExtruderTemp"]];
-    [d2 setObject:[NSNumber numberWithInt:defaultHeatedBedTemp] forKey:[b stringByAppendingString:@".defaultHeatedBedTemp"]];
-    [d2 setObject:[NSNumber numberWithInt:receiveCacheSize] forKey:[b stringByAppendingString:@".receiveCacheSize"]];
-    [d2 setObject:[NSNumber numberWithBool:afterJobGoDispose] forKey:[b stringByAppendingString:@".afterJobGoDispose"]];
-    [d2 setObject:[NSNumber numberWithBool:afterJobDisableExtruder] forKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
-    [d2 setObject:[NSNumber numberWithBool:afterJobDisableHeatedBed] forKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
-    [d2 setObject:[NSNumber numberWithBool:afterJobDisableMotors] forKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
-    [d2 setObject:[NSNumber numberWithBool:dontLogM105] forKey:[b stringByAppendingString:@".dontLogM105"]];
-    [d2 setObject:[NSNumber numberWithBool:autocheckTemp] forKey:[b stringByAppendingString:@".autocheckTemp"]];
-    [d2 setObject:[NSNumber numberWithBool:okAfterResend] forKey:[b stringByAppendingString:@".okAfterResend"]];
-    [d2 setObject:[NSNumber numberWithBool:pingPongMode] forKey:[b stringByAppendingString:@".pingPongMode"]];
-    [d2 setObject:[NSNumber numberWithDouble:width] forKey:[b stringByAppendingString:@".width"]];
-    [d2 setObject:[NSNumber numberWithDouble:height] forKey:[b stringByAppendingString:@".height"]];
-    [d2 setObject:[NSNumber numberWithDouble:depth] forKey:[b stringByAppendingString:@".depth"]];
-    [d2 setObject:[NSNumber numberWithDouble:xMin] forKey:[b stringByAppendingString:@".xMin"]];
-    [d2 setObject:[NSNumber numberWithDouble:xMax] forKey:[b stringByAppendingString:@".xMax"]];
-    [d2 setObject:[NSNumber numberWithDouble:yMin] forKey:[b stringByAppendingString:@".yMin"]];
-    [d2 setObject:[NSNumber numberWithDouble:yMax] forKey:[b stringByAppendingString:@".yMax"]];
-    [d2 setObject:[NSNumber numberWithDouble:bedLeft] forKey:[b stringByAppendingString:@".bedLeft"]];
-    [d2 setObject:[NSNumber numberWithDouble:bedFront] forKey:[b stringByAppendingString:@".bedFront"]];
-    [d2 setObject:[NSNumber numberWithBool:homeX] forKey:[b stringByAppendingString:@".homeX"]];
-    [d2 setObject:[NSNumber numberWithBool:homeY] forKey:[b stringByAppendingString:@".homeY"]];
-    [d2 setObject:[NSNumber numberWithBool:homeZ] forKey:[b stringByAppendingString:@".homeZ"]];
-    [d2 setObject:[NSNumber numberWithDouble:travelFeedrate] forKey:[b stringByAppendingString:@".travelFeedrate"]];
-    [d2 setObject:[NSNumber numberWithDouble:travelZFeedrate] forKey:[b stringByAppendingString:@".travelZFeedrate"]];
-    [d2 setObject:[NSNumber numberWithDouble:disposeX] forKey:[b stringByAppendingString:@".disposeX"]];
-    [d2 setObject:[NSNumber numberWithDouble:disposeY] forKey:[b stringByAppendingString:@".disposeY"]];
-    [d2 setObject:[NSNumber numberWithDouble:disposeZ] forKey:[b stringByAppendingString:@".disposeZ"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".startCode"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".endCode"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".jobkillCode"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".jobpauseCode"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".script1Code"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".script2Code"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".script3Code"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".script4Code"]];
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".script5Code"]];
+    [d2 setObject:port forKey:[self.b stringByAppendingString:@".port"]];
+    [d2 setObject:[NSNumber numberWithInt:baud] forKey:[self.b stringByAppendingString:@".baud"]];
+    [d2 setObject:[NSNumber numberWithInt:parity] forKey:[self.b stringByAppendingString:@".parity"]];
+    [d2 setObject:[NSNumber numberWithInt:stopBits] forKey:[self.b stringByAppendingString:@".stopBits"]];
+    [d2 setObject:[NSNumber numberWithInt:databits] forKey:[self.b stringByAppendingString:@".databits"]];
+    [d2 setObject:[NSNumber numberWithInt:protocol] forKey:[self.b stringByAppendingString:@".protocol"]];
+    [d2 setObject:[NSNumber numberWithInt:autocheckInterval] forKey:[self.b stringByAppendingString:@".autocheckInterval"]];
+    [d2 setObject:[NSNumber numberWithInt:defaultExtruderTemp] forKey:[self.b stringByAppendingString:@".defaultExtruderTemp"]];
+    [d2 setObject:[NSNumber numberWithInt:defaultHeatedBedTemp] forKey:[self.b stringByAppendingString:@".defaultHeatedBedTemp"]];
+    [d2 setObject:[NSNumber numberWithInt:receiveCacheSize] forKey:[self.b stringByAppendingString:@".receiveCacheSize"]];
+    [d2 setObject:[NSNumber numberWithBool:afterJobGoDispose] forKey:[self.b stringByAppendingString:@".afterJobGoDispose"]];
+    [d2 setObject:[NSNumber numberWithBool:afterJobDisableExtruder] forKey:[self.b stringByAppendingString:@".afterJobDisableExtruder"]];
+    [d2 setObject:[NSNumber numberWithBool:afterJobDisableHeatedBed] forKey:[self.b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    [d2 setObject:[NSNumber numberWithBool:afterJobDisableMotors] forKey:[self.b stringByAppendingString:@".afterJobDisableMotors"]];
+    [d2 setObject:[NSNumber numberWithBool:dontLogM105] forKey:[self.b stringByAppendingString:@".dontLogM105"]];
+    [d2 setObject:[NSNumber numberWithBool:autocheckTemp] forKey:[self.b stringByAppendingString:@".autocheckTemp"]];
+    [d2 setObject:[NSNumber numberWithBool:okAfterResend] forKey:[self.b stringByAppendingString:@".okAfterResend"]];
+    [d2 setObject:[NSNumber numberWithBool:pingPongMode] forKey:[self.b stringByAppendingString:@".pingPongMode"]];
+    [d2 setObject:[NSNumber numberWithDouble:width] forKey:[self.b stringByAppendingString:@".width"]];
+    [d2 setObject:[NSNumber numberWithDouble:height] forKey:[self.b stringByAppendingString:@".height"]];
+    [d2 setObject:[NSNumber numberWithDouble:depth] forKey:[self.b stringByAppendingString:@".depth"]];
+    [d2 setObject:[NSNumber numberWithDouble:xMin] forKey:[self.b stringByAppendingString:@".xMin"]];
+    [d2 setObject:[NSNumber numberWithDouble:xMax] forKey:[self.b stringByAppendingString:@".xMax"]];
+    [d2 setObject:[NSNumber numberWithDouble:yMin] forKey:[self.b stringByAppendingString:@".yMin"]];
+    [d2 setObject:[NSNumber numberWithDouble:yMax] forKey:[self.b stringByAppendingString:@".yMax"]];
+    [d2 setObject:[NSNumber numberWithDouble:bedLeft] forKey:[self.b stringByAppendingString:@".bedLeft"]];
+    [d2 setObject:[NSNumber numberWithDouble:bedFront] forKey:[self.b stringByAppendingString:@".bedFront"]];
+    [d2 setObject:[NSNumber numberWithBool:homeX] forKey:[self.b stringByAppendingString:@".homeX"]];
+    [d2 setObject:[NSNumber numberWithBool:homeY] forKey:[self.b stringByAppendingString:@".homeY"]];
+    [d2 setObject:[NSNumber numberWithBool:homeZ] forKey:[self.b stringByAppendingString:@".homeZ"]];
+    [d2 setObject:[NSNumber numberWithDouble:travelFeedrate] forKey:[self.b stringByAppendingString:@".travelFeedrate"]];
+    [d2 setObject:[NSNumber numberWithDouble:travelZFeedrate] forKey:[self.b stringByAppendingString:@".travelZFeedrate"]];
+    [d2 setObject:[NSNumber numberWithDouble:disposeX] forKey:[self.b stringByAppendingString:@".disposeX"]];
+    [d2 setObject:[NSNumber numberWithDouble:disposeY] forKey:[self.b stringByAppendingString:@".disposeY"]];
+    [d2 setObject:[NSNumber numberWithDouble:disposeZ] forKey:[self.b stringByAppendingString:@".disposeZ"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".startCode"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".endCode"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".jobkillCode"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".jobpauseCode"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".script1Code"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".script2Code"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".script3Code"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".script4Code"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".script5Code"]];
 
-    [d2 setObject:@"" forKey:[b stringByAppendingString:@".filterPrg"]];
-    [d2 setObject:[NSNumber numberWithBool:enableFilterPrg] forKey:[b stringByAppendingString:@".enableFilterPrg"]];
+    [d2 setObject:@"" forKey:[self.b stringByAppendingString:@".filterPrg"]];
+    [d2 setObject:[NSNumber numberWithBool:enableFilterPrg] forKey:[self.b stringByAppendingString:@".enableFilterPrg"]];
     
     // Some defaults for the gui
     [d2 setObject:[NSNumber numberWithDouble:100] forKey:@"fanSpeed"];
@@ -282,17 +282,17 @@
     [d2 setObject:[NSNumber numberWithBool:NO] forKey:@"debugDryRun"];
     [d2 setObject:[NSNumber numberWithDouble:10] forKey:@"extruder.extrudeLength"];
     [d2 setObject:[NSNumber numberWithDouble:50] forKey:@"extruder.extrudeSpeed"];
-    //[d setObject:[NSNumber numberWithBool:NO] forKey:[b stringByAppendingString:@".hasDumpArea"]];
-    [d2 setObject:[NSNumber numberWithInt:0] forKey:[b stringByAppendingString:@".printerType"]];
-    [d2 setObject:[NSNumber numberWithDouble:125] forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
-    [d2 setObject:[NSNumber numberWithDouble:0] forKey:[b stringByAppendingString:@".dumpAreaFront"]];
-    [d2 setObject:[NSNumber numberWithDouble:40] forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
-    [d2 setObject:[NSNumber numberWithDouble:22] forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
-    [d2 setObject:[NSNumber numberWithDouble:250] forKey:[b stringByAppendingString:@".deltaDiameter"]];
-    [d2 setObject:[NSNumber numberWithDouble:200] forKey:[b stringByAppendingString:@".deltaHeight"]];
-    [d2 setObject:[NSNumber numberWithDouble:8] forKey:[b stringByAppendingString:@".addPrintingTime"]];
-    [d2 setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".numberOfExtruder"]];
-    [d2 setObject:[NSNumber numberWithInt:1] forKey:[b stringByAppendingString:@".activeSlicer"]];
+    //[d setObject:[NSNumber numberWithBool:NO] forKey:[self.b stringByAppendingString:@".hasDumpArea"]];
+    [d2 setObject:[NSNumber numberWithInt:0] forKey:[self.b stringByAppendingString:@".printerType"]];
+    [d2 setObject:[NSNumber numberWithDouble:125] forKey:[self.b stringByAppendingString:@".dumpAreaLeft"]];
+    [d2 setObject:[NSNumber numberWithDouble:0] forKey:[self.b stringByAppendingString:@".dumpAreaFront"]];
+    [d2 setObject:[NSNumber numberWithDouble:40] forKey:[self.b stringByAppendingString:@".dumpAreaWidth"]];
+    [d2 setObject:[NSNumber numberWithDouble:22] forKey:[self.b stringByAppendingString:@".dumpAreaDepth"]];
+    [d2 setObject:[NSNumber numberWithDouble:250] forKey:[self.b stringByAppendingString:@".deltaDiameter"]];
+    [d2 setObject:[NSNumber numberWithDouble:200] forKey:[self.b stringByAppendingString:@".deltaHeight"]];
+    [d2 setObject:[NSNumber numberWithDouble:8] forKey:[self.b stringByAppendingString:@".addPrintingTime"]];
+    [d2 setObject:[NSNumber numberWithInt:1] forKey:[self.b stringByAppendingString:@".numberOfExtruder"]];
+    [d2 setObject:[NSNumber numberWithInt:1] forKey:[self.b stringByAppendingString:@".activeSlicer"]];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:d2];
     //[d release];
@@ -301,68 +301,68 @@
     [self sanityCheck];
     d = [NSUserDefaults standardUserDefaults];
     self.b = [@"printer." stringByAppendingString:name];
-    [d setObject:port forKey:[b stringByAppendingString:@".port"]];
-    [d setInteger:baud forKey:[b stringByAppendingString:@".baud"]];
-    [d setInteger:parity forKey:[b stringByAppendingString:@".parity"]];
-    [d setInteger:stopBits forKey:[b stringByAppendingString:@".stopBits"]];
-    [d setInteger:databits forKey:[b stringByAppendingString:@".databits"]];
-    [d setInteger:protocol forKey:[b stringByAppendingString:@".protocol"]];
-    [d setInteger:autocheckInterval forKey:[b stringByAppendingString:@".autocheckInterval"]];
-    [d setInteger:defaultExtruderTemp forKey:[b stringByAppendingString:@".defaultExtruderTemp"]];
-    [d setInteger:defaultHeatedBedTemp forKey:[b stringByAppendingString:@".defaultHeatedBedTemp"]];
-    [d setInteger:receiveCacheSize forKey:[b stringByAppendingString:@".receiveCacheSize"]];
-    [d setBool:afterJobGoDispose forKey:[b stringByAppendingString:@".afterJobGoDispose"]];
-    [d setBool:afterJobDisableExtruder forKey:[b stringByAppendingString:@".afterJobDisableExtruder"]];
-    [d setBool:afterJobDisableHeatedBed forKey:[b stringByAppendingString:@".afterJobDisableHeatedBed"]];
-    [d setBool:afterJobDisableMotors forKey:[b stringByAppendingString:@".afterJobDisableMotors"]];
-    [d setBool:autocheckTemp forKey:[b stringByAppendingString:@".autocheckTemp"]];
-    [d setBool:okAfterResend forKey:[b stringByAppendingString:@".okAfterResend"]];
-    [d setBool:pingPongMode forKey:[b stringByAppendingString:@".pingPongMode"]];
-    [d setBool:dontLogM105 forKey:[b stringByAppendingString:@".dontLogM105"]];
-    [d setDouble:width forKey:[b stringByAppendingString:@".width"]];
-    [d setDouble:height forKey:[b stringByAppendingString:@".height"]];
-    [d setDouble:depth forKey:[b stringByAppendingString:@".depth"]];
-    [d setDouble:xMin forKey:[b stringByAppendingString:@".xMin"]];
-    [d setDouble:xMax forKey:[b stringByAppendingString:@".xMax"]];
-    [d setDouble:yMin forKey:[b stringByAppendingString:@".yMin"]];
-    [d setDouble:yMax forKey:[b stringByAppendingString:@".yMax"]];
-    [d setDouble:bedLeft forKey:[b stringByAppendingString:@".bedLeft"]];
-    [d setDouble:bedFront forKey:[b stringByAppendingString:@".bedFront"]];
-    [d setDouble:deltaDiameter forKey:[b stringByAppendingString:@".deltaDiameter"]];
-    [d setDouble:deltaHeight forKey:[b stringByAppendingString:@".deltaHeight"]];
-    [d setInteger:homeX forKey:[b stringByAppendingString:@".homeX"]];
-    [d setInteger:homeY forKey:[b stringByAppendingString:@".homeY"]];
-    [d setInteger:homeZ forKey:[b stringByAppendingString:@".homeZ"]];
-    [d setDouble:travelFeedrate forKey:[b stringByAppendingString:@".travelFeedrate"]];
-    [d setDouble:travelZFeedrate forKey:[b stringByAppendingString:@".travelZFeedrate"]];
-    [d setDouble:disposeX forKey:[b stringByAppendingString:@".disposeX"]];
-    [d setDouble:disposeY forKey:[b stringByAppendingString:@".disposeY"]];
-    [d setDouble:disposeZ forKey:[b stringByAppendingString:@".disposeZ"]];
-    [d setObject:startCode forKey:[b stringByAppendingString:@".startCode"]];
-    [d setObject:endCode forKey:[b stringByAppendingString:@".endCode"]];
-    [d setObject:jobkillCode forKey:[b stringByAppendingString:@".jobkillCode"]];
-    [d setObject:jobpauseCode forKey:[b stringByAppendingString:@".jobpauseCode"]];
-    [d setObject:script1Code forKey:[b stringByAppendingString:@".script1Code"]];
-    [d setObject:script2Code forKey:[b stringByAppendingString:@".script2Code"]];
-    [d setObject:script3Code forKey:[b stringByAppendingString:@".script3Code"]];
-    [d setObject:script4Code forKey:[b stringByAppendingString:@".script4Code"]];
-    [d setObject:script5Code forKey:[b stringByAppendingString:@".script5Code"]];
-    [d setObject:filterPrg forKey:[b stringByAppendingString:@".filterPrg"]];
-    [d setBool:enableFilterPrg forKey:[b stringByAppendingString:@".enableFilterPrg"]];
-    //    [d setBool:hasDumpArea forKey:[b stringByAppendingString:@".hasDumpArea"]];
-    [d setDouble:dumpAreaLeft forKey:[b stringByAppendingString:@".dumpAreaLeft"]];
-    [d setDouble:dumpAreaFront forKey:[b stringByAppendingString:@".dumpAreaFront"]];
-    [d setDouble:dumpAreaWidth forKey:[b stringByAppendingString:@".dumpAreaWidth"]];
-    [d setDouble:dumpAreaDepth forKey:[b stringByAppendingString:@".dumpAreaDepth"]];
-    [d setDouble:addPrintingTime forKey:[b stringByAppendingString:@".addPrintingTime"]];
-    [d setInteger:numberOfExtruder forKey:[b stringByAppendingString:@".numberOfExtruder"]];
-    [d setInteger:printerType forKey:[b stringByAppendingString:@".printerType"]];
-    [d setObject:slic3rPrint forKey:[b stringByAppendingString:@".slic3rPrint"]];
-    [d setObject:slic3rPrinter forKey:[b stringByAppendingString:@".slic3rPrinter"]];
-    [d setObject:slic3rFilament1 forKey:[b stringByAppendingString:@".slic3rFilament1"]];
-    [d setObject:slic3rFilament2 forKey:[b stringByAppendingString:@".slic3rFilament2"]];
-    [d setObject:slic3rFilament3 forKey:[b stringByAppendingString:@".slic3rFilament3"]];
-    [d setInteger:activeSlicer  forKey:[b stringByAppendingString:@".activeSlicer"]];
+    [d setObject:port forKey:[self.b stringByAppendingString:@".port"]];
+    [d setInteger:baud forKey:[self.b stringByAppendingString:@".baud"]];
+    [d setInteger:parity forKey:[self.b stringByAppendingString:@".parity"]];
+    [d setInteger:stopBits forKey:[self.b stringByAppendingString:@".stopBits"]];
+    [d setInteger:databits forKey:[self.b stringByAppendingString:@".databits"]];
+    [d setInteger:protocol forKey:[self.b stringByAppendingString:@".protocol"]];
+    [d setInteger:autocheckInterval forKey:[self.b stringByAppendingString:@".autocheckInterval"]];
+    [d setInteger:defaultExtruderTemp forKey:[self.b stringByAppendingString:@".defaultExtruderTemp"]];
+    [d setInteger:defaultHeatedBedTemp forKey:[self.b stringByAppendingString:@".defaultHeatedBedTemp"]];
+    [d setInteger:receiveCacheSize forKey:[self.b stringByAppendingString:@".receiveCacheSize"]];
+    [d setBool:afterJobGoDispose forKey:[self.b stringByAppendingString:@".afterJobGoDispose"]];
+    [d setBool:afterJobDisableExtruder forKey:[self.b stringByAppendingString:@".afterJobDisableExtruder"]];
+    [d setBool:afterJobDisableHeatedBed forKey:[self.b stringByAppendingString:@".afterJobDisableHeatedBed"]];
+    [d setBool:afterJobDisableMotors forKey:[self.b stringByAppendingString:@".afterJobDisableMotors"]];
+    [d setBool:autocheckTemp forKey:[self.b stringByAppendingString:@".autocheckTemp"]];
+    [d setBool:okAfterResend forKey:[self.b stringByAppendingString:@".okAfterResend"]];
+    [d setBool:pingPongMode forKey:[self.b stringByAppendingString:@".pingPongMode"]];
+    [d setBool:dontLogM105 forKey:[self.b stringByAppendingString:@".dontLogM105"]];
+    [d setDouble:width forKey:[self.b stringByAppendingString:@".width"]];
+    [d setDouble:height forKey:[self.b stringByAppendingString:@".height"]];
+    [d setDouble:depth forKey:[self.b stringByAppendingString:@".depth"]];
+    [d setDouble:xMin forKey:[self.b stringByAppendingString:@".xMin"]];
+    [d setDouble:xMax forKey:[self.b stringByAppendingString:@".xMax"]];
+    [d setDouble:yMin forKey:[self.b stringByAppendingString:@".yMin"]];
+    [d setDouble:yMax forKey:[self.b stringByAppendingString:@".yMax"]];
+    [d setDouble:bedLeft forKey:[self.b stringByAppendingString:@".bedLeft"]];
+    [d setDouble:bedFront forKey:[self.b stringByAppendingString:@".bedFront"]];
+    [d setDouble:deltaDiameter forKey:[self.b stringByAppendingString:@".deltaDiameter"]];
+    [d setDouble:deltaHeight forKey:[self.b stringByAppendingString:@".deltaHeight"]];
+    [d setInteger:homeX forKey:[self.b stringByAppendingString:@".homeX"]];
+    [d setInteger:homeY forKey:[self.b stringByAppendingString:@".homeY"]];
+    [d setInteger:homeZ forKey:[self.b stringByAppendingString:@".homeZ"]];
+    [d setDouble:travelFeedrate forKey:[self.b stringByAppendingString:@".travelFeedrate"]];
+    [d setDouble:travelZFeedrate forKey:[self.b stringByAppendingString:@".travelZFeedrate"]];
+    [d setDouble:disposeX forKey:[self.b stringByAppendingString:@".disposeX"]];
+    [d setDouble:disposeY forKey:[self.b stringByAppendingString:@".disposeY"]];
+    [d setDouble:disposeZ forKey:[self.b stringByAppendingString:@".disposeZ"]];
+    [d setObject:startCode forKey:[self.b stringByAppendingString:@".startCode"]];
+    [d setObject:endCode forKey:[self.b stringByAppendingString:@".endCode"]];
+    [d setObject:jobkillCode forKey:[self.b stringByAppendingString:@".jobkillCode"]];
+    [d setObject:jobpauseCode forKey:[self.b stringByAppendingString:@".jobpauseCode"]];
+    [d setObject:script1Code forKey:[self.b stringByAppendingString:@".script1Code"]];
+    [d setObject:script2Code forKey:[self.b stringByAppendingString:@".script2Code"]];
+    [d setObject:script3Code forKey:[self.b stringByAppendingString:@".script3Code"]];
+    [d setObject:script4Code forKey:[self.b stringByAppendingString:@".script4Code"]];
+    [d setObject:script5Code forKey:[self.b stringByAppendingString:@".script5Code"]];
+    [d setObject:filterPrg forKey:[self.b stringByAppendingString:@".filterPrg"]];
+    [d setBool:enableFilterPrg forKey:[self.b stringByAppendingString:@".enableFilterPrg"]];
+    //    [d setBool:hasDumpArea forKey:[self.b stringByAppendingString:@".hasDumpArea"]];
+    [d setDouble:dumpAreaLeft forKey:[self.b stringByAppendingString:@".dumpAreaLeft"]];
+    [d setDouble:dumpAreaFront forKey:[self.b stringByAppendingString:@".dumpAreaFront"]];
+    [d setDouble:dumpAreaWidth forKey:[self.b stringByAppendingString:@".dumpAreaWidth"]];
+    [d setDouble:dumpAreaDepth forKey:[self.b stringByAppendingString:@".dumpAreaDepth"]];
+    [d setDouble:addPrintingTime forKey:[self.b stringByAppendingString:@".addPrintingTime"]];
+    [d setInteger:numberOfExtruder forKey:[self.b stringByAppendingString:@".numberOfExtruder"]];
+    [d setInteger:printerType forKey:[self.b stringByAppendingString:@".printerType"]];
+    [d setObject:slic3rPrint forKey:[self.b stringByAppendingString:@".slic3rPrint"]];
+    [d setObject:slic3rPrinter forKey:[self.b stringByAppendingString:@".slic3rPrinter"]];
+    [d setObject:slic3rFilament1 forKey:[self.b stringByAppendingString:@".slic3rFilament1"]];
+    [d setObject:slic3rFilament2 forKey:[self.b stringByAppendingString:@".slic3rFilament2"]];
+    [d setObject:slic3rFilament3 forKey:[self.b stringByAppendingString:@".slic3rFilament3"]];
+    [d setInteger:activeSlicer  forKey:[self.b stringByAppendingString:@".activeSlicer"]];
 
     if(app!=nil)
         [app->manualControl updateExtruderCount];
@@ -495,7 +495,7 @@
     [skeinforgeProfile autorelease];
     skeinforgeProfile = [value retain];
     if(importing) return;
-    [d setObject:skeinforgeProfile forKey:[b stringByAppendingString:@".skeinforgeProfile"]];
+    [d setObject:skeinforgeProfile forKey:[self.b stringByAppendingString:@".skeinforgeProfile"]];
 }
 -(NSString*)slic3rPrint {
     return [[slic3rPrint retain] autorelease];
@@ -504,7 +504,7 @@
     [slic3rPrint autorelease];
     slic3rPrint = [value retain];
     if(importing) return;
-    [d setObject:slic3rPrint forKey:[b stringByAppendingString:@".slic3rPrint"]];
+    [d setObject:slic3rPrint forKey:[self.b stringByAppendingString:@".slic3rPrint"]];
 }
 -(NSString*)slic3rPrinter {
     return [[slic3rPrinter retain] autorelease];
@@ -513,7 +513,7 @@
     [slic3rPrinter autorelease];
     slic3rPrinter = [value retain];
     if(importing) return;
-    [d setObject:slic3rPrinter forKey:[b stringByAppendingString:@".slic3rPrinter"]];
+    [d setObject:slic3rPrinter forKey:[self.b stringByAppendingString:@".slic3rPrinter"]];
 }
 -(NSString*)slic3rFilament1 {
     return [[slic3rFilament1 retain] autorelease];
@@ -522,7 +522,7 @@
     [slic3rFilament1 autorelease];
     slic3rFilament1 = [value retain];
     if(importing) return;
-    [d setObject:slic3rFilament1 forKey:[b stringByAppendingString:@".slic3rFilament1"]];
+    [d setObject:slic3rFilament1 forKey:[self.b stringByAppendingString:@".slic3rFilament1"]];
 }
 -(NSString*)slic3rFilament2 {
     return [[slic3rFilament2 retain] autorelease];
@@ -531,7 +531,7 @@
     [slic3rFilament2 autorelease];
     slic3rFilament2 = [value retain];
     if(importing) return;
-    [d setObject:slic3rFilament2 forKey:[b stringByAppendingString:@".slic3rFilament2"]];
+    [d setObject:slic3rFilament2 forKey:[self.b stringByAppendingString:@".slic3rFilament2"]];
 }
 -(NSString*)slic3rFilament3 {
     return [[slic3rFilament3 retain] autorelease];
@@ -540,7 +540,7 @@
     [slic3rFilament3 autorelease];
     slic3rFilament3 = [value retain];
     if(importing) return;
-    [d setObject:slic3rFilament3 forKey:[b stringByAppendingString:@".slic3rFilament3"]];
+    [d setObject:slic3rFilament3 forKey:[self.b stringByAppendingString:@".slic3rFilament3"]];
 }
 -(int)activeSlicer {
     return activeSlicer;
@@ -548,7 +548,7 @@
 -(void)setActiveSlicer:(int)value {
     activeSlicer = value;
     if(importing) return;
-    [d setInteger:activeSlicer forKey:[b stringByAppendingString:@".activeSlicer"]];
+    [d setInteger:activeSlicer forKey:[self.b stringByAppendingString:@".activeSlicer"]];
 }
 @end
 

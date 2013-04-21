@@ -94,7 +94,7 @@
 @property (copy) NSString *script5Code;
 @property (copy) NSString *filterPrg;
 
--(void)initDefaultsRepository:(NSString*)confname;
+-(void)setupDefaultsRepository:(NSString*)confname;
 -(PrinterConfiguration*)initLoadFromRepository:(NSString*)confname;
 -(void)saveToRepository;
 
