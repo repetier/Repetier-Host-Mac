@@ -14,6 +14,5 @@ Stable with ongoing development of new features.
 
 ## Installation
 
-Download the Installer [https://github.com/repetier/Repetier-Host-Mac/downloads](https://github.com/repetier/Repetier-Host-Mac/downloads)
-Run the installer.
-After installation you see a Repetier-Host Mac entry in your application directory.
+Documentation: [http://www.repetier.com/documentation/repetier-host-mac/](http://www.repetier.com/documentation/repetier-host-mac/)
+Downloads: [http://www.repetier.com/download/](http://www.repetier.com/download/)
