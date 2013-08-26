@@ -250,6 +250,7 @@
     c->deltaHeight = deltaHeight;
     [c saveToRepository];
     [app->rhslicer updateSelections];
+    [self loadFromConfig];
 }
 
 - (IBAction)createNewConfig:(id)sender {
@@ -316,7 +317,9 @@
 }
 
 - (IBAction)applyButtonHit:(id)sender {
+    //NSLog(@"bedFront = %f", bedFront);
     [self saveToConfig];
+    //NSLog(@"bedFront 2 = %f", bedFront);
     [app->openGLView redraw];
 }
 

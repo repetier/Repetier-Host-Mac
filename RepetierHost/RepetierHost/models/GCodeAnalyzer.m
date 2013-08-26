@@ -44,10 +44,10 @@
 -(id)init {
     if((self=[super init])) {
         delegate = nil;
-        activeExtruder = nil;
         extruder=[NSMutableDictionary new];
-        activeExtruder = [[ExtruderData alloc] initWithId:0];
-        [extruder setObject:activeExtruder forKey:[NSNumber numberWithInt:0]];
+        activeExtruder = [self getExtruderDataFor:0];
+        // activeExtruder = [[ExtruderData alloc] initWithId:0];
+        //[extruder setObject:activeExtruder forKey:[NSNumber numberWithInt:0]];
         uploading = NO;
         bedTemp = 0;
         x = y = z = 0;
@@ -88,8 +88,7 @@
     [extruder removeAllObjects];
     relative = NO;
     eRelative = NO;
-    activeExtruder = [[ExtruderData alloc] initWithId:0];
-    [extruder setObject:activeExtruder forKey:[NSNumber numberWithInt:0]];
+    activeExtruder = [self getExtruderDataFor:0];
     bedTemp = 0;
     layer = 0;
     fanOn = NO;
@@ -146,7 +145,7 @@
     data->temperature = temp;
 }
 -(bool)isAnyExtruderEnabled {
-    for(ExtruderData *data in extruder)
+    for(ExtruderData *data in extruder.allValues)
         if(data->temperature>20) return YES;
     return NO;
 }

@@ -1584,11 +1584,12 @@ BOOL correctNormals = true;
         sl = [[RHLinkedList new] autorelease];
         for (GCodePath *path in [segments objectAtIndex:i])
         {
+            //[path->pointsLock lock];
             [sl addLast:path];
         }
         [sla addObject:sl];
     }
-    [changeLock unlock];
+    //[changeLock unlock];
     //long timeStart = DateTime.Now.Ticks;
     float *col;
     col = conf3d->filamentColor;
@@ -1636,9 +1637,9 @@ BOOL correctNormals = true;
         }
     }
     if(conf3d->showTravel) {
-        [changeLock lock];
+        //[changeLock lock];
         [self drawMoves];
-        [changeLock unlock];
+        //[changeLock unlock];
     }
     GCodeEditorController *ed = app->gcodeView;
     int findex = ed.fileIndex;
@@ -1664,9 +1665,9 @@ BOOL correctNormals = true;
         }
         glDepthFunc(GL_LEQUAL);
         if(conf3d->showTravel) {
-            [changeLock lock];
+            //[changeLock lock];
             [self drawMovesFrom:selectionStart to:selectionEnd];
-            [changeLock unlock];
+            //[changeLock unlock];
         }
         col = conf3d->selectedFilamentColor;
         defaultColor[0] = (float)col[0];
@@ -1682,6 +1683,8 @@ BOOL correctNormals = true;
         }
     }
     [sla removeAllObjects];
+    [changeLock unlock];
+
     // timeStart = DateTime.Now.Ticks - timeStart;
     //  double time = (double)timeStart * 0.1;
     // Main.conn.log("OpenGL paint time " + time.ToString("0.0", GCode.format) + " microseconds",false,4);

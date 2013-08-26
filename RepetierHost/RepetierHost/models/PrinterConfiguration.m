@@ -161,7 +161,7 @@
         [d removeObjectForKey:[self.b stringByAppendingString:@".homeXMax"]];
         [d setInteger:homeX forKey:[self.b stringByAppendingString:@".homeX"]];
     } else {
-        homeX = [d integerForKey:[self.b stringByAppendingString:@".homeX"]];
+        homeX = (int)[d integerForKey:[self.b stringByAppendingString:@".homeX"]];
     }
     if([d objectForKey:[self.b stringByAppendingString:@".homeYMax"]]!=nil) {
         BOOL homeYMax = [d boolForKey:[self.b stringByAppendingString:@".homeYMax"]];
@@ -169,7 +169,7 @@
         [d removeObjectForKey:[self.b stringByAppendingString:@".homeYMax"]];
         [d setInteger:homeY forKey:[self.b stringByAppendingString:@".homeY"]];
     } else {
-        homeY = [d integerForKey:[self.b stringByAppendingString:@".homeY"]];
+        homeY = (int)[d integerForKey:[self.b stringByAppendingString:@".homeY"]];
     }
     if([d objectForKey:[self.b stringByAppendingString:@".homeZMax"]]!=nil) {
         BOOL homeZMax = [d boolForKey:[self.b stringByAppendingString:@".homeZMax"]];
@@ -177,7 +177,7 @@
         [d removeObjectForKey:[self.b stringByAppendingString:@".homeZMax"]];
         [d setInteger:homeZ forKey:[self.b stringByAppendingString:@".homeZ"]];
     } else {
-        homeZ = [d integerForKey:[self.b stringByAppendingString:@".homeZ"]];
+        homeZ = (int)[d integerForKey:[self.b stringByAppendingString:@".homeZ"]];
     }
     travelFeedrate = [d doubleForKey:[self.b stringByAppendingString:@".travelFeedrate"]];
     travelZFeedrate = [d doubleForKey:[self.b stringByAppendingString:@".travelZFeedrate"]];

@@ -126,29 +126,31 @@
     [super dealloc];
 }
 -(float)getExtruderTemperature:(int)extruder {
-    if(extruder<0) extruder = analyzer->activeExtruder;
+    if(extruder<0) extruder = analyzer->activeExtruder->extruderId;
     NSNumber *en = [NSNumber numberWithInt:extruder];
     id res = [extruderTemp objectForKey:en];
     if(res==nil) return 0;
     return ((NSNumber*)res).floatValue;
 }
 -(void)setExtruder:(int)extruder temperature:(float)temp {
-    if(extruder<0) extruder = analyzer->activeExtruder;
+    if(extruder<0) extruder = analyzer->activeExtruder->extruderId;
     NSNumber *en = [NSNumber numberWithInt:extruder];
     NSNumber *etemp = [NSNumber numberWithFloat:temp];
+    if(extruder!=0)
+        NSLog(@"create extruder %d",extruder);
     [tempLock lock];
     [extruderTemp setObject:etemp forKey:en];
     [tempLock unlock];
 }
 -(int)getExtruderOutput:(int)extruder {
-    if(extruder<0) extruder = analyzer->activeExtruder;
+    if(extruder<0) extruder = analyzer->activeExtruder->extruderId;
     NSNumber *en = [NSNumber numberWithInt:extruder];
     id res = [extruderOutput objectForKey:en];
     if(res==nil) return -1;
     return ((NSNumber*)res).intValue;
 }
 -(void)setExtruder:(int)extruder output:(int)outp {
-    if(extruder<0) extruder = analyzer->activeExtruder;
+    if(extruder<0) extruder = analyzer->activeExtruder->extruderId;
     NSNumber *en = [NSNumber numberWithInt:extruder];
     NSNumber *eout = [NSNumber numberWithFloat:outp];
     [tempLock lock];
@@ -221,7 +223,7 @@
             [port setStopBits:config->stopBits];
             [port setDataBits:config->databits];
             [port clearDTR];
-            [NSThread sleepForTimeInterval:0.2];
+            //[NSThread sleepForTimeInterval:0.2];
 
 			[port commitChanges];
 			[rhlog addInfo:@"Connection opened"];
@@ -945,12 +947,12 @@
         [ThreadedNotification notifyNow:@"FlowMultiply" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetExtr0:"])!=nil)  {
-        if(analyzer->activeExtruder==0)
+        if(analyzer->activeExtruder->extruderId==0)
             [analyzer setExtruder:0 temperature:h.floatValue];
         [ThreadedNotification notifyNow:@"TargetExtr0" object:h];
     }
     if ((h = [self extract:res identifier:@"TargetExtr1:"])!=nil)  {
-        if(analyzer->activeExtruder==1)
+        if(analyzer->activeExtruder->extruderId==1)
             [analyzer setExtruder:1 temperature:h.floatValue];
         [ThreadedNotification notifyNow:@"TargetExtr1" object:h];
     }
@@ -994,6 +996,7 @@
     {
         level = RHLogInfo;
         lastline = 0;
+        [self injectManualCommandFirst:@"N0 M110" ]; // Make sure we tal about the same
         [job killJob]; // continuing the old job makes no sense, better save the plastic
         resendNode = nil;
         sdcardMounted = YES;
