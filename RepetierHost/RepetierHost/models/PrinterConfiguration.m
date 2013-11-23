@@ -445,7 +445,7 @@
     if(dconf==nil) return NO;
     [printerConfigurations removeObject:dconf];
     if(currentPrinterConfiguration==dconf)
-        [self selectPrinter:[printerConfigurations objectAtIndex:0]];
+        [self selectPrinter:[[printerConfigurations objectAtIndex:0] name]];
     // Update printer list
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:printerConfigurations.count];
     for(PrinterConfiguration *c in printerConfigurations)

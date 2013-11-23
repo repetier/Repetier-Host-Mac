@@ -333,5 +333,10 @@
 }
 
 - (IBAction)deleteButtonHit:(id)sender {
+    if([printerConfigurations count] == 1) {
+        [self showWarning:@"You can not delete the last configuration!" headline:@"Warning"];
+        return; // do never delete last configuration
+    }
+    [PrinterConfiguration deletePrinter:[currentPrinterConfiguration name]];
 }
 @end

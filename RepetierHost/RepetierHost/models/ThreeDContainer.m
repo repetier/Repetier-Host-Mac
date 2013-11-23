@@ -272,7 +272,7 @@
                 }
                 if(x >=conf->width) break;
             }
-            for (i = 0; i < 21; i++)
+            for (i = 0; i < 201; i++)
             {
                 y = (double)i*dy;
                 if(y>conf->depth) y = conf->depth;
