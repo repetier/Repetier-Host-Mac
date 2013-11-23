@@ -407,7 +407,9 @@
     [c UpdatePickLineX: p.x y:p.y width:sz.width height:sz.height];
     [movePlane intersectLine:c.pickLine result:moveStart];
     //NSLog(@"Move start %@",self.moveStart.ToString);
-    ThreeDModel *selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
+    ThreeDModel *selmod = nil;
+    if(app->stlView == topView->act)
+        selmod = [c PicktestX:p.x Y:p.y width:sz.width height:sz.height];
     last = p;
     if(selmod!=nil) {
         self.movePlane = [Geom3DPlane planeFromPoint:[Geom3DVector vectorFromVector:c->pickPoint]  normal:[Geom3DVector vectorWithX:0 y:0 z:1]];
